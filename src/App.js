@@ -1,27 +1,27 @@
-import { useSelector, useDispatch } from 'react-redux';
-import { decrement, increment } from './features/counter/counterSlice';
+// Modules:
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+} from "react-router-dom";
+
+// Components:
+import LoginPage from './pages/LoginPage';
+import ChatPage from './pages/ChatPage';
+
+// CSS:
 import './styles/scss/components/App.scss';
 
+
 function App() {
-  const count = useSelector(state => state.counter.value);
-  const dispatch = useDispatch();
-
-  const handleDecrease = () => {
-    const action = decrement();
-    dispatch(action);
-  }
-
-  const handleIncrease = () => {
-    const action = increment();
-    dispatch(action);
-  }
-
   return (
-    <div className="App">
-      <div>Value: {count}</div>
-      <button onClick={() => handleDecrease()}>Decrease</button>
-      <button onClick={() => handleIncrease()}>Increase</button>
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route exact path="/chat" element={<ChatPage />}></Route>
+        <Route exact path="/login" element={<LoginPage />}></Route>
+        <Route exact path="/" element={<LoginPage />}></Route>
+      </Routes>
+    </BrowserRouter>
   );
 }
 
