@@ -1,20 +1,16 @@
-import React, { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React from 'react';
 import swal from 'sweetalert';
 
 // Firebase:
-import { auth, signInWithPopup, signOut, onAuthStateChanged, fb_provider } from '../firebase/config';
+import { auth, signInWithPopup, signOut, fb_provider } from '../firebase/config';
 
 // Redux:
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { setUser } from '../features/auth/userAuthSlice';
 
 
 function LoginPage(props) {
-    const navigate = useNavigate();
-
     // Redux:
-    const user = useSelector((state) => state.userAuth.user);
     const dispatch = useDispatch();
 
 
@@ -48,22 +44,6 @@ function LoginPage(props) {
                 // An error happened!
             });
     }
-
-
-    // Side effects:
-    useEffect(() => {
-        const unsubscribe = onAuthStateChanged(auth, (user) => {
-            if (user) {
-                navigate('/chat');
-            } else {
-                // User is signed out!
-            }
-        });
-
-        return () => {
-            unsubscribe();
-        };
-    }, [navigate]);
 
 
     // Component:
