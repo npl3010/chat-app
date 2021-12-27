@@ -1,0 +1,28 @@
+.top-navigation {
+    box-shadow: 0px 5px 5px -5px #ddd;
+    position: relative;
+}
+
+.topnav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    &__left-section {
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+    }
+
+    &__mid-section {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    &__right-section {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+    }
+}

@@ -1,0 +1,24 @@
+.chatpage {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+
+    &__left-section {
+        position: relative;
+        min-width: 360px;
+    }
+
+    &__mid-section {
+        position: relative;
+        width: 100%;
+        border-left: 1px solid rgb(230, 230, 230);
+        border-right: 1px solid rgb(230, 230, 230);
+        height: calc(100vh - 21px);
+    }
+
+    &__right-section {
+        position: relative;
+        min-width: 300px;
+    }
+}

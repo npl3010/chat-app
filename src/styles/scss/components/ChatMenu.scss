@@ -1,0 +1,94 @@
+// .chatmenu:
+.chatmenu {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+
+    &__header {
+        padding: 16px;
+    }
+
+    &__chatlist {
+        height: 100%;
+        max-height: calc(100vh - 74px);
+        overflow-y: auto;
+    }
+}
+
+
+// .searchbox:
+.searchbox-wrapper .searchbox input[type=text] {
+    border: none;
+    outline: none;
+    border-radius: 15px;
+    padding: 10px 15px;
+    background-color: #f0f2f5;
+    font-size: 15px;
+    width: 100%;
+}
+
+
+// .chatlist:
+.chatlist {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+
+    &__item {
+        padding: 0 8px;
+    }
+
+    &__item.active .chatbox {
+        background-color: rgba(70, 130, 180, 0.3);
+    }
+}
+
+.chatbox {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    align-items: center;
+    cursor: pointer;
+    border-radius: 10px;
+    padding: 8px;
+    user-select: none;
+
+    &:hover {
+        background-color: #eee;
+    }
+
+    &__person-img {
+        display: inline-block;
+        min-width: 56px;
+        width: 56px;
+        height: 56px;
+        margin-right: 10px;
+
+        .person-img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background-color: #eee;
+            border: 1px solid #ddd;
+        }
+    }
+
+    &__info {
+        .chatbox-title {
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        .chatbox-latest-message {
+            font-size: 13px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 1;
+            -webkit-box-orient: vertical;
+            line-height: 20px;
+        }
+    }
+}

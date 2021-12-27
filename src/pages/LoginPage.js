@@ -2,7 +2,7 @@ import React from 'react';
 import swal from 'sweetalert';
 
 // Firebase:
-import { auth, signInWithPopup, signOut, fb_provider } from '../firebase/config';
+import { auth, signInWithPopup, fb_provider } from '../firebase/config';
 
 // Redux:
 import { useDispatch } from 'react-redux';
@@ -33,25 +33,12 @@ function LoginPage(props) {
             });
     }
 
-    const handleLogout = () => {
-        signOut(auth)
-            .then((result) => {
-                // Sign-out successful!
-                const action = setUser(null);
-                dispatch(action);
-            })
-            .catch((error) => {
-                // An error happened!
-            });
-    }
-
 
     // Component:
     return (
         <div>
             <button onClick={() => handleLoginWithFB()}>Đăng nhập với tài khoản Facebook</button>
             <button>Đăng nhập với tài khoản Google</button>
-            <button onClick={() => handleLogout()}>Đăng xuất</button>
         </div>
     );
 }
