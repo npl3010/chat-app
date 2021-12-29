@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 // Components:
 import TopNavigation from '../components/TopNavigation';
@@ -11,6 +11,15 @@ import '../styles/scss/pages/ChatPage.scss';
 
 
 function ChatPage(props) {
+    const [isChatRoomMenuDisplayed, setIsChatRoomMenuDisplayed] = useState(true);
+
+
+    // Methods:
+    const handleDisplayChatRoomMenu = () => {
+        setIsChatRoomMenuDisplayed(!isChatRoomMenuDisplayed);
+    }
+
+
     // Component:
     return (
         <div>
@@ -21,9 +30,19 @@ function ChatPage(props) {
                         <div className='chatpage__left-section'>
                             <ChatMenu></ChatMenu>
                         </div>
+
                         <div className='chatpage__mid-section'>
                             <ChatRoom></ChatRoom>
                         </div>
+
+                        <input
+                            id="checkbox-for-chatroom-menu"
+                            type="checkbox"
+                            name="chatroom-menu-is-displayed"
+                            checked={isChatRoomMenuDisplayed}
+                            onChange={() => handleDisplayChatRoomMenu()}>
+                        </input>
+
                         <div className='chatpage__right-section'>
                             <ChatRoomMenu></ChatRoomMenu>
                         </div>

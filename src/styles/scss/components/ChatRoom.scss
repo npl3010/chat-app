@@ -11,6 +11,11 @@
 .chat-info {
     padding: 10px;
     box-shadow: 0px 5px 5px -5px #ddd;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-direction: row;
+    flex-wrap: nowrap;
 
     &__person {
         display: flex;
@@ -54,6 +59,16 @@
     .person-active-status {
         font-weight: lighter;
         font-size: 13px;
+    }
+}
+
+.action-list-wrapper .action-list .action-item .action-icon {
+    font-size: 25px;
+    color: rgba(70, 130, 180, 0.8);
+    cursor: pointer;
+
+    &:hover {
+        color: rgba(70, 130, 180, 1);
     }
 }
 

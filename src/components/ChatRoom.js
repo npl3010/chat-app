@@ -1,4 +1,6 @@
 import React from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 
 // CSS:
 import '../styles/scss/components/ChatRoom.scss';
@@ -17,7 +19,16 @@ function ChatRoom(props) {
                         <span className='person-active-status'>Hoạt động 1 giờ trước</span>
                     </div>
                 </div>
-                <div className='chat-info__actions'></div>
+
+                <div className='chat-info__actions'>
+                    <div className='action-list-wrapper'>
+                        <div className='action-list'>
+                            <label className='action-item' htmlFor="checkbox-for-chatroom-menu">
+                                <FontAwesomeIcon className='action-icon' icon={faInfoCircle} />
+                            </label>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <div className='chat-content'>

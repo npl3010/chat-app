@@ -1,0 +1,35 @@
+// .chatroom-menu:
+.chatroom-menu {
+    position: relative;
+    height: 100%;
+
+    &__header {
+        padding: 10px;
+    }
+
+    &__info {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: center;
+    }
+
+    &__name {
+        display: inline-block;
+        font-size: 16px;
+        font-weight: bold;
+        cursor: pointer;
+        text-align: center;
+        padding: 10px 0;
+    }
+
+    &__name:hover {
+        text-decoration: underline;
+    }
+
+    &__members {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+}

@@ -2,11 +2,14 @@ import React from 'react';
 import swal from 'sweetalert';
 
 // Firebase:
-import { auth, signInWithPopup, fb_provider } from '../firebase/config';
+import { auth, signInWithPopup, fb_provider, getAdditionalUserInfo } from '../firebase/config';
 
 // Redux:
 import { useDispatch } from 'react-redux';
 import { setUser } from '../features/auth/userAuthSlice';
+
+// Services:
+import { addDocument } from '../firebase/services';
 
 
 function LoginPage(props) {
@@ -18,9 +21,23 @@ function LoginPage(props) {
     const handleLoginWithFB = () => {
         signInWithPopup(auth, fb_provider)
             .then((result) => {
+                // Get user data:
                 const { displayName, email, uid, photoURL } = result.user;
                 const action = setUser({ displayName, email, uid, photoURL });
                 dispatch(action);
+
+                // Check isNewUser:
+                const moreInfo = getAdditionalUserInfo(result);
+                if (moreInfo.isNewUser === true) {
+                    addDocument("users", {
+                        displayName: result.user.displayName,
+                        email: result.user.email,
+                        uid: result.user.uid,
+                        photoURL: result.user.photoURL,
+                        providerId: moreInfo.providerId,
+                    });
+                }
+
                 // Display result:
                 swal("Successfully logged in!", `Your email: ${email}`, "success");
             })

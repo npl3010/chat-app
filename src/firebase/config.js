@@ -1,8 +1,30 @@
 // Import the functions you need from the SDKs you need
-import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
-import { getAuth, signInWithPopup, signOut, onAuthStateChanged, FacebookAuthProvider, } from "firebase/auth";
-import { getFirestore } from "firebase/firestore";
+import {
+    initializeApp
+} from "firebase/app";
+
+import {
+    getAnalytics
+} from "firebase/analytics";
+
+import {
+    getAuth,
+    signInWithPopup,
+    signOut,
+    onAuthStateChanged,
+    FacebookAuthProvider,
+    getAdditionalUserInfo
+} from "firebase/auth";
+
+import {
+    getFirestore,
+    collection,
+    doc,
+    setDoc,
+    addDoc,
+    serverTimestamp,
+} from "firebase/firestore";
+
 
 // Web app's Firebase configuration
 const firebaseConfig = {
@@ -15,14 +37,17 @@ const firebaseConfig = {
     measurementId: "G-82QBFZLPWE"
 };
 
+
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
+
 
 // Setup:
 const auth = getAuth();
 const db = getFirestore();
 const fb_provider = new FacebookAuthProvider();
+
 
 export {
     analytics,
@@ -32,5 +57,11 @@ export {
     signOut,
     onAuthStateChanged,
     fb_provider,
-    FacebookAuthProvider
+    FacebookAuthProvider,
+    getAdditionalUserInfo,
+    collection,
+    doc,
+    setDoc,
+    addDoc,
+    serverTimestamp,
 };

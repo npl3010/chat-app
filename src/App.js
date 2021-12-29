@@ -12,6 +12,7 @@ import LoginPage from './pages/LoginPage';
 import ChatPage from './pages/ChatPage';
 
 // CSS:
+import 'antd/dist/antd.min.css';
 import './styles/scss/components/App.scss';
 
 // Firebase:
