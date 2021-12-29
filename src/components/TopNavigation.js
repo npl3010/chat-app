@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBell } from '@fortawesome/free-solid-svg-icons';
 
 // Firebase:
-import { auth, signOut } from '../firebase/config';
+import { db, auth, signOut, collection, doc, onSnapshot } from '../firebase/config';
 
 // Redux:
 import { useSelector, useDispatch } from 'react-redux';
@@ -31,6 +31,23 @@ function TopNavigation(props) {
                 // An error happened!
             });
     }
+
+
+    // Side effects:
+    useEffect(() => {
+        // (Cloud Firestore) Listen for realtime updates:
+        onSnapshot(
+            collection(db, "users"),
+            (snapshot) => {
+                const data = snapshot.docs.map((doc) => {
+                    return ({
+                        ...doc.data(),
+                        id: doc.id
+                    });
+                });
+                console.log(data)
+            });
+    }, []);
 
 
     // Component:
