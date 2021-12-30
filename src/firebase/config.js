@@ -23,9 +23,11 @@ import {
     doc,
     setDoc,
     addDoc,
+    getDocs,
     onSnapshot,
     serverTimestamp,
     connectFirestoreEmulator,
+    query, where, orderBy, limit,
 } from "firebase/firestore";
 
 
@@ -71,6 +73,8 @@ export {
     doc,
     setDoc,
     addDoc,
+    getDocs,
     onSnapshot,
     serverTimestamp,
+    query, where, orderBy, limit,
 };

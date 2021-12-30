@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBell } from '@fortawesome/free-solid-svg-icons';
+import { faBell, faCaretDown } from '@fortawesome/free-solid-svg-icons';
 
 // Firebase:
-import { db, auth, signOut, collection, doc, onSnapshot } from '../firebase/config';
+import { auth, signOut } from '../firebase/config';
 
 // Redux:
 import { useSelector, useDispatch } from 'react-redux';
@@ -11,6 +11,9 @@ import { setUser } from '../features/auth/userAuthSlice';
 
 // CSS:
 import '../styles/scss/components/TopNavigation.scss';
+
+// Custom hooks:
+// import useFirestore from '../customHooks/useFirestore';
 
 
 function TopNavigation(props) {
@@ -36,17 +39,17 @@ function TopNavigation(props) {
     // Side effects:
     useEffect(() => {
         // (Cloud Firestore) Listen for realtime updates:
-        onSnapshot(
-            collection(db, "users"),
-            (snapshot) => {
-                const data = snapshot.docs.map((doc) => {
-                    return ({
-                        ...doc.data(),
-                        id: doc.id
-                    });
-                });
-                console.log(data)
-            });
+        // onSnapshot(
+        //     collection(db, "users"),
+        //     (snapshot) => {
+        //         const data = snapshot.docs.map((doc) => {
+        //             return ({
+        //                 ...doc.data(),
+        //                 id: doc.id
+        //             });
+        //         });
+        //         console.log(data)
+        //     });
     }, []);
 
 
@@ -61,15 +64,38 @@ function TopNavigation(props) {
                             <input type='text' placeholder='Tìm kiếm trên app'></input>
                         </div>
                     </div>
+
                     <div className='topnav__mid-section'>
                         <div className='app-menu'>
                         </div>
                     </div>
+
                     <div className='topnav__right-section'>
                         <div className='personal-menu'>
-                            {user !== null ? `Hello, ${user.displayName}` : ''}
-                            <FontAwesomeIcon icon={faBell} />
-                            <button onClick={() => handleLogout()}>LOG OUT!</button>
+                            <div className='menu-item user-btn'>
+                                <div className='user-img-wrapper'>
+                                    <img className='user-img' src={user.photoURL} alt='' ></img>
+                                </div>
+                                <div className='user-name'>
+                                    {user !== null ? `${user.displayName}` : 'Unknown'}
+                                </div>
+                            </div>
+
+                            <div className='menu-item menu-button notification-btn'>
+                                <FontAwesomeIcon className='menu-button__icon notification-icon' icon={faBell} />
+                            </div>
+
+                            <label className='menu-item menu-button dropdown-btn' htmlFor="checkbox-for-dropdown-menu">
+                                <FontAwesomeIcon className='menu-button__icon dropdown-icon' icon={faCaretDown} />
+                                <input
+                                    id="checkbox-for-dropdown-menu"
+                                    type="checkbox"
+                                    name="dropdown-menu-is-displayed">
+                                </input>
+                                <div className='dropdown-menu'>
+                                    <button onClick={() => handleLogout()}>LOG OUT!</button>
+                                </div>
+                            </label>
                         </div>
                     </div>
                 </div>

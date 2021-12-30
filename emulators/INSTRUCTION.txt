@@ -1,3 +1,5 @@
+How to set up Firebase Emulator for local development?
+
 Open Command Prompt (cmd) and run:
 1)
     npm i -g firebase-tools
