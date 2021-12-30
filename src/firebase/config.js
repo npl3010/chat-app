@@ -13,7 +13,8 @@ import {
     signOut,
     onAuthStateChanged,
     FacebookAuthProvider,
-    getAdditionalUserInfo
+    getAdditionalUserInfo,
+    connectAuthEmulator,
 } from "firebase/auth";
 
 import {
@@ -24,6 +25,7 @@ import {
     addDoc,
     onSnapshot,
     serverTimestamp,
+    connectFirestoreEmulator,
 } from "firebase/firestore";
 
 
@@ -48,6 +50,11 @@ const analytics = getAnalytics(app);
 const auth = getAuth();
 const db = getFirestore();
 const fb_provider = new FacebookAuthProvider();
+
+
+// Firebase Emulator:
+connectAuthEmulator(auth, "http://localhost:9099");
+connectFirestoreEmulator(db, 'localhost', 8080);
 
 
 export {

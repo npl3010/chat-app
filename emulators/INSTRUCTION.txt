@@ -1,0 +1,8 @@
+Open Command Prompt (cmd) and run:
+1)
+    npm i -g firebase-tools
+2)
+    firebase login
+    firebase init
+3)
+    firebase emulators:start
