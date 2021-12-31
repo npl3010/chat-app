@@ -14,6 +14,59 @@
         max-height: calc(100vh - 74px);
         overflow-y: auto;
     }
+
+    &__actions {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+
+    &__search {
+        user-select: none;
+    }
+}
+
+.title {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.action-list {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: flex-end;
+    align-items: center;
+
+    .action-item {
+        margin-right: 8px;
+    }
+
+    .action-item:last-child {
+        margin-right: 0;
+    }
+
+    .action-button {
+        background-color: #eee;
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 36px;
+        height: 36px;
+        cursor: pointer;
+    
+        &:hover {
+            background-color: rgb(221, 221, 221);
+        }
+    
+        &__icon {
+            font-size: 18px;
+        }
+    }
 }
 
 

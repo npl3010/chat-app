@@ -1,0 +1,17 @@
+COLLECTIONS:
+
+1. users:
+All fields:
+- createdAt (timestamp)
+- displayName (string)
+- email (string)
+- photoURL (string)
+- providerId (string)
+- uid (string)
+
+2. rooms (This object represents a chat room information):
+All fields:
+- createdAt (timestamp)
+- name (string)
+- description (string)
+- members (array): List of uids.

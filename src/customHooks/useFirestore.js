@@ -6,7 +6,7 @@ import { db, collection, onSnapshot, query, where, orderBy } from '../firebase/c
 
 // Work with Cloud Firestore:
 const useFirestore = (collectionName, condition) => {
-    // condition:
+    // condition (This object is used for where() function):
     /**
      * {
      *   fieldName: 'az',
@@ -31,9 +31,12 @@ const useFirestore = (collectionName, condition) => {
             if (!condition.value || condition.value.length === 0) {
                 return;
             }
+
+            // Lưu ý: Dữ liệu thuộc collection được đọc từ database phải có field là createdAt:
             q = query(collectionRef, where(condition.fieldName, condition.operator, condition.value), orderBy("createdAt"));
         }
         else {
+            // Lưu ý: Dữ liệu thuộc collection được đọc từ database phải có field là createdAt:
             q = query(collectionRef, orderBy("createdAt"));
         }
 
