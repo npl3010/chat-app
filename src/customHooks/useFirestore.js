@@ -47,6 +47,7 @@ const useFirestore = (collectionName, condition) => {
                 const data = snapshot.docs.map((doc) => {
                     return ({
                         ...doc.data(),
+                        createdAt: doc.data().createdAt.toDate().toString(),
                         id: doc.id
                     });
                 });

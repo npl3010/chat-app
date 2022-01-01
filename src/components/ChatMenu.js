@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faEllipsisH } from '@fortawesome/free-solid-svg-icons';
 
@@ -8,27 +8,12 @@ import { useSelector } from 'react-redux';
 // CSS:
 import '../styles/scss/components/ChatMenu.scss';
 
-// Custom hooks:
-import useFirestore from '../customHooks/useFirestore';
-
 
 function ChatMenu(props) {
 
 
-    // Redux:
-    const user = useSelector((state) => state.userAuth.user);
-
-
-    // Hooks:
-    const roomsCondition = useMemo(() => {
-        return {
-            fieldName: 'members',
-            operator: 'array-contains',
-            value: user.uid
-        };
-    }, [user.uid]);
-
-    const chatRooms = useFirestore('rooms', roomsCondition);
+    // // Redux:
+    const chatRooms = useSelector((state) => state.manageRooms.rooms);
 
 
     // Component:
