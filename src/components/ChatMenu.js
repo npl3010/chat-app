@@ -1,6 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faEllipsisH } from '@fortawesome/free-solid-svg-icons';
+
+// Components:
+import ModalSearchUserForm from '../components/ModalSearchUserForm';
 
 // Redux:
 import { useSelector } from 'react-redux';
@@ -10,6 +13,7 @@ import '../styles/scss/components/ChatMenu.scss';
 
 
 function ChatMenu(props) {
+    const [isModalSearchVisible, setIsModalSearchVisible] = useState(false);
 
 
     // // Redux:
@@ -26,9 +30,16 @@ function ChatMenu(props) {
                         <div className='action-item action-button more-options-btn'>
                             <FontAwesomeIcon className='action-button__icon addnew-icon' icon={faEllipsisH} />
                         </div>
-                        <div className='action-item action-button add-room-btn'>
+                        <div
+                            className='action-item action-button add-room-btn'
+                            onClick={() => setIsModalSearchVisible(!isModalSearchVisible)}
+                        >
                             <FontAwesomeIcon className='action-button__icon addnew-icon' icon={faEdit} />
                         </div>
+                        <ModalSearchUserForm
+                            isModalSearchVisible={isModalSearchVisible}
+                            setIsModalSearchVisible={setIsModalSearchVisible}
+                        ></ModalSearchUserForm>
                     </div>
                 </div>
                 <div className='chatmenu__search'>
