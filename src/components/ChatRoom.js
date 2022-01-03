@@ -7,6 +7,7 @@ import '../styles/scss/components/ChatRoom.scss';
 
 
 function ChatRoom(props) {
+    // Component:
     return (
         <div className='chatroom'>
             <div className='chat-info'>

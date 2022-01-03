@@ -12,6 +12,8 @@ All fields:
 2. rooms (This object represents a chat room information):
 All fields:
 - createdAt (timestamp)
+- lastActive (timestamp)
 - name (string)
 - description (string)
 - members (array): List of uids.
+- type (string): 'self-chat', 'one-to-one-chat', 'group-chat'

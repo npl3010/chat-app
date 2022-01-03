@@ -6,6 +6,7 @@ import '../styles/scss/components/ChatRoomMenu.scss';
 
 
 function ChatRoomMenu(props) {
+    // Component:
     return (
         <div className='chatroom-menu'>
             <div className='chatroom-menu__header'>

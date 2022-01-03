@@ -4,6 +4,7 @@
     flex-wrap: nowrap;
     justify-content: flex-start;
     overflow-x: hidden;
+    height: calc(100vh - 65px);
 
     &__left-section {
         position: relative;
@@ -15,7 +16,6 @@
         width: 100%;
         border-left: 1px solid rgb(230, 230, 230);
         border-right: 1px solid rgb(230, 230, 230);
-        height: calc(100vh - 21px);
     }
 
     &__right-section {

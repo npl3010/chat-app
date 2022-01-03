@@ -16,7 +16,7 @@ const useFirestore = (collectionName, condition) => {
      */
 
 
-    // States:
+    // State:
     const [document, setDocument] = useState([]);
 
 
@@ -33,11 +33,11 @@ const useFirestore = (collectionName, condition) => {
             }
 
             // Lưu ý: Dữ liệu thuộc collection được đọc từ database phải có field là createdAt:
-            q = query(collectionRef, where(condition.fieldName, condition.operator, condition.value), orderBy("createdAt"));
+            q = query(collectionRef, where(condition.fieldName, condition.operator, condition.value), orderBy("createdAt", "desc"));
         }
         else {
             // Lưu ý: Dữ liệu thuộc collection được đọc từ database phải có field là createdAt:
-            q = query(collectionRef, orderBy("createdAt"));
+            q = query(collectionRef, orderBy("createdAt", "desc"));
         }
 
         // Listen for realtime updates:
@@ -47,7 +47,7 @@ const useFirestore = (collectionName, condition) => {
                 const data = snapshot.docs.map((doc) => {
                     return ({
                         ...doc.data(),
-                        createdAt: doc.data().createdAt.toDate().toString(),
+                        createdAt: (doc.data().createdAt) && (doc.data().createdAt.toDate().toString()),
                         id: doc.id
                     });
                 });
