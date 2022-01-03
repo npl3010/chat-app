@@ -7,7 +7,8 @@ import ModalSearchUserForm from '../components/ModalSearchUserForm';
 import ModalAddGroupChat from './ModalAddGroupChat';
 
 // Redux:
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { setSelectedChatRoom } from '../features/manageRooms/manageRoomsSlice';
 
 // CSS:
 import '../styles/scss/components/ChatMenu.scss';
@@ -15,13 +16,21 @@ import '../styles/scss/components/ChatMenu.scss';
 
 function ChatMenu(props) {
     // State:
-    const [selectedChatRoom, setSelectedChatRoom] = useState(-1);
     const [isModalSearchVisible, setIsModalSearchVisible] = useState(false);
     const [isModalAddGroupVisible, setisModalAddGroupVisible] = useState(false);
 
 
     // Redux:
     const chatRooms = useSelector((state) => state.manageRooms.rooms);
+    const selectedChatRoom = useSelector((state) => state.manageRooms.selectedChatRoom);
+    const dispatch = useDispatch();
+
+
+    // Methods:
+    const handleClickChatRoom = (roomIndex) => {
+        const action = setSelectedChatRoom(roomIndex);
+        dispatch(action);
+    }
 
 
     // Component:
@@ -68,7 +77,7 @@ function ChatMenu(props) {
                                     <div
                                         className={`chatlist__item${selectedChatRoom === index ? ' active' : ''}`}
                                         key={`chatRoom-${index}`}
-                                        onClick={() => setSelectedChatRoom(index)}
+                                        onClick={() => handleClickChatRoom(index)}
                                     >
                                         <div className='chatbox'>
                                             <div className='chatbox__person-img'>
@@ -96,6 +105,7 @@ function ChatMenu(props) {
             <ModalAddGroupChat
                 isModalAddGroupVisible={isModalAddGroupVisible}
                 setisModalAddGroupVisible={setisModalAddGroupVisible}
+                setSelectedChatRoom={handleClickChatRoom}
             ></ModalAddGroupChat>
         </div>
     );

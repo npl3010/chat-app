@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 
 // Components:
 import TopNavigation from '../components/TopNavigation';
@@ -6,18 +6,36 @@ import ChatMenu from '../components/ChatMenu';
 import ChatRoom from '../components/ChatRoom';
 import ChatRoomMenu from '../components/ChatRoomMenu';
 
+// Redux:
+import { useSelector } from 'react-redux';
+
 // CSS:
 import '../styles/scss/pages/ChatPage.scss';
 
 
 function ChatPage(props) {
-    const [isChatRoomMenuDisplayed, setIsChatRoomMenuDisplayed] = useState(true);
+    // Redux:
+    const selectedChatRoom = useSelector((state) => state.manageRooms.selectedChatRoom);
+
+
+    // State:
+    const [isThereASelectedRoom, setIsThereASelectedRoom] = useState(false);
+    const [isChatRoomMenuDisplayed, setIsChatRoomMenuDisplayed] = useState(false);
 
 
     // Methods:
-    const handleDisplayChatRoomMenu = () => {
+    const handleDisplayChatRoomMenu = useCallback(() => {
         setIsChatRoomMenuDisplayed(!isChatRoomMenuDisplayed);
-    }
+    }, [isChatRoomMenuDisplayed]);
+
+
+    // Side effects:
+    useEffect(() => {
+        if (isNaN(selectedChatRoom) === false && selectedChatRoom !== -1 && isThereASelectedRoom === false) {
+            handleDisplayChatRoomMenu();
+            setIsThereASelectedRoom(true);
+        }
+    }, [selectedChatRoom, isThereASelectedRoom, handleDisplayChatRoomMenu]);
 
 
     // Component:

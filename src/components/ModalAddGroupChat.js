@@ -11,7 +11,7 @@ import '../styles/scss/components/ModalAddGroupChat.scss';
 import { addDocument } from '../firebase/services';
 
 
-function ModalAddGroupChat({ isModalAddGroupVisible, setisModalAddGroupVisible }) {
+function ModalAddGroupChat({ isModalAddGroupVisible, setisModalAddGroupVisible, setSelectedChatRoom }) {
     // Hooks:
     const [form] = Form.useForm();
 
@@ -36,6 +36,9 @@ function ModalAddGroupChat({ isModalAddGroupVisible, setisModalAddGroupVisible }
 
         // Hide form:
         setisModalAddGroupVisible(false);
+
+        // Select the last created chat room:
+        setSelectedChatRoom(0);
     };
 
     const handleCancel = () => {
