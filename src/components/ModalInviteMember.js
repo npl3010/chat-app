@@ -2,6 +2,9 @@ import React from 'react';
 import { Form, Modal, Select, Spin, Avatar } from 'antd';
 import debounce from 'lodash/debounce';
 
+// Firebase:
+import { db, getDocs, collection, query, where, orderBy, limit } from '../firebase/config';
+
 // Redux:
 // import { useSelector } from 'react-redux';
 
@@ -9,7 +12,7 @@ import debounce from 'lodash/debounce';
 import { ModalControlContext } from '../context/ModalControlProvider';
 
 // CSS:
-import '../styles/scss/components/ModalInviteChat.scss';
+import '../styles/scss/components/ModalInviteMember.scss';
 
 
 const { Option } = Select;
@@ -55,10 +58,10 @@ function DebounceSelect({ fetchOptions, debounceTimeout = 500, ...props }) {
                 options.map((element) => {
                     return (
                         <Option key={`user-${element.value}`} label={`${element.label}`} value={`${element.value}`}>
-                            <Avatar src={element.photoURL} shape='circle' draggable={false}>
+                            <Avatar src={element.photoURL} shape='circle' draggable={false} style={{ marginRight: '10px' }}>
                                 {element.photoURL ? '' : element.label?.charAt(0)?.toUpperCase()}
                             </Avatar>
-                            {`${element.label}`}
+                            <span>{`${element.label}`}</span>
                         </Option>
                     );
                 })
@@ -69,15 +72,46 @@ function DebounceSelect({ fetchOptions, debounceTimeout = 500, ...props }) {
 
 
 async function fetchUserList(username) {
-    return fetch('https://randomuser.me/api/?results=5')
-        .then((response) => response.json())
-        .then((body) => {
-            return body.results.map((user) => ({
-                label: `${user.name.first} ${user.name.last}`,
-                value: user.login.username,
-                photoURL: user.picture.thumbnail,
-            }));
-        });
+    // Capitalize text:
+    const capitalizeSingleWord = (word) => {
+        if (word.length > 0) {
+            return word[0].toUpperCase() + word.slice(1);
+        }
+        return '';
+    }
+
+    const capitalizeAllWords = (text) => {
+        const arrOfSubstr = text.split(" ")
+        for (let i = 0; i < arrOfSubstr.length; i++) {
+            arrOfSubstr[i] = capitalizeSingleWord(arrOfSubstr[i]);
+        }
+        return arrOfSubstr.join(" ");
+    }
+
+    // Get all documents in a collection from Firestore:
+    const capitalizedUsername = capitalizeAllWords(username);
+
+    const q = query(collection(db, "users"),
+        where("displayNameSearchKeywords", "array-contains-any", [username, capitalizedUsername]),
+        orderBy("displayName"),
+        limit(10)
+    );
+
+    const querySnapshot = await getDocs(q);
+
+    let results = [];
+
+    querySnapshot.forEach((doc) => {
+        const docData = doc.data();
+        const resultItem = {
+            label: `${docData.displayName}`,
+            value: docData.displayName,
+            photoURL: docData.photoURL,
+        }
+        results.push(resultItem);
+    });
+
+    return results;
 }
 
 
@@ -141,6 +175,7 @@ function ModalInviteMember(props) {
                 cancelText='Hủy'
             >
                 <Form
+                    className='antd-search-and-select-user-form'
                     form={form}
                     name="basic"
                     labelCol={{ span: 8 }}
