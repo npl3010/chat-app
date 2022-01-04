@@ -151,7 +151,7 @@ function ModalInviteMember(props) {
                     <DebounceSelect
                         mode="multiple"
                         value={value}
-                        placeholder="Nhập người dùng"
+                        placeholder="Nhập tên người dùng"
                         fetchOptions={fetchUserList}
                         onChange={(newValue) => {
                             setValue(newValue);

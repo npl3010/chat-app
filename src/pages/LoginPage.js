@@ -9,7 +9,7 @@ import { useDispatch } from 'react-redux';
 import { setUser } from '../features/auth/userAuthSlice';
 
 // Services:
-import { addDocument } from '../firebase/services';
+import { addDocument, generateUserNameKeywords } from '../firebase/services';
 
 
 function LoginPage(props) {
@@ -35,6 +35,7 @@ function LoginPage(props) {
                         uid: result.user.uid,
                         photoURL: result.user.photoURL,
                         providerId: moreInfo.providerId,
+                        displayNameSearchKeywords: generateUserNameKeywords(result.user.displayName),
                     });
                 }
 
