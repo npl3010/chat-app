@@ -4,12 +4,16 @@ import { Avatar, Tooltip } from 'antd';
 // Redux:
 import { useSelector } from 'react-redux';
 
+// Context:
+import { ModalControlContext } from '../context/ModalControlProvider';
+
 // CSS:
 import '../styles/scss/components/ChatRoomMenu.scss';
 
 
 function ChatRoomMenu(props) {
-    // State:
+    // Context:
+    const { isModalInviteVisible, setisModalInviteVisible } = React.useContext(ModalControlContext);
 
 
     // Redux:
@@ -106,7 +110,10 @@ function ChatRoomMenu(props) {
             if (rooms[selectedChatRoom].type === 'group-chat') {
                 return (
                     <>
-                        <button className='option-list__button'>Thêm thành viên</button>
+                        <button
+                            className='option-list__button'
+                            onClick={() => setisModalInviteVisible(!isModalInviteVisible)}
+                        >Thêm thành viên</button>
                     </>
                 );
             } else {

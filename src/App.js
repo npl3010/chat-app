@@ -29,6 +29,9 @@ import {
   setSelectedChatRoom
 } from "./features/manageRooms/manageRoomsSlice";
 
+// Provider:
+import ModalControlProvider from "./context/ModalControlProvider";
+
 // Custom hooks:
 import useFirestore from "./customHooks/useFirestore";
 
@@ -117,11 +120,13 @@ function App() {
 
   return (
     <BrowserRouter>
-      <Routes>
-        <Route exact path="/chat" element={user === null ? <Navigate to="/login" /> : <ChatPage />}></Route>
-        <Route exact path="/login" element={user !== null ? <Navigate to="/" /> : <LoginPage />}></Route>
-        <Route exact path="/" element={user === null ? <Navigate to="/login" /> : <ChatPage />}></Route>
-      </Routes>
+      <ModalControlProvider>
+        <Routes>
+          <Route exact path="/chat" element={user === null ? <Navigate to="/login" /> : <ChatPage />}></Route>
+          <Route exact path="/login" element={user !== null ? <Navigate to="/" /> : <LoginPage />}></Route>
+          <Route exact path="/" element={user === null ? <Navigate to="/login" /> : <ChatPage />}></Route>
+        </Routes>
+      </ModalControlProvider>
     </BrowserRouter>
   );
 }

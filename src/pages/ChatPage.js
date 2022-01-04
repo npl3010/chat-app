@@ -5,6 +5,7 @@ import TopNavigation from '../components/TopNavigation';
 import ChatMenu from '../components/ChatMenu';
 import ChatRoom from '../components/ChatRoom';
 import ChatRoomMenu from '../components/ChatRoomMenu';
+import ModalInviteMember from '../components/ModalInviteMember';
 
 // Redux:
 import { useSelector } from 'react-redux';
@@ -42,6 +43,7 @@ function ChatPage(props) {
     return (
         <div>
             <TopNavigation></TopNavigation>
+
             <div className='chat-page'>
                 <div className='chatpage-wrapper'>
                     <div className='chatpage'>
@@ -67,6 +69,9 @@ function ChatPage(props) {
                     </div>
                 </div>
             </div>
+
+            {/* Modals: */}
+            <ModalInviteMember></ModalInviteMember>
         </div>
     );
 }
