@@ -21,7 +21,13 @@ import { auth, onAuthStateChanged } from './firebase/config';
 // Redux:
 import { useDispatch, useSelector } from 'react-redux';
 import { setUser } from './features/auth/userAuthSlice';
-import { clearRoomList, setRoomList } from "./features/manageRooms/manageRoomsSlice";
+import {
+  clearRoomList,
+  setRoomList,
+  clearSelectedChatRoomUserList,
+  setSelectedChatRoomUserList,
+  setSelectedChatRoom
+} from "./features/manageRooms/manageRoomsSlice";
 
 // Custom hooks:
 import useFirestore from "./customHooks/useFirestore";
@@ -30,6 +36,7 @@ import useFirestore from "./customHooks/useFirestore";
 function App() {
   // Redux:
   const user = useSelector((state) => state.userAuth.user);
+  const { rooms, selectedChatRoom } = useSelector((state) => state.manageRooms);
   const dispatch = useDispatch();
 
 
@@ -46,7 +53,26 @@ function App() {
     };
   }, [user_uid]);
 
-  const chatRooms = useFirestore('rooms', roomsCondition); // Get all rooms that the user is a member of.
+  const selectedRoomUsersCondition = useMemo(() => {
+    if (selectedChatRoom !== -1 && rooms.length > 0) {
+      return {
+        fieldName: 'uid',
+        operator: 'in',
+        value: rooms[selectedChatRoom].members
+      };
+    } else {
+      return {
+        fieldName: 'uid',
+        operator: 'in',
+        value: []
+      }
+    }
+  }, [rooms, selectedChatRoom]);
+
+  // - Get all rooms that the user is a member of.
+  const chatRooms = useFirestore('rooms', roomsCondition);
+  // - Get all members of the selected room.
+  const selectedRoomUsers = useFirestore('users', selectedRoomUsersCondition);
 
 
   // Side effects:
@@ -58,6 +84,12 @@ function App() {
         dispatch(action);
       } else {
         // User is signed out!
+        // - Clear room list:
+        dispatch(clearRoomList());
+        // - Clear selected room user list:
+        dispatch(clearSelectedChatRoomUserList());
+        // - Reset selected room to default (-1):
+        dispatch((setSelectedChatRoom(-1)));
       }
     });
 
@@ -73,6 +105,14 @@ function App() {
     const action = setRoomList(chatRooms);
     dispatch(action);
   }, [dispatch, chatRooms]);
+
+  useEffect(() => {
+    // 1. Clear selected room user list:
+    dispatch(clearSelectedChatRoomUserList());
+    // 2. Set new room list:
+    const action = setSelectedChatRoomUserList(selectedRoomUsers);
+    dispatch(action);
+  }, [dispatch, selectedRoomUsers]);
 
 
   return (
