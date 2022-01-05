@@ -3,10 +3,10 @@ import { Form, Modal, Select, Spin, Avatar } from 'antd';
 import debounce from 'lodash/debounce';
 
 // Firebase:
-import { db, getDocs, collection, query, where, orderBy, limit } from '../firebase/config';
+import { db, doc, getDocs, updateDoc, collection, query, where, orderBy, limit } from '../firebase/config';
 
 // Redux:
-// import { useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 // Context:
 import { ModalControlContext } from '../context/ModalControlProvider';
@@ -57,7 +57,7 @@ function DebounceSelect({ fetchOptions, debounceTimeout = 500, ...props }) {
                 // Variable: options = [{ label: '', value: '', photoURL: '' }, ...];
                 options.map((element) => {
                     return (
-                        <Option key={`user-${element.value}`} label={`${element.label}`} value={`${element.value}`}>
+                        <Option key={`uid-${element.value}`} title={`${element.label}`} value={`${element.value}`}>
                             <Avatar src={element.photoURL} shape='circle' draggable={false} style={{ marginRight: '10px' }}>
                                 {element.photoURL ? '' : element.label?.charAt(0)?.toUpperCase()}
                             </Avatar>
@@ -105,7 +105,7 @@ async function fetchUserList(username) {
         const docData = doc.data();
         const resultItem = {
             label: `${docData.displayName}`,
-            value: docData.displayName,
+            value: docData.uid,
             photoURL: docData.photoURL,
         }
         results.push(resultItem);
@@ -130,24 +130,29 @@ function ModalInviteMember(props) {
 
     // Redux:
     // const user = useSelector((state) => state.userAuth.user);
+    const { rooms, selectedChatRoom } = useSelector((state) => state.manageRooms);
 
 
     // Methods:
-    const handleOk = () => {
-        // Get form data and insert it to database:
-        // const formData = form.getFieldsValue();
-        // addDocument('rooms', {
-        //     name: formData.groupChatName,
-        //     description: 'Group chat',
-        //     type: 'group-chat',
-        //     members: [user.uid]
-        // });
+    const handleOk = async () => {
+        if (selectedChatRoom !== -1 && rooms.length > 0) {
+            // Update member list in the current room:
+            const roomRef = doc(db, "rooms", rooms[selectedChatRoom].id);
 
-        // Clear form:
-        form.resetFields();
+            // Set the "members" field of the selected room:
+            const newMemberList = [...rooms[selectedChatRoom].members, ...value.map((val) => val)];
 
-        // Hide form:
-        setisModalInviteVisible(false);
+            await updateDoc(roomRef, {
+                members: newMemberList
+            });
+
+            // Clear form:
+            form.resetFields();
+            setValue([]);
+
+            // Hide form:
+            setisModalInviteVisible(false);
+        }
     };
 
     const handleCancel = () => {
@@ -169,7 +174,7 @@ function ModalInviteMember(props) {
                 title="Thêm thành viên"
                 centered
                 visible={isModalInviteVisible}
-                onOk={() => handleOk()}
+                onOk={handleOk}
                 onCancel={() => handleCancel()}
                 okText='Thêm'
                 cancelText='Hủy'

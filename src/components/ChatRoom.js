@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
+import { faInfoCircle, faExclamation } from '@fortawesome/free-solid-svg-icons';
 
 // Redux:
 import { useSelector } from 'react-redux';
@@ -104,7 +104,16 @@ function ChatRoom(props) {
                 Object.keys(roomData).length > 0 ? (
                     chatRoomComponent()
                 ) : (
-                    <></>
+                    <div className='chatroom__app-message'>
+                        <div className='app-message-wrapper'>
+                            <div className='app-message'>
+                                <div className='app-message__icon-wrapper'>
+                                    <FontAwesomeIcon className='app-message__icon' icon={faExclamation} />
+                                </div>
+                                <div className='app-message__content'>Hãy chọn người dùng để chat</div>
+                            </div>
+                        </div>
+                    </div>
                 )
             }
         </div>

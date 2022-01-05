@@ -1,5 +1,13 @@
 import { createSlice } from "@reduxjs/toolkit";
 
+/**
+ * STATE
+ * All fields:
+ * - rooms (array): array of rooms,
+ * - selectedChatRoom (number): array index,
+ * - selectedChatRoomUsers: array of users,
+ */
+
 const initialState = {
     rooms: [],
     selectedChatRoom: -1,

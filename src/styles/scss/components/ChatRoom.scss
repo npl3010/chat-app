@@ -4,6 +4,43 @@
     display: flex;
     justify-content: space-between;
     flex-direction: column;
+
+    &__app-message {
+        display: block;
+    }
+
+    .app-message {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        justify-content: flex-start;
+        align-items: center;
+        padding: 10px 16px;
+        margin: 8px;
+        background-color: aliceblue;
+        border-radius: 10px;
+
+        &__icon-wrapper {
+            background-color: lightsteelblue;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 30px;
+            height: 30px;
+            margin-right: 8px;
+        }
+
+        &__icon {
+            color: #fff;
+            font-size: 18px;
+            display: block;
+        }
+
+        &__content {
+            font-size: 16px;
+        }
+    }
 }
 
 

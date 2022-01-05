@@ -7,4 +7,5 @@ Open Command Prompt (cmd) and run:
     firebase login
     firebase init
 3)
+    cd emulators
     firebase emulators:start
