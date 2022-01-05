@@ -129,13 +129,25 @@
 // chat-content:
 .chat-content {
     height: 100%;
-    padding: 10px 10px 0 10px;
     overflow-y: auto;
 }
 
 .chat-content .content-wrapper,
 .chat-content .content-wrapper .content {
     height: 100%;
+}
+
+.chat-content .content-wrapper .content {
+    overflow-y: auto;
+    display: flex;
+    flex-flow: column nowrap;
+    /* DO NOT USE justify-content: flex-end; because it breaks scrolling. */
+    padding: 10px 10px 0 10px;
+}
+
+.chat-content .content-wrapper .content .message:first-child {
+    margin-top: auto !important;
+    /* Use !important to prevent breakage from child margin settings. */
 }
 
 .chat-content .content-wrapper .content .message:last-child {

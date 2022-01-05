@@ -9,7 +9,7 @@ All fields:
 - providerId (string)
 - uid (string)
 
-2. rooms (This object represents a chat room information):
+2. rooms (A room object represents a chat room information):
 All fields:
 - createdAt (timestamp)
 - lastActive (timestamp)
@@ -17,3 +17,10 @@ All fields:
 - description (string)
 - members (array): List of uids.
 - type (string): 'self-chat', 'one-to-one-chat', 'group-chat'
+
+3. messages (A message object represents a message of a chat room):
+All fields:
+- createdAt (timestamp)
+- roomId (string)
+- content (string)
+- uid (string)

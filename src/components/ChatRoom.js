@@ -1,30 +1,76 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faInfoCircle, faExclamation } from '@fortawesome/free-solid-svg-icons';
 
 // Redux:
 import { useSelector } from 'react-redux';
 
+// Services:
+import { addDocument } from '../firebase/services';
+
 // CSS:
 import '../styles/scss/components/ChatRoom.scss';
+
+// Custom hooks:
+import useFirestore from "../customHooks/useFirestore";
 
 
 function ChatRoom(props) {
     // State:
     const [roomData, setRoomData] = useState({});
+    const [inputMessage, setInputMessage] = useState('');
 
 
     // Redux:
-    const chatRooms = useSelector((state) => state.manageRooms.rooms);
+    const user = useSelector((state) => state.userAuth.user);
+    const rooms = useSelector((state) => state.manageRooms.rooms);
     const selectedChatRoom = useSelector((state) => state.manageRooms.selectedChatRoom);
+    const selectedChatRoomUsers = useSelector((state) => state.manageRooms.selectedChatRoomUsers);
 
 
     // Side effects:
     useEffect(() => {
-        if (selectedChatRoom !== -1 && selectedChatRoom < chatRooms.length) {
-            setRoomData(chatRooms[selectedChatRoom]);
+        if (selectedChatRoom !== -1 && selectedChatRoom < rooms.length) {
+            setRoomData(rooms[selectedChatRoom]);
         }
-    }, [chatRooms, selectedChatRoom]);
+    }, [rooms, selectedChatRoom]);
+
+
+    // Methods:
+    const handleInputChange = (e) => {
+        setInputMessage(e.target.value);
+    }
+
+    const handleInputOnKeyPress = (e) => {
+        if (e.charCode === 13) {
+            if (inputMessage.length > 0) {
+                // Add data to Cloud Firestore:
+                const data = {
+                    roomId: rooms[selectedChatRoom].id,
+                    content: inputMessage,
+                    uid: user.uid,
+                };
+                addDocument('messages', data);
+
+                // Clear form:
+                setInputMessage('');
+            }
+        }
+    }
+
+
+    // Hooks:
+    const messagesCondition = useMemo(() => {
+        const comparisonValue = (selectedChatRoom !== -1 && rooms.length > 0) ? rooms[selectedChatRoom].id : '';
+        return {
+            fieldName: 'roomId',
+            operator: '==',
+            value: comparisonValue
+        };
+    }, [rooms, selectedChatRoom]);
+
+    // - Get all messages that belong to this room.
+    const messages = useFirestore('messages', messagesCondition);
 
 
     // Component:
@@ -56,7 +102,8 @@ function ChatRoom(props) {
                 <div className='chat-content'>
                     <div className='content-wrapper'>
                         <div className='content'>
-                            <div className='message from-others'>
+
+                            {/* <div className='message from-others'>
                                 <div className='message__person-img'>
                                     <img className='person-img' src='' alt='' ></img>
                                 </div>
@@ -81,7 +128,39 @@ function ChatRoom(props) {
                                 <div className='message__content'>
                                     <span className='message-piece'>Ừ xin chào bạn mà tôi méo quen bạn nhé!</span>
                                 </div>
-                            </div>
+                            </div> */}
+
+                            {
+                                messages.slice(0).reverse().map((msg, index) => {
+                                    if (msg.uid === user.uid) {
+                                        return (
+                                            <div key={`msg-${index}`} className='message from-me'>
+                                                <div className='message__content'>
+                                                    <span className='message-piece'>{msg.content}</span>
+                                                </div>
+                                            </div>
+                                        );
+                                    } else {
+                                        let data = null;
+                                        for (let i = 0; i < selectedChatRoomUsers.length; i++) {
+                                            if (selectedChatRoomUsers[i].uid === msg.uid) {
+                                                data = selectedChatRoomUsers[i];
+                                                break;
+                                            }
+                                        }
+                                        return (
+                                            <div key={`msg-${index}`} className='message from-others'>
+                                                <div className='message__person-img'>
+                                                    <img className='person-img' src={data ? data.photoURL : ''} alt='' ></img>
+                                                </div>
+                                                <div className='message__content'>
+                                                    <span className='message-piece'>{msg.content}</span>
+                                                </div>
+                                            </div>
+                                        );
+                                    }
+                                })
+                            }
                         </div>
                     </div>
                 </div>
@@ -89,7 +168,12 @@ function ChatRoom(props) {
                 <div className='chat-tools'>
                     <div className='textbox-wrapper'>
                         <div className='textbox'>
-                            <input type='text' placeholder='Aa'></input>
+                            <input
+                                type='text' placeholder='Nhập tin nhắn'
+                                value={inputMessage}
+                                onChange={(e) => handleInputChange(e)}
+                                onKeyPress={(e) => handleInputOnKeyPress(e)}
+                            ></input>
                         </div>
                     </div>
                 </div>
