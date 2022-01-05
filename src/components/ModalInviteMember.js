@@ -31,7 +31,7 @@ function DebounceSelect({ fetchOptions, debounceTimeout = 500, ...props }) {
             // Data is being fetched or not:
             setFetching(true);
             // Fetch API using the callback which is passed to this component:
-            fetchOptions(value)
+            fetchOptions(value, props.custom_attr.membersAlreadyInRoom)
                 .then((newOptions) => {
                     if (fetchId !== fetchRef.current) {
                         // for fetch callback order
@@ -42,7 +42,7 @@ function DebounceSelect({ fetchOptions, debounceTimeout = 500, ...props }) {
                 });
         };
         return debounce(loadOptions, debounceTimeout);
-    }, [fetchOptions, debounceTimeout]);
+    }, [fetchOptions, debounceTimeout, props.custom_attr.membersAlreadyInRoom]);
 
     return (
         <Select
@@ -71,7 +71,15 @@ function DebounceSelect({ fetchOptions, debounceTimeout = 500, ...props }) {
 }
 
 
-async function fetchUserList(username) {
+async function fetchUserList(username = '', membersAlreadyInRoom = []) {
+    /**
+     * 
+     * @param {string} username This is a keyword to search for. 
+     * @param {array} membersAlreadyInRoom The list of users who are already existed in this room,
+     * we need to hide these users in Select options.
+     * @returns 
+     */
+
     // Capitalize text:
     const capitalizeSingleWord = (word) => {
         if (word.length > 0) {
@@ -111,7 +119,9 @@ async function fetchUserList(username) {
         results.push(resultItem);
     });
 
-    return results;
+    return results.filter((element) => {
+        return !membersAlreadyInRoom.includes(element.value);
+    });
 }
 
 
@@ -163,6 +173,14 @@ function ModalInviteMember(props) {
         setisModalInviteVisible(false);
     };
 
+    const getMemberAlreadyInRoom = () => {
+        if (selectedChatRoom !== -1 && rooms.length > 0) {
+            return { membersAlreadyInRoom: rooms[selectedChatRoom].members };
+        } else {
+            return { membersAlreadyInRoom: [] };
+        }
+    }
+
 
     // Component:
     return (
@@ -199,6 +217,7 @@ function ModalInviteMember(props) {
                         style={{
                             width: '100%',
                         }}
+                        custom_attr={getMemberAlreadyInRoom()}
                     />
                 </Form>
             </Modal>
