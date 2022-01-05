@@ -58,6 +58,12 @@ function ChatRoom(props) {
         }
     }
 
+    const getDateAndTimeFromDateString = (dateString) => {
+        const objDate = new Date(dateString);
+        const strDateTime = objDate.toLocaleString();
+        return strDateTime;
+    }
+
 
     // Hooks:
     const messagesCondition = useMemo(() => {
@@ -69,7 +75,7 @@ function ChatRoom(props) {
         };
     }, [rooms, selectedChatRoom]);
 
-    // - Get all messages that belong to this room.
+    // Get all messages that belong to this room.
     const messages = useFirestore('messages', messagesCondition);
 
 
@@ -133,14 +139,17 @@ function ChatRoom(props) {
                             {
                                 messages.slice(0).reverse().map((msg, index) => {
                                     if (msg.uid === user.uid) {
+                                        const strDateTime = getDateAndTimeFromDateString(msg.createdAt);
                                         return (
                                             <div key={`msg-${index}`} className='message from-me'>
                                                 <div className='message__content'>
+                                                    <i>{strDateTime}</i> {/*Delele this line later!*/}
                                                     <span className='message-piece'>{msg.content}</span>
                                                 </div>
                                             </div>
                                         );
                                     } else {
+                                        // Get user data:
                                         let data = null;
                                         for (let i = 0; i < selectedChatRoomUsers.length; i++) {
                                             if (selectedChatRoomUsers[i].uid === msg.uid) {
@@ -148,12 +157,16 @@ function ChatRoom(props) {
                                                 break;
                                             }
                                         }
+
+                                        // Return:
+                                        const strDateTime = getDateAndTimeFromDateString(msg.createdAt);
                                         return (
                                             <div key={`msg-${index}`} className='message from-others'>
                                                 <div className='message__person-img'>
                                                     <img className='person-img' src={data ? data.photoURL : ''} alt='' ></img>
                                                 </div>
                                                 <div className='message__content'>
+                                                    <i>{strDateTime}</i> {/*Delele this line later!*/}
                                                     <span className='message-piece'>{msg.content}</span>
                                                 </div>
                                             </div>

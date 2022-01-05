@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Form, Modal, Select, Spin, Avatar } from 'antd';
 import debounce from 'lodash/debounce';
 
@@ -43,6 +43,13 @@ function DebounceSelect({ fetchOptions, debounceTimeout = 500, ...props }) {
         };
         return debounce(loadOptions, debounceTimeout);
     }, [fetchOptions, debounceTimeout, props.custom_attr.membersAlreadyInRoom]);
+
+    useEffect(() => {
+        return () => {
+            // Clear form when unmount:
+            setOptions([]);
+        };
+    }, []);
 
     return (
         <Select
