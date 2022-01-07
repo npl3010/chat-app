@@ -1,0 +1,28 @@
+@mixin overlay($bgColor) {
+    background-color: $bgColor;
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 90;
+    cursor: default
+}
+
+.overlay {
+    @include overlay(rgba(0, 0, 0, 0.3));
+    display: none;
+
+    &.visible {
+        display: block;
+    }
+}
+
+.overlay--transparent {
+    @include overlay(transparent);
+    display: none;
+
+    &.visible {
+        display: block;
+    }
+}

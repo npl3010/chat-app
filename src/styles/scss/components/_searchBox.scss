@@ -1,0 +1,71 @@
+@use '../abstracts/_mixins.scss';
+
+
+// Example of using mixin from another module:
+.dummy-div {
+    @include mixins.padding(5px 15px);
+}
+
+
+// Variables:
+$inputText_bgColor: #f0f2f5;
+$inputText_textColor: #000;
+$icon_fontSize: 15px;
+
+
+// Mixins:
+@mixin inputText($bgColor, $textColor, $paddingValues) {
+    background-color: $bgColor;
+    color: $textColor;
+    @include mixins.padding($paddingValues);
+    // Hardcode:
+    border: none;
+    outline: none;
+    border-radius: 30px;
+    font-size: 15px;
+    width: 100%;
+}
+
+
+// Styles:
+.search-box-wrapper {
+
+    .search-box {
+        &__icon {
+            font-size: $icon_fontSize;
+            position: absolute;
+            top: 50%;
+            transform: translate(0, -50%);
+            display: inline-block;
+            color: #888;
+        }
+    }
+
+    .search-box {
+        $paddingRightLeft: 10px;
+        $paddingLeft: $paddingRightLeft * 2 + $icon_fontSize;
+        position: relative;
+
+        input[type=text] {
+            @include inputText($inputText_bgColor, $inputText_textColor, (8px $paddingRightLeft 8px $paddingLeft));
+        }
+
+        .search-box__icon {
+            left: $paddingRightLeft;
+        }
+    }
+
+    .search-box--primary {
+        $paddingRightLeft: 15px;
+        $paddingLeft: $paddingRightLeft * 2 + $icon_fontSize;
+        position: relative;
+
+        input[type=text] {
+            @include inputText($inputText_bgColor, $inputText_textColor, (10px $paddingRightLeft 10px $paddingLeft));
+        }
+
+        .search-box__icon {
+            left: $paddingRightLeft;
+        }
+    }
+}

@@ -1,3 +1,7 @@
+@use '_searchBox.scss';
+@use '_tooltip.scss';
+
+
 // .chatmenu:
 .chatmenu {
     height: 100%;
@@ -69,18 +73,15 @@
             font-size: 18px;
         }
     }
-}
 
-
-// .searchbox:
-.searchbox-wrapper .searchbox input[type=text] {
-    border: none;
-    outline: none;
-    border-radius: 15px;
-    padding: 10px 15px;
-    background-color: #f0f2f5;
-    font-size: 15px;
-    width: 100%;
+    .tooltip {
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        height: 100%;
+    }
 }
 
 

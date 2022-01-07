@@ -1,20 +1,32 @@
+@use '_searchBox.scss';
+
+
+// Variables:
+$topnav_paddingTopBottom: 8px;
+
+
+// .top-navigation:
 .top-navigation {
     box-shadow: 0px 5px 5px -5px #ddd;
     position: relative;
 }
 
 .topnav-wrapper {
-    padding: 0 16px;
+    display: block;
+    position: relative;
 
     .topnav {
         display: flex;
         justify-content: space-between;
         align-items: center;
+        padding: $topnav_paddingTopBottom 0px;
     
         &__left-section {
             display: flex;
             justify-content: flex-start;
             align-items: center;
+            max-width: 360px;
+            width: 360px;
         }
     
         &__mid-section {
@@ -27,6 +39,25 @@
             display: flex;
             justify-content: flex-end;
             align-items: center;
+            padding: 0 16px;
+        }
+
+        &__quick-menu {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: nowrap;
+            justify-content: flex-start;
+            align-items: center;
+            width: 100%;
+            padding: 0 16px;
+
+            .search-box-wrapper {
+                width: 100%;
+            }
+        }
+
+        &__logo {
+            margin-right: 8px;
         }
     }
 }
@@ -113,7 +144,7 @@
 
     .dropdown-menu {
         position: absolute;
-        top: 100%;
+        top: calc(100% + $topnav_paddingTopBottom);
         right: 0;
         width: 100%;
         z-index: 100;
@@ -121,6 +152,7 @@
         box-shadow: 0px 2px 10px 3px #ddd;
         background-color: #fff;
         padding: 8px;
+        cursor: default;
         display: none;
     }
 

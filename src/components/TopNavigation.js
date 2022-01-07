@@ -1,6 +1,6 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBell, faCaretDown } from '@fortawesome/free-solid-svg-icons';
+import { faBell, faCaretDown, faSearch } from '@fortawesome/free-solid-svg-icons';
 
 // Firebase:
 import { auth, signOut } from '../firebase/config';
@@ -17,6 +17,10 @@ import '../styles/scss/components/TopNavigation.scss';
 
 
 function TopNavigation(props) {
+    // State:
+    const [isDropdownMenuDisplayed, setIsDropdownMenuDisplayed] = useState(false);
+
+
     // Redux:
     const user = useSelector((state) => state.userAuth.user);
     const dispatch = useDispatch();
@@ -33,6 +37,11 @@ function TopNavigation(props) {
             .catch((error) => {
                 // An error happened!
             });
+    }
+
+    const handleInputChange_ForDropdownBtn = (e) => {
+        e.stopPropagation();
+        setIsDropdownMenuDisplayed(!isDropdownMenuDisplayed);
     }
 
 
@@ -59,9 +68,14 @@ function TopNavigation(props) {
             <div className='topnav-wrapper'>
                 <div className='topnav'>
                     <div className='topnav__left-section'>
-                        <div className='quick-menu'>
-                            <span className='logo'>chat</span>
-                            <input type='text' placeholder='Tìm kiếm trên app'></input>
+                        <div className='topnav__quick-menu'>
+                            <span className='topnav__logo'>MyChatApp</span>
+                            <div className='search-box-wrapper'>
+                                <div className='search-box--primary'>
+                                    <FontAwesomeIcon className='search-box__icon' icon={faSearch} />
+                                    <input className='search-box__input' type='text' placeholder='Tìm kiếm trên App'></input>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
@@ -85,17 +99,30 @@ function TopNavigation(props) {
                                 <FontAwesomeIcon className='menu-button__icon notification-icon' icon={faBell} />
                             </div>
 
-                            <label className='menu-item menu-button dropdown-btn' htmlFor="checkbox-for-dropdown-menu">
+                            <div
+                                className='menu-item menu-button dropdown-btn'
+                                onClick={(e) => handleInputChange_ForDropdownBtn(e)}
+                            >
                                 <FontAwesomeIcon className='menu-button__icon dropdown-icon' icon={faCaretDown} />
                                 <input
                                     id="checkbox-for-dropdown-menu"
                                     type="checkbox"
-                                    name="dropdown-menu-is-displayed">
+                                    name="dropdown-menu-is-displayed"
+                                    checked={isDropdownMenuDisplayed}
+                                    onChange={(e) => { handleInputChange_ForDropdownBtn(e) }}
+                                >
                                 </input>
-                                <div className='dropdown-menu'>
+                                <div
+                                    className={`overlay--transparent${isDropdownMenuDisplayed ? ' visible' : ''}`}
+                                    onClick={(e) => handleInputChange_ForDropdownBtn(e)}>
+                                </div>
+                                <div
+                                    className='dropdown-menu'
+                                    onClick={(e) => { e.stopPropagation() }}
+                                >
                                     <button onClick={() => handleLogout()}>LOG OUT!</button>
                                 </div>
-                            </label>
+                            </div>
                         </div>
                     </div>
                 </div>

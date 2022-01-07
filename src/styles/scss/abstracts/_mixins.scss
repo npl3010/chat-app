@@ -1,0 +1,5 @@
+@mixin padding($paddingValues...) {
+    @each $var in $paddingValues {
+        padding: #{$var};
+    }
+}

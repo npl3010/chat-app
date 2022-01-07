@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEllipsisH, faUserPlus, faUsers } from '@fortawesome/free-solid-svg-icons';
+import { faEllipsisH, faUserPlus, faUsers, faSearch } from '@fortawesome/free-solid-svg-icons';
 
 // Components:
 import ModalSearchUserForm from '../components/ModalSearchUserForm';
@@ -48,21 +48,28 @@ function ChatMenu(props) {
                             className='action-item action-button add-room-btn'
                             onClick={() => setIsModalSearchVisible(!isModalSearchVisible)}
                         >
-                            <FontAwesomeIcon className='action-button__icon add-room-icon' icon={faUserPlus} />
+                            <div class="tooltip">
+                                <FontAwesomeIcon className='action-button__icon add-room-icon' icon={faUserPlus} />
+                                <span class="tooltip__text">Thêm bạn</span>
+                            </div>
                         </div>
                         <div
                             className='action-item action-button add-group-chat-btn'
                             onClick={() => setisModalAddGroupVisible(!isModalAddGroupVisible)}
                         >
-                            <FontAwesomeIcon className='action-button__icon add-group-chat-icon' icon={faUsers} />
+                            <div class="tooltip">
+                                <FontAwesomeIcon className='action-button__icon add-group-chat-icon' icon={faUsers} />
+                                <span class="tooltip__text">Tạo nhóm chat</span>
+                            </div>
                         </div>
                     </div>
                 </div>
 
                 <div className='chatmenu__search'>
-                    <div className='searchbox-wrapper'>
-                        <div className='searchbox'>
-                            <input type='text' placeholder='Tìm kiếm người dùng'></input>
+                    <div className='search-box-wrapper'>
+                        <div className='search-box'>
+                            <FontAwesomeIcon className='search-box__icon' icon={faSearch} />
+                            <input className='search-box__input' type='text' placeholder='Tìm kiếm người dùng'></input>
                         </div>
                     </div>
                 </div>

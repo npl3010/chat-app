@@ -32,7 +32,7 @@ function ModalSearchUserForm({ isModalSearchVisible, setIsModalSearchVisible }) 
             ></div>
 
             <div
-                className={`modal-search-user-form${isModalSearchVisible ? ' visible' : ''}`}
+                className={`modal-search-user-form${isModalSearchVisible ? ' visible' : ' close'}`}
             >
                 <div className='modal-content-wrapper'>
                     <div className={`user-search-form-wrapper form-${idOfFormToBeDisplayed}`}>
