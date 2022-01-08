@@ -2,10 +2,10 @@
 .chatroom-menu {
     position: relative;
     height: 100%;
-    padding: 10px 16px;
 
     &__header {
         position: relative;
+        padding: 10px 16px;
     }
 
     &__info {
@@ -21,7 +21,8 @@
         font-weight: bold;
         cursor: pointer;
         text-align: center;
-        padding: 10px 0;
+        // padding: 10px 0;
+        padding: 10px 16px 0 16px;
     }
 
     &__name:hover {
@@ -32,6 +33,10 @@
         display: flex;
         justify-content: center;
         align-items: center;
+    }
+
+    &__options {
+        padding: 0 8px;
     }
 
     .user-avatar-wrapper {

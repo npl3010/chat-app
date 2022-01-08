@@ -1,6 +1,9 @@
 import React from 'react';
 import { Avatar, Tooltip } from 'antd';
 
+// Components:
+import CollapsibleMenu from './CollapsibleMenu';
+
 // Redux:
 import { useSelector } from 'react-redux';
 
@@ -110,6 +113,7 @@ function ChatRoomMenu(props) {
             if (rooms[selectedChatRoom].type === 'group-chat') {
                 return (
                     <>
+                        <CollapsibleMenu></CollapsibleMenu>
                         <button
                             className='option-list__button'
                             onClick={() => setisModalInviteVisible(!isModalInviteVisible)}
@@ -154,13 +158,7 @@ function ChatRoomMenu(props) {
             </div>
 
             <div className='chatroom-menu__options'>
-                <div className='option-list-wrapper'>
-                    <div className='option-list'>
-                        <div className='option-list__item'>
-                            {renderOptionList()}
-                        </div>
-                    </div>
-                </div>
+                {renderOptionList()}
             </div>
         </div>
     );

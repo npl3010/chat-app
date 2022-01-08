@@ -48,18 +48,18 @@ function ChatMenu(props) {
                             className='action-item action-button add-room-btn'
                             onClick={() => setIsModalSearchVisible(!isModalSearchVisible)}
                         >
-                            <div class="tooltip">
+                            <div className="tooltip">
                                 <FontAwesomeIcon className='action-button__icon add-room-icon' icon={faUserPlus} />
-                                <span class="tooltip__text">Thêm bạn</span>
+                                <span className="tooltip__text">Thêm bạn</span>
                             </div>
                         </div>
                         <div
                             className='action-item action-button add-group-chat-btn'
                             onClick={() => setisModalAddGroupVisible(!isModalAddGroupVisible)}
                         >
-                            <div class="tooltip">
+                            <div className="tooltip">
                                 <FontAwesomeIcon className='action-button__icon add-group-chat-icon' icon={faUsers} />
-                                <span class="tooltip__text">Tạo nhóm chat</span>
+                                <span className="tooltip__text">Tạo nhóm chat</span>
                             </div>
                         </div>
                     </div>

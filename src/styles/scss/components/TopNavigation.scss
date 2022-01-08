@@ -92,6 +92,14 @@ $topnav_paddingTopBottom: 8px;
         &:hover {
             background-color: rgb(221, 221, 221);
         }
+
+        &.active {
+            background-color: lightblue;
+    
+            .menu-button__icon {
+                color: steelblue;
+            }
+        }
     
         &__icon {
             display: block;
@@ -146,17 +154,43 @@ $topnav_paddingTopBottom: 8px;
         position: absolute;
         top: calc(100% + $topnav_paddingTopBottom);
         right: 0;
+        transform: translateY(-10px) rotateX(-30deg) scaleY(0.8);
+        transform-origin: top;
         width: 100%;
         z-index: 100;
-        border-radius: 8px;
+        border-radius: 10px;
         box-shadow: 0px 2px 10px 3px #ddd;
         background-color: #fff;
-        padding: 8px;
+        padding: 0px;
         cursor: default;
-        display: none;
+        width: 360px;
+        max-width: 360px;
+        // display: none;
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+        transition: all 0.2s ease;
+
+        &__footer {
+            padding: 8px 16px;
+            border-top: 1px solid #e6e6e6;
+            font-size: 14px;
+            cursor: auto;
+            user-select: text;
+            color: #65676B;
+        }
+
+        &__title {
+            text-align: center;
+            margin-bottom: 8px;
+        }
     }
 
     input#checkbox-for-dropdown-menu:checked ~ .dropdown-menu {
-        display: block;
+        // display: block;
+        transform: translateY(0) rotateX(0deg) scaleY(1);
+        opacity: 1;
+        visibility: visible;
+        pointer-events: auto;
     }
 }

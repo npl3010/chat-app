@@ -1,0 +1,58 @@
+.collapsible-menu-wrapper.for-chatroom-menu {
+    user-select: none;
+
+    .option {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: nowrap;
+        flex-direction: row;
+        padding: 10px 8px;
+        border-radius: 10px;
+        font-weight: bold;
+        cursor: pointer;
+    
+        &:hover {
+            background-color: #eee;
+        }
+
+        &__icon {
+            display: block;
+            font-size: 15px;
+            transition: all 0.3s ease;
+        }
+    
+        &__title {
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            flex-wrap: nowrap;
+            flex-direction: row;
+        }
+    }
+
+    .inline-menu {
+        padding: 0px 8px 0px calc(8px + 16px);
+        transition: all 0.3s ease;
+        height: auto;
+        // display: none;
+        // font-size: 0;
+        opacity: 0;
+        visibility: hidden;
+        max-height: 0;
+    }
+
+    .option-list__item.active {
+        .option__icon {
+            transform: rotateZ(-180deg);
+        }
+
+        .inline-menu {
+            // display: block;
+            // font-size: 14px;
+            opacity: 1;
+            visibility: visible;
+            max-height: 100vh;
+        }
+    }
+}

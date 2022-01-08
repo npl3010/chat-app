@@ -2,6 +2,9 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faInfoCircle, faExclamation } from '@fortawesome/free-solid-svg-icons';
 
+// Components:
+import AvatarGroup from './AvatarGroup';
+
 // Redux:
 import { useSelector } from 'react-redux';
 
@@ -90,14 +93,28 @@ function ChatRoom(props) {
 
 
     // Component:
+    const renderChatRoomImage = () => {
+        if (selectedChatRoom !== -1 && rooms.length > 0) {
+            if (rooms[selectedChatRoom].type === 'group-chat') {
+                return (
+                    <AvatarGroup></AvatarGroup>
+                );
+            } else {
+                return (
+                    <div className='person-img-wrapper'>
+                        <img className='person-img' src='' alt='' ></img>
+                    </div>
+                );
+            }
+        }
+    }
+
     const chatRoomComponent = () => {
         return (
             <>
                 <div className='chat-info'>
                     <div className='chat-info__person'>
-                        <div className='person-img-wrapper'>
-                            <img className='person-img' src='' alt='' ></img>
-                        </div>
+                        {renderChatRoomImage()}
                         <div className='person-info'>
                             <span className='person-name'>{roomData.name ? roomData.name : ''}</span>
                             <span className='person-active-status'>Hoạt động 1 giờ trước</span>

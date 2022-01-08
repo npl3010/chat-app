@@ -1,4 +1,3 @@
-// Modules:
 import { useEffect, useMemo } from "react";
 import {
   BrowserRouter,

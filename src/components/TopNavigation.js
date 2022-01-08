@@ -1,6 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBell, faCaretDown, faSearch } from '@fortawesome/free-solid-svg-icons';
+import {
+    faBell, faCaretDown, faSearch
+} from '@fortawesome/free-solid-svg-icons';
+
+// Components:
+import OptionListMenu from './OptionListMenu';
 
 // Firebase:
 import { auth, signOut } from '../firebase/config';
@@ -69,7 +74,7 @@ function TopNavigation(props) {
                 <div className='topnav'>
                     <div className='topnav__left-section'>
                         <div className='topnav__quick-menu'>
-                            <span className='topnav__logo'>MyChatApp</span>
+                            <span className='topnav__logo'>FMc</span>
                             <div className='search-box-wrapper'>
                                 <div className='search-box--primary'>
                                     <FontAwesomeIcon className='search-box__icon' icon={faSearch} />
@@ -100,7 +105,7 @@ function TopNavigation(props) {
                             </div>
 
                             <div
-                                className='menu-item menu-button dropdown-btn'
+                                className={`menu-item menu-button dropdown-btn${isDropdownMenuDisplayed ? ' active' : ''}`}
                                 onClick={(e) => handleInputChange_ForDropdownBtn(e)}
                             >
                                 <FontAwesomeIcon className='menu-button__icon dropdown-icon' icon={faCaretDown} />
@@ -120,7 +125,25 @@ function TopNavigation(props) {
                                     className='dropdown-menu'
                                     onClick={(e) => { e.stopPropagation() }}
                                 >
-                                    <button onClick={() => handleLogout()}>LOG OUT!</button>
+                                    <div className='dropdown-menu__header'>
+                                    </div>
+                                    <div className='dropdown-menu__body'>
+                                        <div className='dropdown-menu__options'>
+                                            <OptionListMenu handleLogout={handleLogout}></OptionListMenu>
+                                        </div>
+                                    </div>
+                                    <div className='dropdown-menu__footer'>
+                                        <div className='dropdown-menu__title'>Facebook Messenger Clone</div>
+                                        <div className='dropdown-menu__label'>View source on GitHub:</div>
+                                        <a
+                                            className='dropdown-menu__link'
+                                            href='https://github.com/npl3010/chat-app'
+                                            target="_blank"
+                                            rel="noreferrer"
+                                        >
+                                            <span>github.com/npl3010/chat-app</span>
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
                         </div>

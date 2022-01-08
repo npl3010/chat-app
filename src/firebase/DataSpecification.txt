@@ -12,11 +12,15 @@ All fields:
 2. rooms (A room object represents a chat room information):
 All fields:
 - createdAt (timestamp)
-- lastActive (timestamp)
+- lastActiveAt (timestamp)
 - name (string)
 - description (string)
 - members (array): List of uids.
-- type (string): 'self-chat', 'one-to-one-chat', 'group-chat'
+- membersAddedBy (array): List of uids.
+- type (string): 'self-chat', 'one-to-one-chat', 'group-chat'.
+- fromOthers_BgColor (string)
+- fromMe_BgColor (string)
+
 
 3. messages (A message object represents a message of a chat room):
 All fields:
@@ -24,3 +28,4 @@ All fields:
 - roomId (string)
 - content (string)
 - uid (string)
+- latestMessage (string)
