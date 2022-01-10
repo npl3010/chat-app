@@ -28,7 +28,10 @@ function ModalAddGroupChat({ isModalAddGroupVisible, setisModalAddGroupVisible, 
             name: formData.groupChatName,
             description: 'Group chat',
             type: 'group-chat',
-            members: [user.uid]
+            members: [user.uid],
+            membersAddedBy: [user.uid],
+            membersRole: ['group-admin'],
+            latestMessage: ''
         });
 
         // Clear form:

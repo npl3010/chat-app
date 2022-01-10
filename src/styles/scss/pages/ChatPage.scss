@@ -5,21 +5,22 @@
     justify-content: flex-start;
     overflow-x: hidden;
     height: calc(100vh - 65px);
+    // position: relative;
 
     &__left-section {
-        position: relative;
+        // position: relative;
         min-width: 360px;
     }
 
     &__mid-section {
-        position: relative;
+        // position: relative;
         width: 100%;
         border-left: 1px solid rgb(230, 230, 230);
         border-right: 1px solid rgb(230, 230, 230);
     }
 
     &__right-section {
-        position: relative;
+        // position: relative;
         min-width: 0;
         width: 0;
         opacity: 0;

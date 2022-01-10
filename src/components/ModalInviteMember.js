@@ -146,7 +146,7 @@ function ModalInviteMember(props) {
 
 
     // Redux:
-    // const user = useSelector((state) => state.userAuth.user);
+    const user = useSelector((state) => state.userAuth.user);
     const { rooms, selectedChatRoom } = useSelector((state) => state.manageRooms);
 
 
@@ -158,9 +158,13 @@ function ModalInviteMember(props) {
 
             // Set the "members" field of the selected room:
             const newMemberList = [...rooms[selectedChatRoom].members, ...value.map((val) => val)];
+            const newMembersAddedBy = [...rooms[selectedChatRoom].membersAddedBy, ...value.map(() => (user.uid))];
+            const newmembersRole = [...rooms[selectedChatRoom].membersRole, ...value.map(() => ('group-member'))];
 
             await updateDoc(roomRef, {
-                members: newMemberList
+                members: newMemberList,
+                membersAddedBy: newMembersAddedBy,
+                membersRole: newmembersRole
             });
 
             // Clear form:

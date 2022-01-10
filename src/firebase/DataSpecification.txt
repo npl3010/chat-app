@@ -17,9 +17,11 @@ All fields:
 - description (string)
 - members (array): List of uids.
 - membersAddedBy (array): List of uids.
+- membersRole (array): List of role, they are: 'group-admin', 'group-member'.
 - type (string): 'self-chat', 'one-to-one-chat', 'group-chat'.
 - fromOthers_BgColor (string)
 - fromMe_BgColor (string)
+- latestMessage (string)
 
 
 3. messages (A message object represents a message of a chat room):
@@ -28,4 +30,3 @@ All fields:
 - roomId (string)
 - content (string)
 - uid (string)
-- latestMessage (string)

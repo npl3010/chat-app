@@ -31,15 +31,16 @@
         }
     }
 
-    .inline-menu {
-        padding: 0px 8px 0px calc(8px + 16px);
+    .inline-menu-wrapper {
+        border-radius: 10px;
+        overflow: hidden;
         transition: all 0.3s ease;
-        height: auto;
         // display: none;
         // font-size: 0;
         opacity: 0;
         visibility: hidden;
         max-height: 0;
+        height: 0;
     }
 
     .option-list__item.active {
@@ -47,12 +48,40 @@
             transform: rotateZ(-180deg);
         }
 
-        .inline-menu {
+        .inline-menu-wrapper {
             // display: block;
             // font-size: 14px;
             opacity: 1;
             visibility: visible;
             max-height: 100vh;
+            // height: 250px;
+        }
+    }
+
+    .inline-menu {
+        display: block;
+
+        // Option:
+        &__option {
+            background-color: #f9f9f9;
+            padding: 8px;
+            cursor: pointer;
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+
+            &:hover {
+                background-color: #eee;
+            }
+        }
+
+        &__option-icon-wrapper {
+            margin-right: 8px;
+        }
+
+        &__option-icon {
+            display: block;
+            font-size: 18px;
         }
     }
 }
