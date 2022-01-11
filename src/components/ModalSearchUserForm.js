@@ -3,13 +3,20 @@ import { Input, Select } from 'antd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronLeft, faTimes } from '@fortawesome/free-solid-svg-icons';
 
+// Context:
+import { ModalControlContext } from '../context/ModalControlProvider';
+
 // CSS:
 import '../styles/scss/components/ModalSearchUserForm.scss';
 
 
 const { Option } = Select;
 
-function ModalSearchUserForm({ isModalSearchVisible, setIsModalSearchVisible }) {
+function ModalSearchUserForm(props) {
+    // Context:
+    const { isModalSearchUserVisible, setIsModalSearchUserVisible } = React.useContext(ModalControlContext);
+
+
     // State:
     const [idOfFormToBeDisplayed, setIdOfFormToBeDisplayed] = useState(1);
 
@@ -27,12 +34,12 @@ function ModalSearchUserForm({ isModalSearchVisible, setIsModalSearchVisible }) 
     return (
         <>
             <div
-                className={`overlay${isModalSearchVisible ? ' visible' : ''}`}
-                onClick={() => setIsModalSearchVisible(!isModalSearchVisible)}
+                className={`overlay${isModalSearchUserVisible ? ' visible' : ''}`}
+                onClick={() => setIsModalSearchUserVisible(!isModalSearchUserVisible)}
             ></div>
 
             <div
-                className={`modal-search-user-form${isModalSearchVisible ? ' visible' : ''}`}
+                className={`modal-search-user-form${isModalSearchUserVisible ? ' visible' : ''}`}
             >
                 <div className='modal-content-wrapper'>
                     <div className={`user-search-form-wrapper form-${idOfFormToBeDisplayed}`}>
@@ -84,7 +91,7 @@ function ModalSearchUserForm({ isModalSearchVisible, setIsModalSearchVisible }) 
                                         <div className='navigation__right-section'>
                                             <div
                                                 className='nav_button close-btn'
-                                                onClick={() => setIsModalSearchVisible(!isModalSearchVisible)}
+                                                onClick={() => setIsModalSearchUserVisible(!isModalSearchUserVisible)}
                                             >
                                                 <FontAwesomeIcon className='nav_button__icon' icon={faTimes} />
                                             </div>

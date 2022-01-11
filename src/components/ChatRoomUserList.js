@@ -7,6 +7,9 @@ import {
 // Redux:
 import { useSelector } from 'react-redux';
 
+// Context:
+import { ModalControlContext } from '../context/ModalControlProvider';
+
 // CSS:
 import '../styles/scss/components/ChatRoomUserList.scss';
 
@@ -20,6 +23,10 @@ function ChatRoomUserList(props) {
         selectedChatRoom,
         selectedChatRoomUsers
     } = props;
+
+
+    // Context:
+    const { isModalInviteVisible, setisModalInviteVisible } = React.useContext(ModalControlContext);
 
 
     // Redux:
@@ -183,7 +190,7 @@ function ChatRoomUserList(props) {
             </div>
 
             {/* Actions: */}
-            <div className='object-list-action'>
+            <div className='object-list-action' onClick={() => setisModalInviteVisible(!isModalInviteVisible)}>
                 <div className='object-list-action__icon-wrapper'>
                     <FontAwesomeIcon className='object-list-action__icon' icon={faUserPlus} />
                 </div>

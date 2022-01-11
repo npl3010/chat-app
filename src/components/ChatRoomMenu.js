@@ -7,18 +7,11 @@ import ChatRoomCollapsibleMenu from './ChatRoomCollapsibleMenu';
 // Redux:
 import { useSelector } from 'react-redux';
 
-// Context:
-import { ModalControlContext } from '../context/ModalControlProvider';
-
 // CSS:
 import '../styles/scss/components/ChatRoomMenu.scss';
 
 
 function ChatRoomMenu(props) {
-    // Context:
-    const { isModalInviteVisible, setisModalInviteVisible } = React.useContext(ModalControlContext);
-
-
     // Redux:
     const user = useSelector((state) => state.userAuth.user);
     const { rooms, selectedChatRoom, selectedChatRoomUsers } = useSelector((state) => state.manageRooms);
@@ -118,10 +111,6 @@ function ChatRoomMenu(props) {
                             selectedChatRoom={selectedChatRoom}
                             selectedChatRoomUsers={selectedChatRoomUsers}
                         ></ChatRoomCollapsibleMenu>
-                        <button
-                            className='option-list__button'
-                            onClick={() => setisModalInviteVisible(!isModalInviteVisible)}
-                        >Thêm thành viên</button>
                     </>
                 );
             } else {

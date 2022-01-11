@@ -1,23 +1,24 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEllipsisH, faUserPlus, faUsers, faSearch } from '@fortawesome/free-solid-svg-icons';
-
-// Components:
-import ModalSearchUserForm from '../components/ModalSearchUserForm';
-import ModalAddGroupChat from './ModalAddGroupChat';
 
 // Redux:
 import { useDispatch, useSelector } from 'react-redux';
 import { setSelectedChatRoom } from '../features/manageRooms/manageRoomsSlice';
+
+// Context:
+import { ModalControlContext } from '../context/ModalControlProvider';
 
 // CSS:
 import '../styles/scss/components/ChatMenu.scss';
 
 
 function ChatMenu(props) {
-    // State:
-    const [isModalSearchVisible, setIsModalSearchVisible] = useState(false);
-    const [isModalAddGroupVisible, setisModalAddGroupVisible] = useState(false);
+    // Context:
+    const {
+        isModalSearchUserVisible, setIsModalSearchUserVisible,
+        isModalAddGroupVisible, setisModalAddGroupVisible
+    } = React.useContext(ModalControlContext);
 
 
     // Redux:
@@ -46,7 +47,7 @@ function ChatMenu(props) {
                         </div>
                         <div
                             className='action-item action-button add-room-btn'
-                            onClick={() => setIsModalSearchVisible(!isModalSearchVisible)}
+                            onClick={() => setIsModalSearchUserVisible(!isModalSearchUserVisible)}
                         >
                             <div className="tooltip">
                                 <FontAwesomeIcon className='action-button__icon add-room-icon' icon={faUserPlus} />
@@ -102,18 +103,6 @@ function ChatMenu(props) {
                     </div>
                 </div>
             </div>
-
-            {/* Modals: */}
-            <ModalSearchUserForm
-                isModalSearchVisible={isModalSearchVisible}
-                setIsModalSearchVisible={setIsModalSearchVisible}
-            ></ModalSearchUserForm>
-
-            <ModalAddGroupChat
-                isModalAddGroupVisible={isModalAddGroupVisible}
-                setisModalAddGroupVisible={setisModalAddGroupVisible}
-                setSelectedChatRoom={handleClickChatRoom}
-            ></ModalAddGroupChat>
         </div>
     );
 }

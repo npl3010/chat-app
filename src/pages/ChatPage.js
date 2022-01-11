@@ -6,6 +6,8 @@ import ChatMenu from '../components/ChatMenu';
 import ChatRoom from '../components/ChatRoom';
 import ChatRoomMenu from '../components/ChatRoomMenu';
 import ModalInviteMember from '../components/ModalInviteMember';
+import ModalSearchUserForm from '../components/ModalSearchUserForm';
+import ModalAddGroupChat from '../components/ModalAddGroupChat';
 
 // Redux:
 import { useSelector } from 'react-redux';
@@ -71,7 +73,9 @@ function ChatPage(props) {
             </div>
 
             {/* Modals: */}
+            <ModalSearchUserForm></ModalSearchUserForm>
             <ModalInviteMember></ModalInviteMember>
+            <ModalAddGroupChat></ModalAddGroupChat>
         </div>
     );
 }

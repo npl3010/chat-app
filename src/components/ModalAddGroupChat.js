@@ -2,7 +2,11 @@ import React from 'react';
 import { Form, Input, Modal } from 'antd';
 
 // Redux:
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { setSelectedChatRoom } from '../features/manageRooms/manageRoomsSlice';
+
+// Context:
+import { ModalControlContext } from '../context/ModalControlProvider';
 
 // CSS:
 import '../styles/scss/components/ModalAddGroupChat.scss';
@@ -11,13 +15,18 @@ import '../styles/scss/components/ModalAddGroupChat.scss';
 import { addDocument } from '../firebase/services';
 
 
-function ModalAddGroupChat({ isModalAddGroupVisible, setisModalAddGroupVisible, setSelectedChatRoom }) {
+function ModalAddGroupChat(props) {
     // Hooks:
     const [form] = Form.useForm();
 
 
+    // Context:
+    const { isModalAddGroupVisible, setisModalAddGroupVisible } = React.useContext(ModalControlContext);
+
+
     // Redux:
     const user = useSelector((state) => state.userAuth.user);
+    const dispatch = useDispatch();
 
 
     // Methods:
@@ -41,7 +50,8 @@ function ModalAddGroupChat({ isModalAddGroupVisible, setisModalAddGroupVisible, 
         setisModalAddGroupVisible(false);
 
         // Select the last created chat room:
-        setSelectedChatRoom(0);
+        const action = setSelectedChatRoom(0);
+        dispatch(action);
     };
 
     const handleCancel = () => {
