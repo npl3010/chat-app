@@ -73,3 +73,20 @@ export const generateUserNameKeywords = (displayName) => {
 
     return keywords;
 };
+
+
+// Capitalize text:
+export const capitalizeSingleWord = (word) => {
+    if (word.length > 0) {
+        return word[0].toUpperCase() + word.slice(1);
+    }
+    return '';
+}
+
+export const capitalizeAllWords = (text) => {
+    const arrOfSubstr = text.split(" ")
+    for (let i = 0; i < arrOfSubstr.length; i++) {
+        arrOfSubstr[i] = capitalizeSingleWord(arrOfSubstr[i]);
+    }
+    return arrOfSubstr.join(" ");
+}

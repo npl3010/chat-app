@@ -4,3 +4,28 @@
 }
 
 
+.antd-modal-add-group-chat {
+    min-width: 500px;
+    // width: 650px !important;
+
+    .ant-select-multiple .ant-select-selection-item {
+        height: auto;
+        align-items: center;
+    }
+}
+
+.loading-msg.for-antd-modal-add-group-chat {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+
+    .spinner-wrapper {
+        display: inline-block;
+        padding-right: 10px;
+    }
+
+    .title.for-empty-search-result {
+        display: block;
+        text-align: center;
+    }
+}

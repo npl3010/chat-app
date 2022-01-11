@@ -200,6 +200,7 @@ function ModalInviteMember(props) {
             </div> */}
 
             <Modal
+                className='antd-modal-invite-member'
                 title="Thêm thành viên"
                 centered
                 visible={isModalInviteVisible}
