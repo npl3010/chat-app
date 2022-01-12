@@ -6,11 +6,24 @@
 
 .antd-modal-add-group-chat {
     min-width: 500px;
-    // width: 650px !important;
+    width: 650px !important;
 
     .ant-select-multiple .ant-select-selection-item {
         height: auto;
         align-items: center;
+    }
+
+    .ant-select-selection-item {
+        padding-top: 4px;
+        padding-bottom: 4px;
+    }
+
+    .ant-select-selection-item {
+
+        .ant-avatar {
+            width: 25px;
+            height: 25px;
+        }
     }
 }
 
