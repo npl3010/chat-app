@@ -438,3 +438,20 @@ $avatar_size: 96px;
         left: 50%;
     }
 }
+
+.userlist.empty {
+    display: block;
+    
+    .empty-search-result {
+        display: block;
+        padding: 10px 16px;
+        cursor: auto;
+        user-select: text;
+
+        &__msg {
+            font-size: 15px;
+            font-style: italic;
+            color: #888;
+        }
+    }
+}

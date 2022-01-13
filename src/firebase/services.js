@@ -10,6 +10,14 @@ export const addDocument = async (collectionName, data) => {
 }
 
 
+// Add data to Cloud Firestore without timestamp:
+export const addDocumentWithoutTimestamp = async (collectionName, data) => {
+    await addDoc(collection(db, collectionName), {
+        ...data
+    });
+}
+
+
 // Create keywords for displayName.
 // Keywords are used for implementing full-text search without third party (Elastic, Algolia,...).
 export const generateUserNameKeywords = (displayName) => {

@@ -2,6 +2,12 @@ import React, { useRef } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronLeft, faTimes } from '@fortawesome/free-solid-svg-icons';
 
+// Redux:
+import { useSelector } from 'react-redux';
+
+// Services:
+import { sendFriendRequest } from '../firebase/queryFriends';
+
 
 function ModalSearchUserFormPage2(props) {
     const {
@@ -12,6 +18,16 @@ function ModalSearchUserFormPage2(props) {
         hanldeGoBackToUserSearchResultList
     } = props;
     const userProfile = useRef(null);
+
+
+    // Redux:
+    const user = useSelector((state) => state.userAuth.user);
+
+
+    // Methods:
+    const handleSendFriendRequest = (fromUID, toUID) => {
+        sendFriendRequest(fromUID, toUID);
+    };
 
 
     // Component:
@@ -38,8 +54,11 @@ function ModalSearchUserFormPage2(props) {
                         <div className='info__actions'>
                             <div className='info__action-list-wrapper'>
                                 <div className='info__action-list'>
-                                    <button className='info__action-button'>Thêm bạn</button>
-                                    <button className='info__action-button'>Nhắn tin</button>
+                                    <button className='info__action-button'
+                                        onClick={() => handleSendFriendRequest(user.uid, userProfile.current?.uid)}
+                                    >Thêm bạn</button>
+                                    <button className='info__action-button'
+                                    >Nhắn tin</button>
                                 </div>
                             </div>
                         </div>

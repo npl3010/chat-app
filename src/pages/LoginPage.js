@@ -9,7 +9,7 @@ import { useDispatch } from 'react-redux';
 import { setUser } from '../features/auth/userAuthSlice';
 
 // Services:
-import { addDocument, generateUserNameKeywords } from '../firebase/services';
+import { addDocument, addDocumentWithoutTimestamp, generateUserNameKeywords } from '../firebase/services';
 
 
 function LoginPage(props) {
@@ -29,6 +29,8 @@ function LoginPage(props) {
                 // Check isNewUser:
                 const moreInfo = getAdditionalUserInfo(result);
                 if (moreInfo.isNewUser === true) {
+                    // If user's account is the first login, create necessary tables in database:
+                    // - Table 'users':
                     addDocument("users", {
                         displayName: result.user.displayName,
                         email: result.user.email,
@@ -36,6 +38,13 @@ function LoginPage(props) {
                         photoURL: result.user.photoURL,
                         providerId: moreInfo.providerId,
                         displayNameSearchKeywords: generateUserNameKeywords(result.user.displayName),
+                    });
+                    // - Table 'friends':
+                    addDocumentWithoutTimestamp("friends", {
+                        uid: result.user.uid,
+                        friends: [],
+                        friendRequestsReceived: [],
+                        friendRequestsSent: [],
                     });
                 }
 

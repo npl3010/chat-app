@@ -30,3 +30,12 @@ All fields:
 - roomId (string)
 - content (string)
 - uid (string)
+
+
+4. friends (A user's list of friends):
+All fields:
+- uid (string)
+- friends (array): List of uids.
+- friendRequestsReceived (array): List of uids (People who want to make friend with you).
+- friendRequestsSent (array): List of uids (People who you want to make friend with).
+

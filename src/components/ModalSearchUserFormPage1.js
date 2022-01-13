@@ -63,13 +63,23 @@ function ModalSearchUserFormPage1(props) {
                 </div>
             </div>
         );
-    }
+    };
+
+    const renderEmptyUserList = () => {
+        return (
+            <div className='userlist empty'>
+                <div className='empty-search-result'>
+                    <div className='empty-search-result__msg'>Không tìm thấy kết quả tương ứng!</div>
+                </div>
+            </div>
+        );
+    };
 
     const renderSearchResult = () => {
         if (stateForSearching === 'fetching') {
             return renderUserListOnLoading();
         } else if (stateForSearching === 'empty-search-result') {
-            return <>Empty</>;
+            return renderEmptyUserList();
         } else if (stateForSearching === 'none') {
             return renderUserList();
         } else {
