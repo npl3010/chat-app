@@ -298,6 +298,7 @@ $avatar_size: 96px;
         margin-right: 10px;
 
         .person-img {
+            position: relative;
             width: 100%;
             height: 100%;
             border-radius: 50%;
@@ -306,6 +307,7 @@ $avatar_size: 96px;
         }
 
         .person-character-name {
+            position: relative;
             width: 100%;
             height: 100%;
             border-radius: 50%;
@@ -321,19 +323,118 @@ $avatar_size: 96px;
     }
 
     &__info {
+        width: 100%;
+        // flex-grow: 1;
+
         .user-title {
+            position: relative;
             font-size: 16px;
             font-weight: 500;
+            margin-bottom: 2px;
+            border-radius: 5px;
+            overflow: hidden;
         }
 
         .user-more-info {
+            position: relative;
             font-size: 13px;
-            overflow: hidden;
             text-overflow: ellipsis;
             display: -webkit-box;
             -webkit-line-clamp: 1;
             -webkit-box-orient: vertical;
             line-height: 20px;
+            border-radius: 5px;
+            overflow: hidden;
         }
+    }
+}
+
+.userlist.skeleton-loading {
+
+    .user {
+        cursor: default;
+        user-select: none;
+
+        &:hover {
+            background-color: transparent;
+        }
+
+        &__person-img {
+
+            .person-img,
+            .person-character-name {
+                border: none;
+                overflow: hidden;
+            }
+
+            .person-img::before,
+            .person-character-name::before {
+                content: '';
+                position: absolute;
+                background-color: #dddddd;
+                width: 100%;
+                height: 100%;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                border-radius: 50%;
+            }
+
+            .person-img::after,
+            .person-character-name::after {
+                content: '';
+                position: absolute;
+                width: 100%;
+                height: 100%;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background-image: linear-gradient(to right, #ddd 0%, #f5f5f5 50%, #ddd 100%);
+                background-repeat: no-repeat;
+                animation: skeletonLoadingLeftToRight 1s ease infinite alternate;
+            }
+        }
+
+        &__info {
+
+            .user-title::before,
+            .user-more-info::before {
+                content: '';
+                position: absolute;
+                background-color: #ddd;
+                width: 100%;
+                height: 100%;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+            }
+
+            .user-title::after,
+            .user-more-info::after {
+                content: '';
+                position: absolute;
+                width: 100%;
+                height: 100%;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background-image: linear-gradient(to right, #ddd 0%, #f5f5f5 50%, #ddd 100%);
+                background-repeat: no-repeat;
+                animation: skeletonLoadingLeftToRight 1s ease infinite alternate;
+            }
+        }
+    }
+}
+
+@keyframes skeletonLoadingLeftToRight {
+    0% {
+        left: -50%;
+    }
+    100% {
+        left: 50%;
     }
 }

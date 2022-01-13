@@ -45,9 +45,29 @@ function ModalSearchUserFormPage1(props) {
         );
     };
 
+    const renderUserListOnLoading = () => {
+        return (
+            <div className='userlist skeleton-loading'>
+                <div
+                    className='userlist__item'
+                >
+                    <div className='user'>
+                        <div className='user__person-img'>
+                            <div className='person-img'></div>
+                        </div>
+                        <div className='user__info'>
+                            <div className='user-title'>User's name</div>
+                            <div className='user-more-info'>User's email</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
     const renderSearchResult = () => {
         if (stateForSearching === 'fetching') {
-            return <>Loading</>;
+            return renderUserListOnLoading();
         } else if (stateForSearching === 'empty-search-result') {
             return <>Empty</>;
         } else if (stateForSearching === 'none') {
