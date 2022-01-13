@@ -23,6 +23,7 @@ function ChatRoomUserList(props) {
         selectedChatRoom,
         selectedChatRoomUsers
     } = props;
+    const userRole = useRef('');
 
 
     // Context:
@@ -35,7 +36,6 @@ function ChatRoomUserList(props) {
 
     // State:
     const [indexOfObjectToBeDisplayed, setIndexOfObjectToBeDisplayed] = useState(-1);
-    const userRole = useRef('');
 
 
     // Methods:

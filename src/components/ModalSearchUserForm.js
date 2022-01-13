@@ -1,33 +1,96 @@
-import React, { useState } from 'react';
-import { Input, Select } from 'antd';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faChevronLeft, faTimes } from '@fortawesome/free-solid-svg-icons';
+import React, { useRef, useState } from 'react';
+
+// Components:
+import ModalSearchUserFormPage1 from './ModalSearchUserFormPage1';
+import ModalSearchUserFormPage2 from './ModalSearchUserFormPage2';
+
+// Redux:
+// import { useSelector } from 'react-redux';
 
 // Context:
 import { ModalControlContext } from '../context/ModalControlProvider';
+
+// Services:
+import { fetchUserListByUserEmail, fetchUserListByUserName } from '../firebase/queryUsers';
 
 // CSS:
 import '../styles/scss/components/ModalSearchUserForm.scss';
 
 
-const { Option } = Select;
-
 function ModalSearchUserForm(props) {
+    const timeout = useRef(null);
+
+
     // Context:
     const { isModalSearchUserVisible, setIsModalSearchUserVisible } = React.useContext(ModalControlContext);
 
 
     // State:
     const [idOfFormToBeDisplayed, setIdOfFormToBeDisplayed] = useState(1);
+    const [userSearchResultList, setUserSearchResultList] = useState([]);
+    const [userSearchResultSelected, setUserSearchResultSelected] = useState(null);
+    const [stateForSearching, setStateForSearching] = useState('none'); // Value: none, fetching, empty-search-result.
 
 
-    // Variables:
-    const selectBefore = (
-        <Select defaultValue="user-name" className="select-before">
-            <Option value="user-name">Tên</Option>
-            <Option value="user-email">Email</Option>
-        </Select>
-    );
+    // Methods:
+    const handleInputKeywordChange = (e) => {
+        // We must clearTimeout to prevent autocomplete on submitting many requests when fetching API:
+        clearTimeout(timeout.current);
+
+        // Handle search:
+        if (e.target.value) {
+            // Validate email address:
+            const regexForEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            // Data is being fetched or not:
+            setStateForSearching('fetching');
+            // Clear options:
+            setUserSearchResultList([]);
+            // Fetch API:
+            let keywordToSearchFor = e.target.value;
+            if (regexForEmail.test(keywordToSearchFor) === true) {
+                timeout.current = setTimeout(() => {
+                    fetchUserListByUserEmail(keywordToSearchFor, [], 1)
+                        .then((newOptions) => {
+                            setUserSearchResultList(newOptions);
+                            if (newOptions.length === 0) {
+                                setStateForSearching('empty-search-result');
+                            } else {
+                                setStateForSearching('none');
+                            }
+                        });
+                }, 500);
+            } else {
+                timeout.current = setTimeout(() => {
+                    fetchUserListByUserName(keywordToSearchFor, [], 20)
+                        .then((newOptions) => {
+                            setUserSearchResultList(newOptions);
+                            if (newOptions.length === 0) {
+                                setStateForSearching('empty-search-result');
+                            } else {
+                                setStateForSearching('none');
+                            }
+                        });
+                }, 500);
+            }
+        } else {
+            setStateForSearching('none');
+        }
+    }
+
+    const hanldeSelectUserToViewQuickProfile = (uid) => {
+        setUserSearchResultSelected(uid);
+        setIdOfFormToBeDisplayed(2);
+    }
+
+    const hanldeGoBackToUserSearchResultList = () => {
+        setUserSearchResultSelected(null);
+        setIdOfFormToBeDisplayed(1);
+    }
+
+
+    // Side effects:
+    // useEffect(() => {
+    // }, []);
 
 
     // Component:
@@ -44,90 +107,22 @@ function ModalSearchUserForm(props) {
                 <div className='modal-content-wrapper'>
                     <div className={`user-search-form-wrapper form-${idOfFormToBeDisplayed}`}>
 
-                        {/* First form: */}
-                        <div className='user-search-form'>
-                            <div className='user-search-form__search-box-wrapper'>
-                                <span className='title'>Đến:</span>
-                                <Input addonBefore={selectBefore} />
-                            </div>
+                        {/* First form (page 1): */}
+                        <ModalSearchUserFormPage1
+                            userSearchResultList={userSearchResultList}
+                            handleInputKeywordChange={handleInputKeywordChange}
+                            hanldeSelectUserToViewQuickProfile={hanldeSelectUserToViewQuickProfile}
+                            stateForSearching={stateForSearching}
+                        ></ModalSearchUserFormPage1>
 
-                            <div className='user-search-form__userlist'>
-                                <div className='userlist-wrapper'>
-                                    <div className='userlist'>
-                                        <div
-                                            className='userlist__item'
-                                            key={`user-1`}
-                                            onClick={() => setIdOfFormToBeDisplayed(2)}
-                                        >
-                                            <div className='user'>
-                                                <div className='user__person-img'>
-                                                    <img className='person-img' src='' alt='' ></img>
-                                                </div>
-                                                <div className='user__info'>
-                                                    <div className='user-title'>Username</div>
-                                                    <div className='user-more-info'>...</div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Second form: */}
-                        <div className='user-search-form'>
-                            <div className='user-search-form__navigation'>
-                                <div className='navigation-wrapper'>
-                                    <div className='navigation'>
-                                        <div className='navigation__left-section'>
-                                            <div
-                                                className='nav_button go-back-btn'
-                                                onClick={() => setIdOfFormToBeDisplayed(1)}
-                                            >
-                                                <FontAwesomeIcon className='nav_button__icon' icon={faChevronLeft} />
-                                            </div>
-                                            <div className='nav-title'>Tìm bạn bè</div>
-                                        </div>
-                                        <div className='navigation__right-section'>
-                                            <div
-                                                className='nav_button close-btn'
-                                                onClick={() => setIsModalSearchUserVisible(!isModalSearchUserVisible)}
-                                            >
-                                                <FontAwesomeIcon className='nav_button__icon' icon={faTimes} />
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div className='user-search-form__user-profile'>
-                                <div className='user-profile-wrapper'>
-                                    <div className='quick-user-profile'>
-                                        <div className='img-wrapper'>
-                                            <div className='user-bg-img-wrapper'></div>
-                                            <div className='user-avatar-wrapper'>
-                                                <img className='user-avatar' src='' alt='' ></img>
-                                            </div>
-                                        </div>
-                                        <div className='info-wrapper'>
-                                            <div className='info'>
-                                                <div className='info__user-name'>
-                                                    <a className='info__user-name-url' href='/'>Trần Giả Trân</a>
-                                                </div>
-                                                <div className='info__actions'>
-                                                    <div className='info__action-list-wrapper'>
-                                                        <div className='info__action-list'>
-                                                            <button className='info__action-button'>Thêm bạn</button>
-                                                            <button className='info__action-button'>Nhắn tin</button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        {/* Second form (page 2): */}
+                        <ModalSearchUserFormPage2
+                            userSearchResultList={userSearchResultList}
+                            userSearchResultSelected={userSearchResultSelected}
+                            isModalSearchUserVisible={isModalSearchUserVisible}
+                            setIsModalSearchUserVisible={setIsModalSearchUserVisible}
+                            hanldeGoBackToUserSearchResultList={hanldeGoBackToUserSearchResultList}
+                        ></ModalSearchUserFormPage2>
                     </div>
                 </div>
 

@@ -9,12 +9,14 @@ import '../styles/scss/components/OptionListMenu.scss';
 
 
 function OptionListMenu(props) {
+    const optionListPageRef_1 = useRef(null);
+    const optionListPageRef_2 = useRef(null);
+
+
     // State:
     const [idOfPageToBeDisplayed, setidOfPageToBeDisplayed] = useState(1);
     const [idOfMenuToBeDisplayed, setidOfMenuToBeDisplayed] = useState(0);
     const [optionListHeight, setOptionListHeight] = useState(0);
-    const optionListPageRef_1 = useRef(null);
-    const optionListPageRef_2 = useRef(null);
 
 
     // Methods:

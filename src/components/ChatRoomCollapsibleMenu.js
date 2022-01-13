@@ -22,6 +22,7 @@ function ChatRoomCollapsibleMenu(props) {
         selectedChatRoomUsers
     } = props;
 
+
     // State:
     const [idOfInlineMenuToBeDisplayed, setIdOfInlineMenuToBeDisplayed] = useState(-1);
     const [inlineMenuHeight, setInlineMenuHeight] = useState(0);

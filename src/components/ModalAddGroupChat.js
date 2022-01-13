@@ -1,8 +1,5 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Avatar, Form, Input, Modal, Select, Spin } from 'antd';
-
-// Firebase:
-import { db, getDocs, collection, query, where, orderBy, limit } from '../firebase/config';
 
 // Redux:
 import { useDispatch, useSelector } from 'react-redux';
@@ -12,7 +9,8 @@ import { setSelectedChatRoom } from '../features/manageRooms/manageRoomsSlice';
 import { ModalControlContext } from '../context/ModalControlProvider';
 
 // Services:
-import { addDocument, capitalizeAllWords } from '../firebase/services';
+import { addDocument } from '../firebase/services';
+import { fetchUserListByUserEmail, fetchUserListByUserName } from '../firebase/queryUsers';
 
 // CSS:
 import '../styles/scss/components/ModalAddGroupChat.scss';
@@ -20,75 +18,10 @@ import '../styles/scss/components/ModalAddGroupChat.scss';
 
 const { Option } = Select;
 
-async function fetchUserListByUserEmail(username = '', membersAlreadyInRoom = []) {
-    /**
-     * 
-     * @param {string} username This is a keyword to search for. 
-     * @param {array} membersAlreadyInRoom The list of users who are already existed in this room,
-     * we need to hide these users in Select options.
-     * @returns 
-     */
-
-    // Get all documents in a collection from Firestore:
-    const q = query(collection(db, "users"),
-        where("email", "==", username),
-        orderBy("displayName"),
-        limit(10)
-    );
-
-    const querySnapshot = await getDocs(q);
-
-    let results = [];
-
-    querySnapshot.forEach((doc) => {
-        const docData = doc.data();
-        const resultItem = {
-            label: `${docData.displayName}`,
-            value: docData.uid,
-            photoURL: docData.photoURL,
-        }
-        results.push(resultItem);
-    });
-
-    return results;
-}
-
-async function fetchUserListByUserName(username = '', membersAlreadyInRoom = []) {
-    /**
-     * 
-     * @param {string} username This is a keyword to search for. 
-     * @param {array} membersAlreadyInRoom The list of users who are already existed in this room,
-     * we need to hide these users in Select options.
-     * @returns 
-     */
-
-    // Get all documents in a collection from Firestore:
-    const capitalizedUsername = capitalizeAllWords(username);
-
-    const q = query(collection(db, "users"),
-        where("displayNameSearchKeywords", "array-contains-any", [username, capitalizedUsername]),
-        orderBy("displayName"),
-        limit(10)
-    );
-
-    const querySnapshot = await getDocs(q);
-
-    let results = [];
-
-    querySnapshot.forEach((doc) => {
-        const docData = doc.data();
-        const resultItem = {
-            label: `${docData.displayName}`,
-            value: docData.uid,
-            photoURL: docData.photoURL,
-        }
-        results.push(resultItem);
-    });
-
-    return results;
-}
-
 function ModalAddGroupChat(props) {
+    const timeout = useRef(null);
+
+
     // Hooks:
     const [form] = Form.useForm();
 
@@ -106,7 +39,6 @@ function ModalAddGroupChat(props) {
     const [optionsData, setOptionsData] = useState([]);
     const [optionsSelected, setOptionsSelected] = useState([]);
     const [stateForSelectOnSearch, setStateForSelectOnSearch] = useState('none'); // Value: none, fetching, empty-search-result.
-    const timeout = useRef(null);
 
 
     // Methods:
@@ -154,6 +86,7 @@ function ModalAddGroupChat(props) {
 
         // We must clearTimeout to prevent autocomplete on submitting many requests when fetching API:
         clearTimeout(timeout.current);
+
         // Handle search:
         if (searchKeyword) {
             // Data is being fetched or not:
@@ -163,7 +96,7 @@ function ModalAddGroupChat(props) {
             // Fetch API:
             if (regexForEmail.test(searchKeyword) === true) {
                 timeout.current = setTimeout(() => {
-                    fetchUserListByUserEmail(searchKeyword)
+                    fetchUserListByUserEmail(searchKeyword, [user.uid], 1)
                         .then((newOptions) => {
                             setOptionsData(newOptions);
                             if (newOptions.length === 0) {
@@ -175,7 +108,7 @@ function ModalAddGroupChat(props) {
                 }, 500);
             } else {
                 timeout.current = setTimeout(() => {
-                    fetchUserListByUserName(searchKeyword)
+                    fetchUserListByUserName(searchKeyword, [user.uid])
                         .then((newOptions) => {
                             setOptionsData(newOptions);
                             if (newOptions.length === 0) {
@@ -215,6 +148,15 @@ function ModalAddGroupChat(props) {
             return null;
         }
     };
+
+
+    // Side effects:
+    useEffect(() => {
+        if (isModalAddGroupVisible === false) {
+            // Reset form values:
+            setOptionsSelected([]);
+        }
+    }, [isModalAddGroupVisible]);
 
 
     // Component:
@@ -299,11 +241,11 @@ function ModalAddGroupChat(props) {
                             {
                                 optionsData.map((op, index) => {
                                     return (
-                                        <Option value={op.value} key={`user-${op.value}`}>
+                                        <Option value={op.uid} key={`user-${op.uid}`}>
                                             <Avatar src={op.photoURL} shape='circle' draggable={false} style={{ marginRight: '10px' }}>
-                                                {op.photoURL ? '' : op.label?.charAt(0)?.toUpperCase()}
+                                                {op.photoURL ? '' : op.displayName?.charAt(0)?.toUpperCase()}
                                             </Avatar>
-                                            <span>{op.label}</span>
+                                            <span>{op.displayName}</span>
                                         </Option>
                                     );
                                 })

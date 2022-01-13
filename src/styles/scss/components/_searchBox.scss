@@ -68,4 +68,8 @@ $icon_fontSize: 15px;
             left: $paddingRightLeft;
         }
     }
+
+    input[type=text]::placeholder {
+        color: #aaa;
+    }
 }
