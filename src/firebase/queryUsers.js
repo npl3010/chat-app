@@ -62,3 +62,26 @@ export async function fetchUserListByUserName(userName = '', excludedUsers = [],
         return !excludedUsers.includes(arrItem.uid);
     });
 }
+
+
+// Get users by uid:
+export async function fetchUserListByUserID(userID = '') {
+    /**
+     * 
+     * @param {string} userID This is a keyword to search for. 
+     * @returns {array} The list of users.
+     */
+
+    const q = query(collection(db, "users"), where("uid", "==", userID));
+
+    const querySnapshot = await getDocs(q);
+
+    let results = [];
+
+    querySnapshot.forEach((doc) => {
+        const docData = doc.data();
+        results.push(docData);
+    });
+
+    return results;
+}

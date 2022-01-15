@@ -37,5 +37,11 @@ All fields:
 - uid (string)
 - friends (array): List of uids.
 - friendRequestsReceived (array): List of uids (People who want to make friend with you).
+- friendRequestsReceivedAt (array): List of timestamps.
+- friendRequestsReceivedIsSeen (number): Number of friend requests has been seen in the array above.
 - friendRequestsSent (array): List of uids (People who you want to make friend with).
 
+5. notifications:
+- createdAt (timestamp)
+- forUid (string)
+- type (string): 'join-chat-room'.

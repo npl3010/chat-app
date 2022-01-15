@@ -44,6 +44,8 @@ function LoginPage(props) {
                         uid: result.user.uid,
                         friends: [],
                         friendRequestsReceived: [],
+                        friendRequestsReceivedAt: [],
+                        friendRequestsReceivedIsSeen: 0,
                         friendRequestsSent: [],
                     });
                 }

@@ -1,0 +1,9 @@
+// .notification:
+.notification-wrapper.for-friend-request {
+    position: relative;
+
+    .notification {
+        user-select: text;
+        cursor: auto;
+    }
+}

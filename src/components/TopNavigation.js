@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-    faBell, faCaretDown, faSearch
+    faBell, faCaretDown, faSearch, faUserFriends
 } from '@fortawesome/free-solid-svg-icons';
 
 // Components:
+import NotificationForFriendRequestPanel from './NotificationForFriendRequestPanel';
 import OptionListMenu from './OptionListMenu';
 
 // Firebase:
@@ -17,17 +18,20 @@ import { setUser } from '../features/auth/userAuthSlice';
 // CSS:
 import '../styles/scss/components/TopNavigation.scss';
 
-// Custom hooks:
-// import useFirestore from '../customHooks/useFirestore';
-
 
 function TopNavigation(props) {
     // State:
     const [isDropdownMenuDisplayed, setIsDropdownMenuDisplayed] = useState(false);
+    const [isFRNMenuDisplayed, setIsFRNMenuDisplayed] = useState(false);
+    const [isONMenuDisplayed, setIsONMenuDisplayed] = useState(false);
 
 
     // Redux:
     const user = useSelector((state) => state.userAuth.user);
+    const {
+        friendRequestsReceived,
+        friendRequestsReceivedIsSeen
+    } = useSelector((state) => state.manageFriends);
     const dispatch = useDispatch();
 
 
@@ -49,25 +53,34 @@ function TopNavigation(props) {
         setIsDropdownMenuDisplayed(!isDropdownMenuDisplayed);
     }
 
+    const handleInputChange_ForFRNBtn = (e) => {
+        e.stopPropagation();
+        setIsFRNMenuDisplayed(!isFRNMenuDisplayed);
+    }
 
-    // Side effects:
-    useEffect(() => {
-        // (Cloud Firestore) Listen for realtime updates:
-        // onSnapshot(
-        //     collection(db, "users"),
-        //     (snapshot) => {
-        //         const data = snapshot.docs.map((doc) => {
-        //             return ({
-        //                 ...doc.data(),
-        //                 id: doc.id
-        //             });
-        //         });
-        //         console.log(data)
-        //     });
-    }, []);
+    const handleInputChange_ForONBtn = (e) => {
+        e.stopPropagation();
+        setIsONMenuDisplayed(!isONMenuDisplayed);
+    }
 
 
     // Component:
+    const countNewFriendRequestsReceived = () => {
+        return friendRequestsReceived.length - friendRequestsReceivedIsSeen;
+    };
+
+    const renderFRNBadge = () => {
+        if (countNewFriendRequestsReceived() > 0) {
+            return (
+                <div className='notification-btn__badge'>
+                    <span className='notification-btn__counting-number'>{countNewFriendRequestsReceived()}</span>
+                </div>
+            );
+        } else {
+            return (<></>);
+        }
+    };
+
     return (
         <div className='top-navigation'>
             <div className='topnav-wrapper'>
@@ -90,7 +103,8 @@ function TopNavigation(props) {
                     </div>
 
                     <div className='topnav__right-section'>
-                        <div className='personal-menu'>
+                        <div className='main-menu'>
+                            {/* Logged in user: */}
                             <div className='menu-item user-btn'>
                                 <div className='user-img-wrapper'>
                                     <img className='user-img' src={user.photoURL} alt='' ></img>
@@ -100,10 +114,56 @@ function TopNavigation(props) {
                                 </div>
                             </div>
 
-                            <div className='menu-item menu-button notification-btn'>
-                                <FontAwesomeIcon className='menu-button__icon notification-icon' icon={faBell} />
+                            {/* Friend Request Notifications (FRNMenu): */}
+                            <div
+                                className={`menu-item menu-button notification-btn${isFRNMenuDisplayed ? ' active' : ''}`}
+                                onClick={(e) => handleInputChange_ForFRNBtn(e)}
+                            >
+                                <div className='content-wrapper'>
+                                    <FontAwesomeIcon className='menu-button__icon notification-icon' icon={faUserFriends} />
+                                    {renderFRNBadge()}
+                                </div>
+                                <div
+                                    className={`overlay--transparent${isFRNMenuDisplayed ? ' visible' : ''}`}
+                                    onClick={(e) => handleInputChange_ForFRNBtn(e)}>
+                                </div>
+                                <div
+                                    className='notification-menu'
+                                    onClick={(e) => { e.stopPropagation() }}
+                                >
+                                    <div className='notification-menu__body'>
+                                        <div className='notification-menu__notifications'>
+                                            <NotificationForFriendRequestPanel></NotificationForFriendRequestPanel>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
 
+                            {/* Other Notifications (ONMenu): */}
+                            <div
+                                className={`menu-item menu-button notification-btn${isONMenuDisplayed ? ' active' : ''}`}
+                                onClick={(e) => handleInputChange_ForONBtn(e)}
+                            >
+                                <div className='content-wrapper'>
+                                    <FontAwesomeIcon className='menu-button__icon notification-icon' icon={faBell} />
+                                </div>
+                                <div
+                                    className={`overlay--transparent${isONMenuDisplayed ? ' visible' : ''}`}
+                                    onClick={(e) => handleInputChange_ForONBtn(e)}>
+                                </div>
+                                <div
+                                    className='notification-menu'
+                                    onClick={(e) => { e.stopPropagation() }}
+                                >
+                                    <div className='notification-menu__body'>
+                                        <div className='notification-menu__notifications'>
+                                            <div>ON Menu</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* More settings: */}
                             <div
                                 className={`menu-item menu-button dropdown-btn${isDropdownMenuDisplayed ? ' active' : ''}`}
                                 onClick={(e) => handleInputChange_ForDropdownBtn(e)}

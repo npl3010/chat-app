@@ -1,0 +1,9 @@
+.notification-list-wrapper.for-friend-request {
+    position: relative;
+
+    .notification-list {
+        padding: 8px;
+        max-height: 500px;
+        overflow: auto;
+    }
+}

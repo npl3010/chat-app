@@ -16,7 +16,6 @@ export async function sendFriendRequest(fromUID, toUID) {
     //     friendRequestsSent: []
     // });
 
-
     // Update friendRequestsSent list of 'The First User':
     const q1 = query(collection(db, "friends"),
         where("uid", "==", fromUID),
@@ -33,6 +32,7 @@ export async function sendFriendRequest(fromUID, toUID) {
     });
 
     // Update friendRequestsReceived list of 'The Second User':
+    const dUTC = new Date().toUTCString();
     const q2 = query(collection(db, "friends"),
         where("uid", "==", toUID),
         limit(1)
@@ -41,9 +41,16 @@ export async function sendFriendRequest(fromUID, toUID) {
     querySnapshot2.forEach(async (doc) => {
         // Get current data:
         const currentFriendRequestsReceived = doc.data().friendRequestsReceived;
+        const currentFriendRequestsReceivedAt = doc.data().friendRequestsReceivedAt;
         // Update data:
         await updateDoc(doc.ref, {
-            friendRequestsReceived: [...currentFriendRequestsReceived, fromUID]
+            friendRequestsReceived: [...currentFriendRequestsReceived, fromUID],
+            friendRequestsReceivedAt: [...currentFriendRequestsReceivedAt, dUTC]
         });
     });
+}
+
+
+export async function undoSentFriendRequest(fromUID, toUID) {
+    // Code this function later!
 }

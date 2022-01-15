@@ -21,18 +21,20 @@ import { auth, onAuthStateChanged } from './firebase/config';
 import { useDispatch, useSelector } from 'react-redux';
 import { setUser } from './features/auth/userAuthSlice';
 import {
-  clearRoomList,
-  setRoomList,
-  clearSelectedChatRoomUserList,
-  setSelectedChatRoomUserList,
+  clearRoomList, setRoomList,
+  clearSelectedChatRoomUserList, setSelectedChatRoomUserList,
   setSelectedChatRoom
 } from "./features/manageRooms/manageRoomsSlice";
+import {
+  resetState, setState
+} from "./features/manageFriends/manageFriendsSlice";
 
 // Provider:
 import ModalControlProvider from "./context/ModalControlProvider";
 
 // Custom hooks:
 import useFirestore from "./customHooks/useFirestore";
+import useFirestoreCustomized from "./customHooks/useFirestoreCustomized";
 
 
 function App() {
@@ -71,13 +73,25 @@ function App() {
     }
   }, [rooms, selectedChatRoom]);
 
+  const friendsCondition = useMemo(() => {
+    return {
+      fieldName: 'uid',
+      operator: '==',
+      value: user_uid
+    };
+  }, [user_uid]);
+
+  // Use useFirestore() to get realtime updates:
   // - Get all rooms that the user is a member of.
   const chatRooms = useFirestore('rooms', roomsCondition);
   // - Get all members of the selected room.
   const selectedRoomUsers = useFirestore('users', selectedRoomUsersCondition);
+  // - Get all friends of the logged in user.
+  const userFriends = useFirestoreCustomized('friends', friendsCondition);
 
 
   // Side effects:
+  // - Store logged in user's info.
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (loggedInUser) => {
       if (loggedInUser) {
@@ -100,6 +114,7 @@ function App() {
     };
   }, [dispatch]);
 
+  // - Get all rooms that the user is a member of.
   useEffect(() => {
     // 1. Clear room list:
     dispatch(clearRoomList());
@@ -108,6 +123,7 @@ function App() {
     dispatch(action);
   }, [dispatch, chatRooms]);
 
+  // - Get all members of the selected room.
   useEffect(() => {
     // 1. Clear selected room user list:
     dispatch(clearSelectedChatRoomUserList());
@@ -115,6 +131,24 @@ function App() {
     const action = setSelectedChatRoomUserList(selectedRoomUsers);
     dispatch(action);
   }, [dispatch, selectedRoomUsers]);
+
+  // - Get all friends of the logged in user.
+  useEffect(() => {
+    if (userFriends.length === 1) {
+      // 1. Clear friend list:
+      dispatch(resetState());
+      // 2. Set new friend list:
+      const action = setState({
+        friendsDocID: userFriends[0].id,
+        friends: userFriends[0].friends,
+        friendRequestsSent: userFriends[0].friendRequestsSent,
+        friendRequestsReceived: userFriends[0].friendRequestsReceived,
+        friendRequestsReceivedAt: userFriends[0].friendRequestsReceivedAt,
+        friendRequestsReceivedIsSeen: userFriends[0].friendRequestsReceivedIsSeen,
+      });
+      dispatch(action);
+    }
+  }, [dispatch, userFriends]);
 
 
   return (

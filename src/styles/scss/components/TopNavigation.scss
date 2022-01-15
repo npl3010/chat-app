@@ -11,7 +11,7 @@ $topnav_paddingTopBottom: 8px;
     position: relative;
 }
 
-.topnav-wrapper {
+.top-navigation .topnav-wrapper {
     display: block;
     position: relative;
 
@@ -62,7 +62,9 @@ $topnav_paddingTopBottom: 8px;
     }
 }
 
-.personal-menu {
+
+// .main-menu:
+.top-navigation .main-menu {
     display: flex;
     flex-direction: row;
     flex-wrap: nowrap;
@@ -106,9 +108,20 @@ $topnav_paddingTopBottom: 8px;
             font-size: 18px;
         }
     }
+
+    .content-wrapper {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
 }
 
-.user-btn {
+
+// .user-btn:
+.top-navigation .user-btn {
     display: flex;
     flex-direction: row;
     flex-wrap: nowrap;
@@ -144,7 +157,9 @@ $topnav_paddingTopBottom: 8px;
     }
 }
 
-.dropdown-btn {
+
+// .dropdown-btn:
+.top-navigation .dropdown-btn {
 
     input#checkbox-for-dropdown-menu {
         display: none;
@@ -192,5 +207,76 @@ $topnav_paddingTopBottom: 8px;
         opacity: 1;
         visibility: visible;
         pointer-events: auto;
+    }
+}
+
+
+// .notification-btn:
+.top-navigation .notification-btn {
+
+    &__badge {
+        position: absolute;
+        top: -15%;
+        right: -15%;
+        background-color: #f50000;
+        color: #fff;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        font-weight: bold;
+        text-shadow: 0px 0px 0px #fff;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        animation: displayNotificationBadge 0.3s ease;
+    }
+
+    &__counting-number {
+        height: 20px;
+    }
+
+    .notification-menu {
+        position: absolute;
+        top: calc(100% + $topnav_paddingTopBottom);
+        right: 0;
+        transform: translateY(-10px) rotateX(-30deg) scaleY(0.8);
+        transform-origin: top;
+        width: 100%;
+        z-index: 100;
+        border-radius: 10px;
+        box-shadow: 0px 2px 10px 3px #ddd;
+        background-color: #fff;
+        padding: 0px;
+        cursor: default;
+        width: 360px;
+        max-width: 360px;
+        // display: none;
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+        transition: all 0.2s ease;
+    }
+
+    &.active .notification-menu {
+        // display: block;
+        transform: translateY(0) rotateX(0deg) scaleY(1);
+        opacity: 1;
+        visibility: visible;
+        pointer-events: auto;
+    }
+}
+
+
+// Animations:
+@keyframes displayNotificationBadge {
+    0% {
+        opacity: 0;
+        visibility: hidden;
+        transform: scale(0.5);
+    }
+    100% {
+        opacity: 1;
+        visibility: visible;
+        transform: scale(1);
     }
 }
