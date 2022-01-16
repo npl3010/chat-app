@@ -3,12 +3,17 @@ import React from 'react';
 // Components:
 import Notification from './Notification';
 
+// Services:
+import { acceptFriendRequest } from '../firebase/queryFriends';
+
 // CSS:
 import '../styles/scss/components/NotificationForFriendRequest.scss';
 
 
 function NotificationForFriendRequest(props) {
     const {
+        requestFrom,
+        requestTo,
         userName,
         userImgSrc,
         objectSentAt,
@@ -17,8 +22,12 @@ function NotificationForFriendRequest(props) {
 
 
     // Methods:
-    const handleOnOK = () => {
-        console.log('OK!');
+    const handleAcceptFriendRequest = () => {
+        if (typeof requestFrom === 'string' && typeof requestTo === 'string') {
+            if (requestFrom.length > 0 && requestTo.length > 0) {
+                acceptFriendRequest(requestFrom, requestTo);
+            }
+        }
     };
 
     const handleOnCancel = () => {
@@ -39,7 +48,7 @@ function NotificationForFriendRequest(props) {
             hasActions={true}
             actionNameForOK='Chấp nhận'
             actionNameForCancel='Từ chối'
-            onOK={handleOnOK}
+            onOK={handleAcceptFriendRequest}
             onCancel={handleOnCancel}
         ></Notification>
     );

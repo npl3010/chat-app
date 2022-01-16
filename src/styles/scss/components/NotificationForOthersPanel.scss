@@ -1,0 +1,10 @@
+.notification-list-wrapper.for-other-notifications {
+    position: relative;
+
+    .notification-list {
+        padding: 8px;
+        min-height: 150px;
+        max-height: 500px;
+        overflow: auto;
+    }
+}

@@ -6,6 +6,7 @@ import {
 
 // Components:
 import NotificationForFriendRequestPanel from './NotificationForFriendRequestPanel';
+import NotificationForOthersPanel from './NotificationForOthersPanel';
 import OptionListMenu from './OptionListMenu';
 
 // Firebase:
@@ -133,7 +134,10 @@ function TopNavigation(props) {
                                 >
                                     <div className='notification-menu__body'>
                                         <div className='notification-menu__notifications'>
-                                            <NotificationForFriendRequestPanel></NotificationForFriendRequestPanel>
+                                            <NotificationForFriendRequestPanel
+                                                isFRNMenuDisplayed={isFRNMenuDisplayed}
+                                                setIsFRNMenuDisplayed={setIsFRNMenuDisplayed}
+                                            ></NotificationForFriendRequestPanel>
                                         </div>
                                     </div>
                                 </div>
@@ -157,7 +161,10 @@ function TopNavigation(props) {
                                 >
                                     <div className='notification-menu__body'>
                                         <div className='notification-menu__notifications'>
-                                            <div>ON Menu</div>
+                                            <NotificationForOthersPanel
+                                                isONMenuDisplayed={isONMenuDisplayed}
+                                                setIsONMenuDisplayed={setIsONMenuDisplayed}
+                                            ></NotificationForOthersPanel>
                                         </div>
                                     </div>
                                 </div>

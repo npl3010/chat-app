@@ -3,7 +3,19 @@
 
     .notification-list {
         padding: 8px;
+        min-height: 150px;
         max-height: 500px;
         overflow: auto;
+    }
+
+    .empty-notification-img-wrapper {
+        min-width: 200px;
+        width: 200px;
+        height: auto;
+    }
+
+    .empty-notification-img {
+        width: 100%;
+        height: auto;
     }
 }

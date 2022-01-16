@@ -1,0 +1,53 @@
+.notification-list-wrapper {
+
+    .empty-notification {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .empty-notification-img-wrapper {
+        display: inline-block;
+        min-width: 130px;
+        width: 130px;
+        height: 130px;
+    }
+
+    .empty-notification-img {
+        width: 100%;
+        height: 100%;
+    }
+
+    .empty-notification-msg-wrapper {
+        user-select: text;
+        cursor: auto;
+    }
+
+    .empty-notification-msg {
+        font-size: 15px;
+        color: #888;
+    }
+
+    .empty-notification-actions {
+        padding: 8px 0;
+    }
+
+    .empty-notification-action {
+        display: inline-block;
+        padding: 5px 10px;
+        background-color: steelblue;
+        color: #fff;
+        border-radius: 5px;
+        margin-right: 8px;
+        cursor: pointer;
+
+        &:hover {
+            background-color: cornflowerblue;
+        }
+
+        &:last-child {
+            margin-right: 0;
+        }
+    }
+}
