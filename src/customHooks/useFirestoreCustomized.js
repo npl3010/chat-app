@@ -11,7 +11,7 @@ import { db, collection, onSnapshot, query, where, orderBy } from '../firebase/c
  * @param {Object} condition This object is used for where() function.
  * { fieldName: 'az', operator: '==', value: 'abc' }
  * @param {Array} orderByFields List of field names.
- * @returns {Array}} List of updated results.
+ * @returns {Array} List of updated results.
  */
 const useFirestoreCustomized = (collectionName, condition, orderByFields) => {
     // State:

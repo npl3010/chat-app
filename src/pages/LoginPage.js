@@ -43,10 +43,7 @@ function LoginPage(props) {
                     addDocumentWithoutTimestamp("friends", {
                         uid: result.user.uid,
                         friends: [],
-                        friendRequestsReceived: [],
-                        friendRequestsReceivedAt: [],
-                        friendRequestsReceivedIsSeen: 0,
-                        friendRequestsSent: [],
+                        friendsFrom: []
                     });
                 }
 

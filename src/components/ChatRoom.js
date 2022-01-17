@@ -81,7 +81,7 @@ function ChatRoom(props) {
         };
     }, [rooms, selectedChatRoom]);
 
-    // Get all messages that belong to this room.
+    // (REALTIME) Get all messages that belong to this room.
     const messages = useFirestore('messages', messagesCondition);
 
     // Scroll to bottom if there are new messages:

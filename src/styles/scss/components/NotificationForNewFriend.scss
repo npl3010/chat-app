@@ -1,0 +1,9 @@
+// .notification:
+.notification-wrapper.for-new-friend {
+    position: relative;
+
+    .notification {
+        user-select: none;
+        cursor: pointer;
+    }
+}

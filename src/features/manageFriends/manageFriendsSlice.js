@@ -5,38 +5,28 @@ import { createSlice } from "@reduxjs/toolkit";
  * All fields:
  * - friendsDocID (string): document id.
  * - friends (array): array of friends,
- * - friendRequestsSent (array): array of friend requests sent,
- * - friendRequestsReceived (array): array of friend requests received,
+ * - friendsFrom (array): array of timestamps,
  */
 
 const initialState = {
     friendsDocID: '',
     friends: [],
-    friendRequestsSent: [],
-    friendRequestsReceived: [],
-    friendRequestsReceivedAt: [],
-    friendRequestsReceivedIsSeen: 0,
+    friendsFrom: []
 }
 
 const manageFriendsSlice = createSlice({
     name: 'manageFriends',
     initialState,
     reducers: {
-        resetState: (state) => {
+        resetFriendListState: (state) => {
             state.friendsDocID = '';
             state.friends = [];
-            state.friendRequestsSent = [];
-            state.friendRequestsReceived = [];
-            state.friendRequestsReceivedAt = [];
-            state.friendRequestsReceivedIsSeen = 0;
+            state.friendsFrom = [];
         },
-        setState: (state, action) => {
+        setFriendListState: (state, action) => {
             state.friendsDocID = action.payload.friendsDocID;
             state.friends = action.payload.friends;
-            state.friendRequestsSent = action.payload.friendRequestsSent;
-            state.friendRequestsReceived = action.payload.friendRequestsReceived;
-            state.friendRequestsReceivedAt = action.payload.friendRequestsReceivedAt;
-            state.friendRequestsReceivedIsSeen = action.payload.friendRequestsReceivedIsSeen;
+            state.friendsFrom = action.payload.friendsFrom;
         },
     },
     extraReducers: {}
@@ -44,8 +34,8 @@ const manageFriendsSlice = createSlice({
 
 // Action creators are generated for each case reducer function:
 export const {
-    resetState,
-    setState
+    resetFriendListState,
+    setFriendListState
 } = manageFriendsSlice.actions;
 // Slice Reducer:
 export default manageFriendsSlice.reducer;

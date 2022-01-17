@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
     faBell, faCaretDown, faSearch, faUserFriends
@@ -16,6 +16,9 @@ import { auth, signOut } from '../firebase/config';
 import { useSelector, useDispatch } from 'react-redux';
 import { setUser } from '../features/auth/userAuthSlice';
 
+// Custom hooks:
+import useFriendRequests from '../customHooks/useFriendRequests';
+
 // CSS:
 import '../styles/scss/components/TopNavigation.scss';
 
@@ -29,10 +32,6 @@ function TopNavigation(props) {
 
     // Redux:
     const user = useSelector((state) => state.userAuth.user);
-    const {
-        friendRequestsReceived,
-        friendRequestsReceivedIsSeen
-    } = useSelector((state) => state.manageFriends);
     const dispatch = useDispatch();
 
 
@@ -65,16 +64,44 @@ function TopNavigation(props) {
     }
 
 
+    // Hooks:
+    const paramsToGetFriendRequests = useMemo(() => {
+        return {
+            userID: user.uid,
+            limit: 50
+        };
+    }, [user.uid]);
+
+    // (REALTIME) Get all friend requests that belong to the user.
+    const friendRequestNotifications = useFriendRequests('notificationsForFriendRequests', paramsToGetFriendRequests);
+
+
     // Component:
-    const countNewFriendRequestsReceived = () => {
-        return friendRequestsReceived.length - friendRequestsReceivedIsSeen;
+    const countNewNotifications = () => {
+        let count = 0;
+
+        for (let i = 0; i < friendRequestNotifications.length; i++) {
+            // 1. Get number of new requests which this user received:
+            if (friendRequestNotifications[i].senderUID !== user.uid
+                && friendRequestNotifications[i].receiverSeen === false
+            ) {
+                count++;
+            }
+            // 2. Get number of accepted requests were sent by this user:
+            if (friendRequestNotifications[i].senderUID === user.uid
+                && friendRequestNotifications[i].state === 'accepted'
+            ) {
+                count++;
+            }
+        }
+        return count;
     };
 
     const renderFRNBadge = () => {
-        if (countNewFriendRequestsReceived() > 0) {
+        if (countNewNotifications() > 0) {
             return (
                 <div className='notification-btn__badge'>
-                    <span className='notification-btn__counting-number'>{countNewFriendRequestsReceived()}</span>
+                    <span className='notification-btn__counting-number'>{countNewNotifications()}</span>
                 </div>
             );
         } else {
@@ -137,6 +164,7 @@ function TopNavigation(props) {
                                             <NotificationForFriendRequestPanel
                                                 isFRNMenuDisplayed={isFRNMenuDisplayed}
                                                 setIsFRNMenuDisplayed={setIsFRNMenuDisplayed}
+                                                friendRequestNotifications={friendRequestNotifications}
                                             ></NotificationForFriendRequestPanel>
                                         </div>
                                     </div>

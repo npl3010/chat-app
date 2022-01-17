@@ -1,53 +1,57 @@
-import { db, getDocs, updateDoc, collection, query, where, limit } from './config';
+import { db, collection, addDoc, getDocs, updateDoc, query, where, limit } from './config';
 
 
+// 1. INSTRUCTIONS:
+// // Example of how to add Cloud Firestore document:
+// await addDoc(collection(db, 'friends'), {
+//     friends: []
+// });
+
+
+// // Example of how to update Cloud Firestore document:
+// const friendsRef = doc(db, "friends", friendsDocID);
+// await updateDoc(friendsRef, {
+//     friends: []
+// });
+
+
+// 2. METHODS:
 // Send friend request:
+/**
+ * 
+ * @param {string} fromUID (called 'The First User') This is the user who want to make friend with someone. 
+ * @param {string} toUID (called 'The Second User') This is the user who receives a friend request.
+ * @returns {} 
+ */
 export async function sendFriendRequest(fromUID, toUID) {
-    /**
-     * 
-     * @param {string} fromUID (called 'The First User') This is the user who want to make friend with someone. 
-     * @param {string} toUID (called 'The Second User') This is the user who receives a friend request.
-     * @returns {} 
-     */
+    // Check params:
+    if (fromUID === toUID) {
+        alert('Bạn không thể kết bạn với chính mình!');
+        return;
+    }
 
-    // Example of how to update Cloud Firestore document:
-    // const friendsRef = doc(db, "friends", friendsDocID);
-    // await updateDoc(friendsRef, {
-    //     friendRequestsSent: []
-    // });
+    // Get date & time:
+    const dUTC = new Date().toUTCString();
 
-    // Update friendRequestsSent list of 'The First User':
-    const q1 = query(collection(db, "friends"),
-        where("uid", "==", fromUID),
+    // Add notifications for friend requests:
+    const q1 = query(collection(db, 'notificationsForFriendRequests'),
+        where("senderUID", "==", fromUID),
+        where("receiverUID", "==", toUID),
         limit(1)
     );
     const querySnapshot1 = await getDocs(q1);
-    querySnapshot1.forEach(async (doc) => {
-        // Get current data:
-        const currentFriendRequestsSent = doc.data().friendRequestsSent;
-        // Update data:
-        await updateDoc(doc.ref, {
-            friendRequestsSent: [...currentFriendRequestsSent, toUID]
+    if (querySnapshot1.docs.length === 0) {
+        // Add data:
+        await addDoc(collection(db, 'notificationsForFriendRequests'), {
+            createdAt: dUTC,
+            senderUID: fromUID,
+            receiverUID: toUID,
+            senderSeen: true,
+            receiverSeen: false,
+            state: 'pending',
+            users: [fromUID, toUID]
         });
-    });
-
-    // Update friendRequestsReceived list of 'The Second User':
-    const dUTC = new Date().toUTCString();
-    const q2 = query(collection(db, "friends"),
-        where("uid", "==", toUID),
-        limit(1)
-    );
-    const querySnapshot2 = await getDocs(q2);
-    querySnapshot2.forEach(async (doc) => {
-        // Get current data:
-        const currentFriendRequestsReceived = doc.data().friendRequestsReceived;
-        const currentFriendRequestsReceivedAt = doc.data().friendRequestsReceivedAt;
-        // Update data:
-        await updateDoc(doc.ref, {
-            friendRequestsReceived: [...currentFriendRequestsReceived, fromUID],
-            friendRequestsReceivedAt: [...currentFriendRequestsReceivedAt, dUTC]
-        });
-    });
+    }
 }
 
 
@@ -57,19 +61,63 @@ export async function cancelFriendRequest(fromUID, toUID) {
 }
 
 
-// Accept friend request:
-export async function acceptFriendRequest(fromUID, toUID) {
-    /**
-     * 
-     * @param {string} fromUID (called 'The First User') This is the user who want to make friend with someone. 
-     * @param {string} toUID (called 'The Second User') This is the user who receives a friend request.
-     * @returns {} 
-     */
+// Get friend requests bu uid:
+/**
+ * 
+ * @param {string} uid Get friend requests by this user uid.
+ * @returns {array} The list of friend requests.
+ */
+export async function getFriendRequestsByUID(uid) {
+    // Check params:
+    if (uid === '') {
+        return;
+    }
 
+    // Get results:
+    const q = query(collection(db, "notificationsForFriendRequests"), where("receiverUID", "==", uid));
+
+    const querySnapshot = await getDocs(q);
+
+    let results = [];
+
+    querySnapshot.forEach((doc) => {
+        const docData = doc.data();
+        results.push(docData);
+    });
+
+    return results;
+}
+
+
+// Accept friend request:
+/**
+ * 
+ * @param {string} fromUID (called 'The First User') This is the user who want to make friend with someone. 
+ * @param {string} toUID (called 'The Second User') This is the user who receives a friend request.
+ * @returns {} 
+ */
+export async function acceptFriendRequest(fromUID, toUID) {
     // Get date & time:
     const dUTC = new Date().toUTCString();
 
-    // Update friends & friendRequestsSent list of 'The First User':
+    // Update notifications for friend requests:
+    const q = query(collection(db, 'notificationsForFriendRequests'),
+        where("senderUID", "==", fromUID),
+        where("receiverUID", "==", toUID),
+        limit(1)
+    );
+    const querySnapshot = await getDocs(q);
+    querySnapshot.forEach(async (doc) => {
+        // Update data:
+        await updateDoc(doc.ref, {
+            createdAt: dUTC,
+            senderSeen: false,
+            receiverSeen: false,
+            state: 'accepted'
+        });
+    });
+
+    // Update friends & friendsFrom list of 'The First User':
     const q1 = query(collection(db, "friends"),
         where("uid", "==", fromUID),
         limit(1)
@@ -78,19 +126,15 @@ export async function acceptFriendRequest(fromUID, toUID) {
     querySnapshot1.forEach(async (doc) => {
         // Get current data:
         const currentFriends = doc.data().friends;
-        const currentFriendRequestsSent = doc.data().friendRequestsSent;
-        // Delete friend request:
-        const newFriendRequestsSent = currentFriendRequestsSent.filter((value) => {
-            return !(toUID === value);
-        });
+        const currentFriendsFrom = doc.data().friendsFrom;
         // Update data:
         await updateDoc(doc.ref, {
-            friendRequestsSent: newFriendRequestsSent,
-            friends: [...currentFriends, toUID]
+            friends: [...currentFriends, toUID],
+            friendsFrom: [...currentFriendsFrom, dUTC]
         });
     });
 
-    // Update friends & friendRequestsReceived list of 'The Second User':
+    // Update friends & friendsFrom list of 'The Second User':
     const q2 = query(collection(db, "friends"),
         where("uid", "==", toUID),
         limit(1)
@@ -99,30 +143,11 @@ export async function acceptFriendRequest(fromUID, toUID) {
     querySnapshot2.forEach(async (doc) => {
         // Get current data:
         const currentFriends = doc.data().friends;
-        const currentFriendRequestsReceived = doc.data().friendRequestsReceived;
-        const currentFriendRequestsReceivedAt = doc.data().friendRequestsReceivedAt;
-        let currentFriendRequestsReceivedIsSeen = doc.data().friendRequestsReceivedIsSeen;
-        // Delete friend request:
-        let indexOfElementToBeRemoved = -1;
-        const newFriendRequestsReceived = currentFriendRequestsReceived.filter((value, index) => {
-            if (fromUID === value) {
-                indexOfElementToBeRemoved = index;
-            }
-            return !(fromUID === value);
-        });
-        const newFriendRequestsReceivedAt = currentFriendRequestsReceivedAt.filter((value, index) => {
-            if (indexOfElementToBeRemoved === index) {
-                currentFriendRequestsReceivedIsSeen--;
-            }
-            return !(indexOfElementToBeRemoved === index);
-        });
+        const currentFriendsFrom = doc.data().friendsFrom;
         // Update data:
         await updateDoc(doc.ref, {
-            friendRequestsReceived: newFriendRequestsReceived,
-            friendRequestsReceivedAt: newFriendRequestsReceivedAt,
-            friendRequestsReceivedIsSeen: currentFriendRequestsReceivedIsSeen,
             friends: [...currentFriends, fromUID],
-            friendsUpdatedAt: dUTC
+            friendsFrom: [...currentFriendsFrom, dUTC]
         });
     });
 }

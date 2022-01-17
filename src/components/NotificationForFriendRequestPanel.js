@@ -2,6 +2,7 @@ import React, { useMemo } from 'react';
 
 // Components:
 import NotificationForFriendRequest from './NotificationForFriendRequest';
+import NotificationForNewFriend from './NotificationForNewFriend';
 import NotificationIsEmpty from './NotificationIsEmpty';
 
 // Redux:
@@ -23,47 +24,57 @@ import emptyFriendRequestsImg from '../assets/images/WhatMakesYouSad.jpg';
 function NotificationForFriendRequestPanel(props) {
     const {
         isFRNMenuDisplayed,
-        setIsFRNMenuDisplayed
+        setIsFRNMenuDisplayed,
+        friendRequestNotifications
     } = props;
 
 
     // Context:
-    const user = useSelector((state) => state.userAuth.user);
     const {
         isModalSearchUserVisible, setIsModalSearchUserVisible
     } = React.useContext(ModalControlContext);
 
 
     // Redux:
-    const {
-        friendRequestsReceived,
-        friendRequestsReceivedAt,
-        friendRequestsReceivedIsSeen,
-    } = useSelector((state) => state.manageFriends);
+    const user = useSelector((state) => state.userAuth.user);
 
 
-    // Hooks:
+    // State:
+    // const [friendRequestsData, setFriendRequestsData] = useState([]);
+
+
+    // Side effects:
     const friendRequestsData = useMemo(() => {
         const result = [];
-        if (friendRequestsReceived.length > 0) {
-            friendRequestsReceived.forEach((fRequestFromUID, index) => {
-                fetchUserListByUserID(fRequestFromUID)
+        if (friendRequestNotifications.length > 0) {
+            friendRequestNotifications.forEach((fRequest, index) => {
+                // 1. Generate two types of notification below: 
+                // - The accepted requests were sent by this user.
+                // - The requests which this user received.
+
+                // 2. Get second person's uid to generate the notification:
+                const notificationAboutUID = (user.uid !== fRequest.senderUID) ? fRequest.senderUID : fRequest.receiverUID;
+
+                // 3. Generate notification data:
+                fetchUserListByUserID(notificationAboutUID)
                     .then((userData) => {
-                        const date = new Date(friendRequestsReceivedAt[index]);
+                        const date = new Date(fRequest.createdAt);
                         result.push({
-                            fromUID: fRequestFromUID,
-                            toUID: user.uid,
+                            sentAt: date.toString(),
+                            fromUID: fRequest.senderUID,
+                            toUID: fRequest.receiverUID,
                             displayName: userData[0].displayName,
                             email: userData[0].email,
                             photoURL: userData[0].photoURL,
                             uid: userData[0].uid,
-                            sentAt: date.toString()
+                            unread: (user.uid === fRequest.senderUID) ? (!fRequest.senderSeen) : (!fRequest.receiverSeen),
+                            state: fRequest.state
                         });
                     });
             });
         }
         return result;
-    }, [user.uid, friendRequestsReceived, friendRequestsReceivedAt]);
+    }, [user.uid, friendRequestNotifications]);
 
 
     // Methods:
@@ -75,22 +86,53 @@ function NotificationForFriendRequestPanel(props) {
 
     // Component:
     const renderNotificationForFriendRequests = () => {
+        let countNotifications = 0;
         if (friendRequestsData.length > 0) {
             return (
                 <>
                     {
-                        friendRequestsData.slice(0).reverse().map((data, index) => {
-                            return (
-                                <NotificationForFriendRequest
-                                    requestFrom={data.fromUID}
-                                    requestTo={data.toUID}
-                                    key={`notification-${index}`}
-                                    userName={data.displayName}
-                                    userImgSrc={data.photoURL}
-                                    objectSentAt={data.sentAt}
-                                    unread={friendRequestsReceivedIsSeen <= index ? true : false}
-                                ></NotificationForFriendRequest>
-                            );
+                        friendRequestsData.map((data, index) => {
+                            if (data.fromUID !== user.uid && data.state === 'pending') {
+                                countNotifications++;
+                                return (
+                                    <NotificationForFriendRequest
+                                        requestFrom={data.fromUID}
+                                        requestTo={data.toUID}
+                                        key={`notification-${index}`}
+                                        userName={data.displayName}
+                                        userImgSrc={data.photoURL}
+                                        objectSentAt={data.sentAt}
+                                        unread={data.unread}
+                                    ></NotificationForFriendRequest>
+                                );
+                            } else if (data.state === 'accepted') {
+                                countNotifications++;
+                                return (
+                                    <NotificationForNewFriend
+                                        requestFrom={data.fromUID}
+                                        requestTo={data.toUID}
+                                        key={`notification-${index}`}
+                                        userName={data.displayName}
+                                        userImgSrc={data.photoURL}
+                                        objectSentAt={data.sentAt}
+                                        unread={data.unread}
+                                    ></NotificationForNewFriend>
+                                )
+                            } else {
+                                if (index === friendRequestsData.length - 1 && countNotifications === 0) {
+                                    return (
+                                        <NotificationIsEmpty
+                                            key={`notification-for-empty-results`}
+                                            hasSingleAction={true}
+                                            actionNameForOK='Thêm bạn'
+                                            title='Bạn chưa có lời mời kết bạn nào!'
+                                            onOK={handleClickSearchFriends}
+                                            img={emptyFriendRequestsImg}
+                                        ></NotificationIsEmpty>
+                                    );
+                                }
+                                return (null);
+                            }
                         })
                     }
                 </>

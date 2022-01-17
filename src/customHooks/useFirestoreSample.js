@@ -5,17 +5,14 @@ import { db, collection, onSnapshot, query, where, limit } from '../firebase/con
 
 
 // Work with Cloud Firestore:
+/**
+ * 
+ * @param {string} collectionName Name of document to listen for realtime updates.
+ * @param {Object} condition This object is used for where() function.
+ * { fieldName: 'az', operator: '==', value: 'abc' }
+ * @returns {Array}} List of updated results.
+ */
 const useFirestoreSample = (collectionName, condition) => {
-    // condition (This object is used for where() function):
-    /**
-     * {
-     *   fieldName: 'az',
-     *   operator: '==',
-     *   value: 'abc'
-     * }
-     */
-
-
     // State:
     const [document, setDocument] = useState([]);
 

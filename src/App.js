@@ -26,7 +26,7 @@ import {
   setSelectedChatRoom
 } from "./features/manageRooms/manageRoomsSlice";
 import {
-  resetState, setState
+  resetFriendListState, setFriendListState
 } from "./features/manageFriends/manageFriendsSlice";
 
 // Provider:
@@ -136,15 +136,12 @@ function App() {
   useEffect(() => {
     if (userFriends.length === 1) {
       // 1. Clear friend list:
-      dispatch(resetState());
+      dispatch(resetFriendListState());
       // 2. Set new friend list:
-      const action = setState({
+      const action = setFriendListState({
         friendsDocID: userFriends[0].id,
         friends: userFriends[0].friends,
-        friendRequestsSent: userFriends[0].friendRequestsSent,
-        friendRequestsReceived: userFriends[0].friendRequestsReceived,
-        friendRequestsReceivedAt: userFriends[0].friendRequestsReceivedAt,
-        friendRequestsReceivedIsSeen: userFriends[0].friendRequestsReceivedIsSeen,
+        friendsFrom: userFriends[0].friendsFrom
       });
       dispatch(action);
     }
