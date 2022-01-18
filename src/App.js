@@ -82,11 +82,11 @@ function App() {
   }, [user_uid]);
 
   // Use useFirestore() to get realtime updates:
-  // - Get all rooms that the user is a member of.
+  // - (REALTIME) Get all rooms that the user is a member of.
   const chatRooms = useFirestore('rooms', roomsCondition);
-  // - Get all members of the selected room.
+  // - (REALTIME) Get all members of the selected room.
   const selectedRoomUsers = useFirestore('users', selectedRoomUsersCondition);
-  // - Get all friends of the logged in user.
+  // - (REALTIME) Get all friends of the logged in user.
   const userFriends = useFirestoreCustomized('friends', friendsCondition);
 
 

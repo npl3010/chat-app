@@ -112,7 +112,7 @@ export async function acceptFriendRequest(fromUID, toUID) {
         await updateDoc(doc.ref, {
             createdAt: dUTC,
             senderSeen: false,
-            receiverSeen: false,
+            receiverSeen: true,
             state: 'accepted'
         });
     });
@@ -148,6 +148,42 @@ export async function acceptFriendRequest(fromUID, toUID) {
         await updateDoc(doc.ref, {
             friends: [...currentFriends, fromUID],
             friendsFrom: [...currentFriendsFrom, dUTC]
+        });
+    });
+}
+
+
+/**
+ * 
+ * @param {string} uid Mark all notifications as read by the uid.
+ * @returns {} 
+ */
+// Mark all notifications as read by uid:
+export async function markAllNotificationsAsReadByUID(uid) {
+    // Mark all notifications as read for accepted requests were sent by this user:
+    const q1 = query(collection(db, 'notificationsForFriendRequests'),
+        where("senderUID", "==", uid),
+        where("senderSeen", "==", false),
+        where("state", "==", "accepted")
+    );
+    const querySnapshot1 = await getDocs(q1);
+    querySnapshot1.forEach(async (doc) => {
+        // Update data:
+        await updateDoc(doc.ref, {
+            senderSeen: true
+        });
+    });
+
+    // Mark all notifications as read for new requests which this user received:
+    const q2 = query(collection(db, 'notificationsForFriendRequests'),
+        where("receiverUID", "==", uid),
+        where("receiverSeen", "==", false)
+    );
+    const querySnapshot2 = await getDocs(q2);
+    querySnapshot2.forEach(async (doc) => {
+        // Update data:
+        await updateDoc(doc.ref, {
+            receiverSeen: true
         });
     });
 }

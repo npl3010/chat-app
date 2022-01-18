@@ -79,7 +79,6 @@ function TopNavigation(props) {
     // Component:
     const countNewNotifications = () => {
         let count = 0;
-
         for (let i = 0; i < friendRequestNotifications.length; i++) {
             // 1. Get number of new requests which this user received:
             if (friendRequestNotifications[i].senderUID !== user.uid
@@ -89,6 +88,7 @@ function TopNavigation(props) {
             }
             // 2. Get number of accepted requests were sent by this user:
             if (friendRequestNotifications[i].senderUID === user.uid
+                && friendRequestNotifications[i].senderSeen === false
                 && friendRequestNotifications[i].state === 'accepted'
             ) {
                 count++;
@@ -165,6 +165,7 @@ function TopNavigation(props) {
                                                 isFRNMenuDisplayed={isFRNMenuDisplayed}
                                                 setIsFRNMenuDisplayed={setIsFRNMenuDisplayed}
                                                 friendRequestNotifications={friendRequestNotifications}
+                                                numberOfNewNotifications={countNewNotifications()}
                                             ></NotificationForFriendRequestPanel>
                                         </div>
                                     </div>

@@ -67,11 +67,6 @@
             font-size: 12px;
         }
 
-        &__date-time.highlighted {
-            color: steelblue;
-            font-weight: bold;
-        }
-
         &__actions {
             display: flex;
             flex-direction: row;
@@ -120,6 +115,16 @@
     }
 
     .notification.highlighted {
+        background-color: transparent;
+
+        &:hover {
+            background-color: #f5f5f5;
+        }
+
+        .notification__date-time {
+            color: steelblue;
+            font-weight: bold;
+        }
 
         .notification__dot {
             animation: ripple-animation 1s infinite;
