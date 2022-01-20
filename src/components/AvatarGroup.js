@@ -4,23 +4,57 @@ import React from 'react';
 import '../styles/scss/components/AvatarGroup.scss';
 
 
+/**
+ * 
+ * @param {Array} props.imgsData
+ * @param {string} props.imgsData.imgSrc Image's URL.
+ * @param {string} props.imgsData.displayName Name of the image.
+ * @returns 
+ */
 function AvatarGroup(props) {
-    return (
-        <div className='avatar-group four-imgs'>
+    const {
+        imgsData = []
+    } = props;
+
+
+    // Component:
+    const renderClassNameForAvatarGroup = () => {
+        let className = '';
+        if (imgsData.length === 2) {
+            className = ' two-imgs';
+        } else if (imgsData.length === 3) {
+            className = ' three-imgs';
+        } else if (imgsData.length === 4) {
+            className = ' four-imgs';
+        }
+        return className;
+    };
+
+    const renderAvatars = () => {
+        return (
             <div className='avatar-wrapper'>
-                <div className='avatar'>
-                    <img className='avatar__img' src='https://i.pinimg.com/originals/53/34/4d/53344d5fe450709401a190a64d2e7231.jpg' alt='' ></img>
-                </div>
-                <div className='avatar'>
-                    <img className='avatar__img' src='https://i.pinimg.com/originals/53/34/4d/53344d5fe450709401a190a64d2e7231.jpg' alt='' ></img>
-                </div>
-                <div className='avatar'>
-                    <img className='avatar__img' src='https://i.pinimg.com/originals/53/34/4d/53344d5fe450709401a190a64d2e7231.jpg' alt='' ></img>
-                </div>
-                <div className='avatar'>
-                    <div className='avatar__character' >30+</div>
-                </div>
+                {
+                    imgsData.map((data, index) => {
+                        return (
+                            <div className='avatar' key={`avatar${index}`}>
+                                {data.imgSrc ? (
+                                    <img className='avatar__img' src={data.imgSrc} alt='' ></img>
+                                ) : (
+                                    <div className='avatar__character'>
+                                        <span>{data.displayName?.charAt(0)?.toUpperCase()}</span>
+                                    </div>
+                                )}
+                            </div>
+                        );
+                    })
+                }
             </div>
+        );
+    };
+
+    return (
+        <div className={`avatar-group${renderClassNameForAvatarGroup()}`}>
+            {renderAvatars()}
         </div>
     );
 }

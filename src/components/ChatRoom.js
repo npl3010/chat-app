@@ -38,8 +38,29 @@ function ChatRoom(props) {
     useEffect(() => {
         if (selectedChatRoom !== -1 && selectedChatRoom < rooms.length) {
             setRoomData(rooms[selectedChatRoom]);
+        } else {
+            if (selectedChatRoomUsers.length > 0) {
+                let members = [user.uid];
+                let indexOfMember = -1;
+                for (let i = 0; i < selectedChatRoomUsers.length; i++) {
+                    if (selectedChatRoomUsers[i].uid !== user.uid) {
+                        members.push(selectedChatRoomUsers[i].uid);
+                        indexOfMember = i;
+                        break;
+                    }
+                }
+                setRoomData({
+                    name: `${indexOfMember === -1 ? '' : selectedChatRoomUsers[indexOfMember].displayName}`,
+                    description: 'One To One chat',
+                    type: 'one-to-one-chat',
+                    members: members,
+                    latestMessage: '',
+                    membersAddedBy: [],
+                    membersRole: []
+                });
+            }
         }
-    }, [rooms, selectedChatRoom]);
+    }, [rooms, selectedChatRoom, selectedChatRoomUsers, user.uid]);
 
 
     // Methods:
@@ -49,17 +70,27 @@ function ChatRoom(props) {
 
     const handleInputOnKeyPress = (e) => {
         if (e.charCode === 13) {
-            if (inputMessage.length > 0) {
-                // Add data to Cloud Firestore:
-                const data = {
-                    roomId: rooms[selectedChatRoom].id,
-                    content: inputMessage,
-                    uid: user.uid,
-                };
-                addDocument('messages', data);
+            if (selectedChatRoom !== -1) {
+                if (inputMessage.length > 0) {
+                    // Add data to Cloud Firestore:
+                    const data = {
+                        roomId: rooms[selectedChatRoom].id,
+                        content: inputMessage,
+                        uid: user.uid,
+                    };
+                    addDocument('messages', data);
 
-                // Clear form:
-                setInputMessage('');
+                    // Clear form:
+                    setInputMessage('');
+                }
+            } else {
+                if (selectedChatRoomUsers.length > 0 && Object.keys(roomData).length > 0) {
+                    // Add data to Cloud Firestore:
+                    addDocument('rooms', roomData);
+
+                    // Clear form:
+                    setInputMessage('');
+                }
             }
         }
     }
@@ -93,23 +124,83 @@ function ChatRoom(props) {
 
 
     // Component:
-    const renderChatRoomImage = () => {
-        if (selectedChatRoom !== -1 && rooms.length > 0) {
-            if (rooms[selectedChatRoom].type === 'group-chat') {
+    const renderOneToOneChatRoomImg = () => {
+        if (selectedChatRoomUsers.length > 0) {
+            let indexOfMember = -1;
+            for (let i = 0; i < selectedChatRoomUsers.length; i++) {
+                if (selectedChatRoomUsers[i].uid !== user.uid) {
+                    indexOfMember = i;
+                    break;
+                }
+            }
+            if (indexOfMember === -1) {
                 return (
-                    <AvatarGroup></AvatarGroup>
+                    <div className='person-img-wrapper'></div>
                 );
             } else {
                 return (
                     <div className='person-img-wrapper'>
-                        <img className='person-img' src='' alt='' ></img>
+                        {selectedChatRoomUsers[indexOfMember].photoURL ? (
+                            <img className='person-img' src={selectedChatRoomUsers[indexOfMember].photoURL} alt='' ></img>
+                        ) : (
+                            <div className='person-character-name'>
+                                <span>{selectedChatRoomUsers[indexOfMember].displayName?.charAt(0)?.toUpperCase()}</span>
+                            </div>
+                        )}
                     </div>
                 );
             }
+        } else {
+            return (
+                <div className='person-img-wrapper'></div>
+            );
         }
     }
 
-    const chatRoomComponent = () => {
+    const renderGroupChatImg = () => {
+        if (selectedChatRoomUsers.length > 0) {
+            let imgGroup = [];
+            for (let i = 0; i < selectedChatRoomUsers.length; i++) {
+                if (selectedChatRoomUsers[i].uid !== user.uid) {
+                    imgGroup.push({
+                        imgSrc: selectedChatRoomUsers[i].photoURL,
+                        displayName: selectedChatRoomUsers[i].displayName
+                    });
+                }
+            }
+            if (imgGroup.length === 0) {
+                return (
+                    <div className='group-img-wrapper'></div>
+                );
+            } else {
+                return (
+                    <div className='group-img-wrapper'>
+                        <AvatarGroup
+                            imgsData={imgGroup}
+                        ></AvatarGroup>
+                    </div>
+                );
+            }
+        } else {
+            return (
+                <div className='group-img-wrapper'></div>
+            );
+        }
+    }
+
+    const renderChatRoomImage = () => {
+        if (selectedChatRoom !== -1) {
+            if (rooms[selectedChatRoom].type === 'group-chat') {
+                return renderGroupChatImg();
+            } else {
+                return renderOneToOneChatRoomImg();
+            }
+        } else {
+            return renderOneToOneChatRoomImg();
+        }
+    }
+
+    const renderChatRoomComponent = () => {
         return (
             <>
                 <div className='chat-info'>
@@ -223,23 +314,28 @@ function ChatRoom(props) {
         )
     };
 
+    const renderEmptyChatRoom = () => {
+        return (
+            <div className='chatroom__app-message'>
+                <div className='app-message-wrapper'>
+                    <div className='app-message'>
+                        <div className='app-message__icon-wrapper'>
+                            <FontAwesomeIcon className='app-message__icon' icon={faExclamation} />
+                        </div>
+                        <div className='app-message__content'>Hãy chọn người dùng để chat</div>
+                    </div>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className='chatroom'>
             {
                 Object.keys(roomData).length > 0 ? (
-                    chatRoomComponent()
+                    renderChatRoomComponent()
                 ) : (
-                    <div className='chatroom__app-message'>
-                        <div className='app-message-wrapper'>
-                            <div className='app-message'>
-                                <div className='app-message__icon-wrapper'>
-                                    <FontAwesomeIcon className='app-message__icon' icon={faExclamation} />
-                                </div>
-                                <div className='app-message__content'>Hãy chọn người dùng để chat</div>
-                            </div>
-                        </div>
-                    </div>
+                    renderEmptyChatRoom()
                 )
             }
         </div>

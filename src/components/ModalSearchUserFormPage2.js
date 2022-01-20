@@ -43,7 +43,15 @@ function ModalSearchUserFormPage2(props) {
                 <div className='img-wrapper'>
                     <div className='user-bg-img-wrapper'></div>
                     <div className='user-avatar-wrapper'>
-                        <img className='user-avatar' src={userProfile.current?.photoURL} alt='' ></img>
+                        <div className='person-img-wrapper'>
+                            {userProfile.current?.photoURL ? (
+                                <img className='user-avatar' src={userProfile.current.photoURL} alt='' ></img>
+                            ) : (
+                                <div className='user-character-name'>
+                                    <span>{userProfile.current?.displayName?.charAt(0)?.toUpperCase()}</span>
+                                </div>
+                            )}
+                        </div>
                     </div>
                 </div>
                 <div className='info-wrapper'>

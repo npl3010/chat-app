@@ -100,12 +100,12 @@ function App() {
         dispatch(action);
       } else {
         // User is signed out!
+        // - Reset selected room to default (-1):
+        dispatch(setSelectedChatRoom(-1));
         // - Clear room list:
         dispatch(clearRoomList());
         // - Clear selected room user list:
         dispatch(clearSelectedChatRoomUserList());
-        // - Reset selected room to default (-1):
-        dispatch((setSelectedChatRoom(-1)));
       }
     });
 
@@ -125,12 +125,14 @@ function App() {
 
   // - Get all members of the selected room.
   useEffect(() => {
-    // 1. Clear selected room user list:
-    dispatch(clearSelectedChatRoomUserList());
-    // 2. Set new room list:
-    const action = setSelectedChatRoomUserList(selectedRoomUsers);
-    dispatch(action);
-  }, [dispatch, selectedRoomUsers]);
+    if (selectedChatRoom !== -1) {
+      // 1. Clear selected room user list:
+      dispatch(clearSelectedChatRoomUserList());
+      // 2. Set new room list:
+      const action = setSelectedChatRoomUserList(selectedRoomUsers);
+      dispatch(action);
+    }
+  }, [dispatch, selectedChatRoom, selectedRoomUsers]);
 
   // - Get all friends of the logged in user.
   useEffect(() => {

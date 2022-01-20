@@ -4,7 +4,7 @@ import { faEllipsisH, faUserPlus, faUsers, faSearch, faArrowLeft } from '@fortaw
 
 // Redux:
 import { useDispatch, useSelector } from 'react-redux';
-import { setSelectedChatRoom } from '../features/manageRooms/manageRoomsSlice';
+import { selectTemporaryChatRoom, setSelectedChatRoom } from '../features/manageRooms/manageRoomsSlice';
 
 // Context:
 import { ModalControlContext } from '../context/ModalControlProvider';
@@ -39,7 +39,6 @@ function ChatMenu(props) {
     const [searchResultList, setSearchResultList] = useState([]);
     const [searchResultSelected, setSearchResultSelected] = useState(null);
     const [stateForSearching, setStateForSearching] = useState('none'); // Value: none, fetching, empty-search-result.
-
 
 
     // Methods:
@@ -85,6 +84,16 @@ function ChatMenu(props) {
         }
     }
 
+    const createTemporaryChatRoom = (userData) => {
+        const payload = {
+            users: [{
+                ...userData,
+                createdAt: (userData.createdAt) && (userData.createdAt.toDate().toString())
+            }]
+        }
+        dispatch(selectTemporaryChatRoom(payload));
+    }
+
 
     // Component:
     const renderSearchResultList = () => {
@@ -97,7 +106,7 @@ function ChatMenu(props) {
                                 <div
                                     className='results__item'
                                     key={`search-result-${listItem.uid}`}
-                                    onClick={() => console.log('results__item')}
+                                    onClick={() => createTemporaryChatRoom(listItem)}
                                 >
                                     <div className='object'>
                                         <div className='object__img-wrapper'>
