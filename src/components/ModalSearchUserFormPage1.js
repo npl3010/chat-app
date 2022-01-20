@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 
 function ModalSearchUserFormPage1(props) {
@@ -10,54 +10,72 @@ function ModalSearchUserFormPage1(props) {
     } = props;
 
 
+    // State:
+    const [isSearchFieldFocused, setIsSearchFieldFocused] = useState(false);
+
+
+    // Methods:
+    const handleFocusSearchField = () => {
+        setIsSearchFieldFocused(true);
+    }
+
+    const handleBlurSearchField = () => {
+        setIsSearchFieldFocused(false);
+    }
+
+
     // Component:
     const renderUserList = () => {
         return (
-            <div className='userlist'>
-                {
-                    userSearchResultList.map((userListItem, index) => {
-                        return (
-                            <div
-                                className='userlist__item'
-                                key={`user-${userListItem.uid}`}
-                                onClick={() => hanldeSelectUserToViewQuickProfile(userListItem.uid)}
-                            >
-                                <div className='user'>
-                                    <div className='user__person-img'>
-                                        {userListItem.photoURL ? (
-                                            <img className='person-img' src={userListItem.photoURL} alt='' ></img>
-                                        ) : (
-                                            <div className='person-character-name'>
-                                                <span>{userListItem.displayName?.charAt(0)?.toUpperCase()}</span>
-                                            </div>
-                                        )}
-                                    </div>
-                                    <div className='user__info'>
-                                        <div className='user-title'>{userListItem.displayName}</div>
-                                        <div className='user-more-info'>{userListItem.email}</div>
+            <div className='userlist-wrapper'>
+                <div className='userlist'>
+                    {
+                        userSearchResultList.map((userListItem, index) => {
+                            return (
+                                <div
+                                    className='userlist__item'
+                                    key={`user-${userListItem.uid}`}
+                                    onClick={() => hanldeSelectUserToViewQuickProfile(userListItem.uid)}
+                                >
+                                    <div className='user'>
+                                        <div className='user__person-img'>
+                                            {userListItem.photoURL ? (
+                                                <img className='person-img' src={userListItem.photoURL} alt='' ></img>
+                                            ) : (
+                                                <div className='person-character-name'>
+                                                    <span>{userListItem.displayName?.charAt(0)?.toUpperCase()}</span>
+                                                </div>
+                                            )}
+                                        </div>
+                                        <div className='user__info'>
+                                            <div className='user-title'>{userListItem.displayName}</div>
+                                            <div className='user-more-info'>{userListItem.email}</div>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        );
-                    })
-                }
+                            );
+                        })
+                    }
+                </div>
             </div>
         );
     };
 
     const renderUserListOnLoading = () => {
         return (
-            <div className='userlist skeleton-loading'>
-                <div
-                    className='userlist__item'
-                >
-                    <div className='user'>
-                        <div className='user__person-img'>
-                            <div className='person-img'></div>
-                        </div>
-                        <div className='user__info'>
-                            <div className='user-title'>User's name</div>
-                            <div className='user-more-info'>User's email</div>
+            <div className='userlist-wrapper'>
+                <div className='userlist skeleton-loading'>
+                    <div
+                        className='userlist__item'
+                    >
+                        <div className='user'>
+                            <div className='user__person-img'>
+                                <div className='person-img'></div>
+                            </div>
+                            <div className='user__info'>
+                                <div className='user-title'>User's name</div>
+                                <div className='user-more-info'>User's email</div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -67,9 +85,11 @@ function ModalSearchUserFormPage1(props) {
 
     const renderEmptyUserList = () => {
         return (
-            <div className='userlist empty'>
-                <div className='empty-search-result'>
-                    <div className='empty-search-result__msg'>Không tìm thấy kết quả tương ứng!</div>
+            <div className='userlist-wrapper'>
+                <div className='userlist empty'>
+                    <div className='empty-search-result'>
+                        <div className='empty-search-result__msg'>Không tìm thấy kết quả tương ứng!</div>
+                    </div>
                 </div>
             </div>
         );
@@ -92,20 +112,23 @@ function ModalSearchUserFormPage1(props) {
             <div className='user-search-form'>
                 <div className='user-search-form__search-box-wrapper'>
                     <span className='title'>Đến:</span>
-                    <input
-                        type='text'
-                        id='keywordToSearchFor'
-                        name='keyword'
-                        placeholder='Nhập tên, email của người dùng'
-                        onChange={(e) => handleInputKeywordChange(e)}
-                        autoFocus
-                    ></input>
+                    <div className={`search-field-wrapper${isSearchFieldFocused === true ? ' focused' : ''}`}>
+                        <input
+                            type='text'
+                            className='search-field'
+                            id='keywordToSearchFor'
+                            name='keyword'
+                            placeholder='Nhập tên, email của người dùng'
+                            onChange={(e) => handleInputKeywordChange(e)}
+                            onFocus={handleFocusSearchField}
+                            onBlur={handleBlurSearchField}
+                            autoFocus
+                        ></input>
+                    </div>
                 </div>
 
                 <div className='user-search-form__userlist'>
-                    <div className='userlist-wrapper'>
-                        {renderSearchResult()}
-                    </div>
+                    {renderSearchResult()}
                 </div>
             </div>
         </>

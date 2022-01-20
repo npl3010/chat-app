@@ -4,9 +4,6 @@ import React, { useRef, useState } from 'react';
 import ModalSearchUserFormPage1 from './ModalSearchUserFormPage1';
 import ModalSearchUserFormPage2 from './ModalSearchUserFormPage2';
 
-// Redux:
-// import { useSelector } from 'react-redux';
-
 // Context:
 import { ModalControlContext } from '../context/ModalControlProvider';
 

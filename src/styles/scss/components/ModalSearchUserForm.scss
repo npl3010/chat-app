@@ -5,7 +5,7 @@
 $avatar_size: 96px;
 
 
-// Modal & forms:
+// Modal:
 .modal-search-user-form {
     // display: none;
     opacity: 0;
@@ -25,162 +25,180 @@ $avatar_size: 96px;
     user-select: none;
     transition: all 0.3s ease;
 
+    .modal-content-wrapper {
+        height: 100%;
+        width: 100%;
+        position: relative;
+        overflow-x: hidden;
+    }
+}
+
+
+// Forms:
+.modal-search-user-form {
+
+    .user-search-form-wrapper {
+        height: 100%;
+        min-width: 200%;
+        display: flex;
+        position: absolute;
+        transition: all 0.3s ease;
+    
+        &.form-1 {
+            left: 0;
+        }
+    
+        &.form-2 {
+            left: -100%;
+        }
+    }
+
+    .user-search-form {
+        height: 100%;
+        max-width: 50%;
+        min-width: 50%;
+    
+        &__search-box-wrapper {
+            padding: 10px 16px;
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            border-bottom: 1px solid #eee;
+    
+            .title {
+                font-size: 15px;
+                font-weight: normal;
+                margin-right: 16px;
+            }
+    
+            .search-field-wrapper {
+                position: relative;
+                width: 100%;
+                background-image: linear-gradient(to right, #f0f2f5, #f0f2f5);
+                background-repeat:no-repeat;
+                background-size: 0 100%;
+                background-position:top left;
+                transition: all 0.3s ease;
+            }
+    
+            .search-field-wrapper::after {
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                content: '';
+                width: 0%;
+                height: 2px;
+                background-color: steelblue;
+            }
+
+            .search-field-wrapper.focused {
+                background-size: 100% 100%;
+            }
+    
+            input[type=text]#keywordToSearchFor {
+                border: none;
+                outline: none;
+                background-color: transparent;
+                color: #000;
+                padding: 5px 0px;
+                font-size: 15px;
+                width: 100%;
+                border-bottom: 2px solid #ddd;
+            }
+    
+            input[type=text]#keywordToSearchFor::placeholder {
+                font-size: 14px;
+                color: #aaa;
+            }
+        }
+    
+        &__userlist {
+            height: 100%;
+            max-height: calc(100% - 56.56px);
+            overflow-y: auto;
+        }
+    
+        &__navigation {
+            position: relative;
+        }
+    }
+
     &.visible {
         // display: block;
         opacity: 1;
         visibility: visible;
         transform: translate(-50%, -50%) scale(1);
         animation: displayModalSearchUserForm 0.5s;
-    }
-}
 
-@keyframes displayModalSearchUserForm {
-    0% {
-        opacity: 0;
-        visibility: hidden;
-        transform: translate(-50%, -50%) scale(0.5);
-    }
-    50% {
-        transform: translate(-50%, -50%) scale(1.05);
-    }
-    75% {
-        transform: translate(-50%, -50%) scale(0.95);
-    }
-    100% {
-        opacity: 1;
-        visibility: visible;
-        transform: translate(-50%, -50%) scale(1);
-    }
-}
-
-.modal-content-wrapper {
-    height: 100%;
-    width: 100%;
-    position: relative;
-    overflow-x: hidden;
-}
-
-.user-search-form-wrapper {
-    height: 100%;
-    min-width: 200%;
-    display: flex;
-    position: absolute;
-    transition: all 0.3s ease;
-
-    &.form-1 {
-        left: 0;
-    }
-
-    &.form-2 {
-        left: -100%;
-    }
-}
-
-.user-search-form {
-    height: 100%;
-    max-width: 50%;
-    min-width: 50%;
-
-    &__search-box-wrapper {
-        padding: 10px 16px;
-        display: flex;
-        justify-content: flex-start;
-        align-items: center;
-        border-bottom: 1px solid #eee;
-
-        .title {
-            font-size: 15px;
-            font-weight: normal;
-            margin-right: 16px;
-        }
-
-        input[type=text]#keywordToSearchFor {
-            border: none;
-            outline: none;
-            background-color: transparent;
-            color: #000;
-            padding: 5px 0px;
-            font-size: 15px;
+        .search-field-wrapper::after {
+            transition: width 0.3s ease 0.6s;
             width: 100%;
-            border-bottom: 2px solid steelblue;
         }
-
-        input[type=text]#keywordToSearchFor::placeholder {
-            font-size: 14px;
-            color: #aaa;
-        }
-    }
-
-    &__userlist {
-        height: 100%;
-        max-height: calc(100% - 56.56px);
-        overflow-y: auto;
-    }
-
-    &__navigation {
-        position: relative;
     }
 }
 
 
 // Navigation:
-.modal-search-user-form .navigation {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: nowrap;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 16px;
+.modal-search-user-form {
 
-    &__left-section {
+    .navigation {
         display: flex;
         flex-direction: row;
         flex-wrap: nowrap;
-        justify-content: flex-start;
+        justify-content: space-between;
         align-items: center;
-    }
-
-    &__right-section {
-        display: flex;
-        flex-direction: row;
-        flex-wrap: nowrap;
-        justify-content: flex-end;
-        align-items: center;
-    }
-
-    .nav_button {
-        background-color: #eee;
-        border-radius: 50%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        width: 36px;
-        height: 36px;
-        cursor: pointer;
+        padding: 10px 16px;
     
-        &:hover {
-            background-color: rgb(221, 221, 221);
+        &__left-section {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: nowrap;
+            justify-content: flex-start;
+            align-items: center;
         }
-
-        &__icon {
-            display: block;
-            font-size: 18px;
+    
+        &__right-section {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: nowrap;
+            justify-content: flex-end;
+            align-items: center;
         }
-    }
-
-    .nav-title {
-        font-weight: bold;
-        margin-left: 8px;
+    
+        .nav_button {
+            background-color: #eee;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 36px;
+            height: 36px;
+            cursor: pointer;
+        
+            &:hover {
+                background-color: rgb(221, 221, 221);
+            }
+    
+            &__icon {
+                display: block;
+                font-size: 18px;
+            }
+        }
+    
+        .nav-title {
+            font-weight: bold;
+            margin-left: 8px;
+        }
     }
 }
 
 
 // User profile:
-.quick-user-profile-wrapper {
+.modal-search-user-form .quick-user-profile-wrapper {
     padding: 0 0 10px 0;
 }
 
-.quick-user-profile {
+.modal-search-user-form .quick-user-profile {
     word-wrap: break-word;
 
     .img-wrapper {
@@ -257,11 +275,11 @@ $avatar_size: 96px;
 
 
 // List of users:
-.userlist-wrapper {
+.modal-search-user-form .userlist-wrapper {
     padding: 10px 0;
 }
 
-.userlist {
+.modal-search-user-form .userlist {
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
@@ -275,7 +293,7 @@ $avatar_size: 96px;
     }
 }
 
-.user {
+.modal-search-user-form .user {
     display: flex;
     flex-direction: row;
     flex-wrap: nowrap;
@@ -349,7 +367,7 @@ $avatar_size: 96px;
     }
 }
 
-.userlist.skeleton-loading {
+.modal-search-user-form .userlist.skeleton-loading {
 
     .user {
         cursor: default;
@@ -430,16 +448,7 @@ $avatar_size: 96px;
     }
 }
 
-@keyframes skeletonLoadingLeftToRight {
-    0% {
-        left: -50%;
-    }
-    100% {
-        left: 50%;
-    }
-}
-
-.userlist.empty {
+.modal-search-user-form .userlist.empty {
     display: block;
     
     .empty-search-result {
@@ -453,5 +462,35 @@ $avatar_size: 96px;
             font-style: italic;
             color: #888;
         }
+    }
+}
+
+
+// Animations:
+@keyframes displayModalSearchUserForm {
+    0% {
+        opacity: 0;
+        visibility: hidden;
+        transform: translate(-50%, -50%) scale(0.5);
+    }
+    50% {
+        transform: translate(-50%, -50%) scale(1.05);
+    }
+    75% {
+        transform: translate(-50%, -50%) scale(0.95);
+    }
+    100% {
+        opacity: 1;
+        visibility: visible;
+        transform: translate(-50%, -50%) scale(1);
+    }
+}
+
+@keyframes skeletonLoadingLeftToRight {
+    0% {
+        left: -50%;
+    }
+    100% {
+        left: 50%;
     }
 }

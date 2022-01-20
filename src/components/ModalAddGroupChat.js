@@ -45,8 +45,17 @@ function ModalAddGroupChat(props) {
     const handleOk = () => {
         form.submit();
 
-        // Get form data and insert it to database:
+        // Get form data and validate:
         const formData = form.getFieldsValue();
+        if (formData.groupMembers) {
+            if (Array.isArray(formData.groupMembers) === false || formData.groupMembers.length === 0) {
+                return;
+            }
+        } else {
+            return;
+        }
+
+        // Insert data to database:
         if (formData.groupChatName) {
             addDocument('rooms', {
                 name: formData.groupChatName,
