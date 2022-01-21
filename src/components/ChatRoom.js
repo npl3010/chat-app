@@ -7,7 +7,7 @@ import AvatarGroup from './AvatarGroup';
 
 // Redux:
 import { useDispatch, useSelector } from 'react-redux';
-import { clearSelectedChatRoomUserList, setNewSelectedChatRoomID, setSelectedChatRoom } from '../features/manageRooms/manageRoomsSlice';
+import { clearSelectedChatRoomUserList, setNewSelectedChatRoomID, setSelectedChatRoomID } from '../features/manageRooms/manageRoomsSlice';
 
 // Services:
 import { addDocument } from '../firebase/services';
@@ -30,14 +30,19 @@ function ChatRoom(props) {
 
     // Redux:
     const user = useSelector((state) => state.userAuth.user);
-    const { rooms, selectedChatRoom, selectedChatRoomUsers } = useSelector((state) => state.manageRooms);
+    const { rooms, selectedChatRoomID, selectedChatRoomUsers } = useSelector((state) => state.manageRooms);
     const dispatch = useDispatch();
 
 
     // Side effects:
     useEffect(() => {
-        if (selectedChatRoom !== -1 && selectedChatRoom < rooms.length) {
-            setRoomData(rooms[selectedChatRoom]);
+        if (selectedChatRoomID !== '') {
+            for (let i = 0; i < rooms.length; i++) {
+                if (rooms[i].id === selectedChatRoomID) {
+                    setRoomData(rooms[i]);
+                    break;
+                }
+            }
         } else {
             if (selectedChatRoomUsers.length > 0) {
                 let members = [user.uid];
@@ -60,7 +65,7 @@ function ChatRoom(props) {
                 });
             }
         }
-    }, [rooms, selectedChatRoom, selectedChatRoomUsers, user.uid]);
+    }, [rooms, selectedChatRoomID, selectedChatRoomUsers, user.uid]);
 
 
     // Methods:
@@ -70,11 +75,11 @@ function ChatRoom(props) {
 
     const handleInputOnKeyPress = (e) => {
         if (e.charCode === 13) {
-            if (selectedChatRoom !== -1) {
+            if (selectedChatRoomID !== '') {
                 if (inputMessage.length > 0) {
                     // Add data to Cloud Firestore:
                     const data = {
-                        roomId: rooms[selectedChatRoom].id,
+                        roomId: selectedChatRoomID,
                         content: inputMessage,
                         uid: user.uid,
                     };
@@ -95,7 +100,7 @@ function ChatRoom(props) {
                             content: inputMessage,
                             uid: user.uid,
                         }).then((messageRef) => {
-                            dispatch(setSelectedChatRoom(-1));
+                            dispatch(setSelectedChatRoomID(''));
                             dispatch(clearSelectedChatRoomUserList());
                             dispatch(setNewSelectedChatRoomID(roomRef.id))
                         });
@@ -117,13 +122,13 @@ function ChatRoom(props) {
 
     // Hooks:
     const messagesCondition = useMemo(() => {
-        const comparisonValue = (selectedChatRoom !== -1 && rooms.length > 0) ? rooms[selectedChatRoom].id : '';
+        const comparisonValue = (selectedChatRoomID !== '' && rooms.length > 0) ? selectedChatRoomID : '';
         return {
             fieldName: 'roomId',
             operator: '==',
             value: comparisonValue
         };
-    }, [rooms, selectedChatRoom]);
+    }, [rooms, selectedChatRoomID]);
 
     // (REALTIME) Get all messages that belong to this room.
     let messages = useFirestore('messages', messagesCondition);
@@ -203,8 +208,15 @@ function ChatRoom(props) {
     };
 
     const renderChatRoomImage = () => {
-        if (selectedChatRoom !== -1) {
-            if (rooms[selectedChatRoom].type === 'group-chat') {
+        if (selectedChatRoomID !== '') {
+            let roomType = '';
+            for (let i = 0; i < rooms.length; i++) {
+                if (rooms[i].id === selectedChatRoomID) {
+                    roomType = rooms[i].type;
+                    break;
+                }
+            }
+            if (roomType === 'group-chat') {
                 return renderGroupChatImg();
             } else {
                 return renderOneToOneChatRoomImg();
@@ -215,7 +227,7 @@ function ChatRoom(props) {
     };
 
     const renderChatRoomMessages = () => {
-        if (selectedChatRoom === -1 && selectedChatRoomUsers.length > 0) {
+        if (selectedChatRoomID === '' && selectedChatRoomUsers.length > 0) {
             messages = [];
         }
         return (

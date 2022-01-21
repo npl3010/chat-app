@@ -4,7 +4,7 @@ import { faEllipsisH, faUserPlus, faUsers, faSearch, faArrowLeft } from '@fortaw
 
 // Redux:
 import { useDispatch, useSelector } from 'react-redux';
-import { selectTemporaryChatRoom, setSelectedChatRoom } from '../features/manageRooms/manageRoomsSlice';
+import { selectTemporaryChatRoom, setSelectedChatRoomID } from '../features/manageRooms/manageRoomsSlice';
 
 // Context:
 import { ModalControlContext } from '../context/ModalControlProvider';
@@ -30,7 +30,7 @@ function ChatMenu(props) {
     // Redux:
     const user = useSelector((state) => state.userAuth.user);
     const chatRooms = useSelector((state) => state.manageRooms.rooms);
-    const selectedChatRoom = useSelector((state) => state.manageRooms.selectedChatRoom);
+    const selectedChatRoomID = useSelector((state) => state.manageRooms.selectedChatRoomID);
     const dispatch = useDispatch();
 
 
@@ -42,8 +42,8 @@ function ChatMenu(props) {
 
 
     // Methods:
-    const handleClickChatRoom = (roomIndex) => {
-        const action = setSelectedChatRoom(roomIndex);
+    const handleClickChatRoom = (roomID) => {
+        const action = setSelectedChatRoomID(roomID);
         dispatch(action);
     }
 
@@ -205,9 +205,9 @@ function ChatMenu(props) {
                             chatRooms.map((element, index) => {
                                 return (
                                     <div
-                                        className={`chatlist__item${selectedChatRoom === index ? ' active' : ''}`}
+                                        className={`chatlist__item${selectedChatRoomID === element.id ? ' active' : ''}`}
                                         key={`chatRoom-${index}`}
-                                        onClick={() => handleClickChatRoom(index)}
+                                        onClick={() => handleClickChatRoom(element.id)}
                                     >
                                         <div className='chatbox'>
                                             <div className='chatbox__person-img'>

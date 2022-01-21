@@ -20,7 +20,7 @@ function ChatRoomUserList(props) {
         setInlineMenuOverflow,
         idOfInlineMenuToBeDisplayed,
         rooms,
-        selectedChatRoom,
+        selectedChatRoomID,
         selectedChatRoomUsers
     } = props;
     const userRole = useRef('');
@@ -36,6 +36,7 @@ function ChatRoomUserList(props) {
 
     // State:
     const [indexOfObjectToBeDisplayed, setIndexOfObjectToBeDisplayed] = useState(-1);
+    const [indexOfRoom, setIndexOfRoom] = useState(-1);
 
 
     // Methods:
@@ -51,6 +52,17 @@ function ChatRoomUserList(props) {
 
 
     // Side effects:
+    useEffect(() => {
+        if (selectedChatRoomID !== '' && rooms.length > 0) {
+            for (let i = 0; i < rooms.length; i++) {
+                if (rooms[i].id === selectedChatRoomID) {
+                    setIndexOfRoom(i);
+                    break;
+                }
+            }
+        }
+    }, [rooms, selectedChatRoomID]);
+
     useEffect(() => {
         if (idOfInlineMenuToBeDisplayed !== -1) {
             if (usedForInlineMenuId !== idOfInlineMenuToBeDisplayed) {
@@ -121,14 +133,14 @@ function ChatRoomUserList(props) {
             {/* List of objects: */}
             <div className='object-list'>
                 {
-                    rooms[selectedChatRoom]?.members.map((uid, index) => {
+                    rooms[indexOfRoom]?.members.map((uid, index) => {
                         // 1. Get info to display:
                         let imgURL = '';
                         let title = '';
                         let role = '';
                         let addedBy = '';
                         let count = 0; // Used to break the loop if count === 2.
-                        if (uid === rooms[selectedChatRoom].membersAddedBy[index]) {
+                        if (uid === rooms[indexOfRoom].membersAddedBy[index]) {
                             addedBy = 'group-creator';
                             count++;
                         }
@@ -137,12 +149,12 @@ function ChatRoomUserList(props) {
                             if (selectedChatRoomUsers[i].uid === uid) {
                                 imgURL = selectedChatRoomUsers[i].photoURL;
                                 title = selectedChatRoomUsers[i].displayName;
-                                role = rooms[selectedChatRoom].membersRole[index];
+                                role = rooms[indexOfRoom].membersRole[index];
                                 count++;
                             }
                             // Get info of people who add the user above:
                             if (addedBy !== 'group-creator') {
-                                if (selectedChatRoomUsers[i].uid === rooms[selectedChatRoom].membersAddedBy[index]) {
+                                if (selectedChatRoomUsers[i].uid === rooms[indexOfRoom].membersAddedBy[index]) {
                                     addedBy = selectedChatRoomUsers[i].displayName;
                                     count++;
                                 }
@@ -155,7 +167,7 @@ function ChatRoomUserList(props) {
 
                         // 2. Get the role of user who is using the app:
                         if (userRole.current === '' && user.uid === uid) {
-                            userRole.current = rooms[selectedChatRoom].membersRole[index];
+                            userRole.current = rooms[indexOfRoom].membersRole[index];
                         }
 
                         // Result:

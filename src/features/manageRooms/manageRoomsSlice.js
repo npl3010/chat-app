@@ -10,6 +10,8 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
     rooms: [],
+    selectedChatRoomID: '',
+
     selectedChatRoom: -1,
     selectedChatRoomUsers: [],
     newSelectedChatRoomID: '',
@@ -25,6 +27,11 @@ const manageRoomsSlice = createSlice({
         setRoomList: (state, action) => {
             state.rooms = action.payload;
         },
+        setSelectedChatRoomID: (state, action) => {
+            state.selectedChatRoomID = action.payload;
+        },
+
+
         setSelectedChatRoom: (state, action) => {
             state.selectedChatRoom = action.payload;
             state.newSelectedChatRoomID = '';
@@ -36,6 +43,7 @@ const manageRoomsSlice = createSlice({
             state.selectedChatRoomUsers = action.payload;
         },
         selectTemporaryChatRoom: (state, action) => {
+            state.selectedChatRoomID = '';
             state.selectedChatRoom = -1;
             state.selectedChatRoomUsers = action.payload.users;
         },
@@ -50,6 +58,7 @@ const manageRoomsSlice = createSlice({
 export const {
     clearRoomList,
     setRoomList,
+    setSelectedChatRoomID,
     setSelectedChatRoom,
     clearSelectedChatRoomUserList,
     setSelectedChatRoomUserList,

@@ -23,7 +23,7 @@ import { setUser } from './features/auth/userAuthSlice';
 import {
   clearRoomList, setRoomList,
   clearSelectedChatRoomUserList, setSelectedChatRoomUserList,
-  setSelectedChatRoom
+  setSelectedChatRoomID
 } from "./features/manageRooms/manageRoomsSlice";
 import {
   resetFriendListState, setFriendListState
@@ -40,7 +40,7 @@ import useFirestoreCustomized from "./customHooks/useFirestoreCustomized";
 function App() {
   // Redux:
   const user = useSelector((state) => state.userAuth.user);
-  const { rooms, selectedChatRoom, newSelectedChatRoomID } = useSelector((state) => state.manageRooms);
+  const { rooms, selectedChatRoomID, newSelectedChatRoomID } = useSelector((state) => state.manageRooms);
   const dispatch = useDispatch();
 
 
@@ -58,11 +58,18 @@ function App() {
   }, [user_uid]);
 
   const selectedRoomUsersCondition = useMemo(() => {
-    if (selectedChatRoom !== -1 && rooms.length > 0) {
+    let members = [];
+    for (let i = 0; i < rooms.length; i++) {
+      if (rooms[i].id === selectedChatRoomID) {
+        members = rooms[i].members;
+        break;
+      }
+    }
+    if (selectedChatRoomID !== '' && rooms.length > 0) {
       return {
         fieldName: 'uid',
         operator: 'in',
-        value: rooms[selectedChatRoom].members
+        value: members
       };
     } else {
       return {
@@ -71,7 +78,7 @@ function App() {
         value: []
       }
     }
-  }, [rooms, selectedChatRoom]);
+  }, [rooms, selectedChatRoomID]);
 
   const friendsCondition = useMemo(() => {
     return {
@@ -101,7 +108,7 @@ function App() {
       } else {
         // User is signed out!
         // - Reset selected room to default (-1):
-        dispatch(setSelectedChatRoom(-1));
+        dispatch(setSelectedChatRoomID(''));
         // - Clear room list:
         dispatch(clearRoomList());
         // - Clear selected room user list:
@@ -123,27 +130,20 @@ function App() {
     dispatch(action);
     // 3. If there is a new selected chat room has been added to database, select it:
     if (newSelectedChatRoomID !== '') {
-      let count = 0;
-      for (let i = 0; i < chatRooms.length; i++) {
-        if (chatRooms[i].id === newSelectedChatRoomID) {
-          dispatch(setSelectedChatRoom(i));
-          count++;
-          break;
-        }
-      }
+      dispatch(setSelectedChatRoomID(newSelectedChatRoomID));
     }
   }, [dispatch, chatRooms, newSelectedChatRoomID]);
 
   // - Get all members of the selected room.
   useEffect(() => {
-    if (selectedChatRoom !== -1) {
+    if (selectedChatRoomID !== '') {
       // 1. Clear selected room user list:
       dispatch(clearSelectedChatRoomUserList());
       // 2. Set new room list:
       const action = setSelectedChatRoomUserList(selectedRoomUsers);
       dispatch(action);
     }
-  }, [dispatch, selectedChatRoom, selectedRoomUsers]);
+  }, [dispatch, selectedChatRoomID, selectedRoomUsers]);
 
   // - Get all friends of the logged in user.
   useEffect(() => {

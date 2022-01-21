@@ -19,6 +19,7 @@ function ChatRoomCollapsibleMenu(props) {
     const {
         rooms,
         selectedChatRoom,
+        selectedChatRoomID,
         selectedChatRoomUsers
     } = props;
 
@@ -120,6 +121,7 @@ function ChatRoomCollapsibleMenu(props) {
                                             idOfInlineMenuToBeDisplayed={idOfInlineMenuToBeDisplayed}
                                             rooms={rooms}
                                             selectedChatRoom={selectedChatRoom}
+                                            selectedChatRoomID={selectedChatRoomID}
                                             selectedChatRoomUsers={selectedChatRoomUsers}
                                         ></ChatRoomUserList>
                                     </div>
