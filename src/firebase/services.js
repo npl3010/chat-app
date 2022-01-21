@@ -3,18 +3,20 @@ import { db, collection, addDoc, serverTimestamp } from '../firebase/config';
 
 // Add data to Cloud Firestore:
 export const addDocument = async (collectionName, data) => {
-    await addDoc(collection(db, collectionName), {
+    const docRef = await addDoc(collection(db, collectionName), {
         ...data,
         createdAt: serverTimestamp()
     });
+    return docRef;
 }
 
 
 // Add data to Cloud Firestore without timestamp:
 export const addDocumentWithoutTimestamp = async (collectionName, data) => {
-    await addDoc(collection(db, collectionName), {
+    const docRef = await addDoc(collection(db, collectionName), {
         ...data
     });
+    return docRef;
 }
 
 

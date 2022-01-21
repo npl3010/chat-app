@@ -70,7 +70,6 @@ function ChatMenu(props) {
             timeout.current = setTimeout(async () => {
                 fetchFriendListByUserName(user.uid, keywordToSearchFor, [])
                     .then((newOptions) => {
-                        console.log(newOptions)
                         setSearchResultList(newOptions);
                         if (newOptions.length === 0) {
                             setStateForSearching('empty-search-result');

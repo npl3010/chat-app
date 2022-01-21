@@ -40,7 +40,7 @@ import useFirestoreCustomized from "./customHooks/useFirestoreCustomized";
 function App() {
   // Redux:
   const user = useSelector((state) => state.userAuth.user);
-  const { rooms, selectedChatRoom } = useSelector((state) => state.manageRooms);
+  const { rooms, selectedChatRoom, newSelectedChatRoomID } = useSelector((state) => state.manageRooms);
   const dispatch = useDispatch();
 
 
@@ -121,7 +121,18 @@ function App() {
     // 2. Set new room list:
     const action = setRoomList(chatRooms);
     dispatch(action);
-  }, [dispatch, chatRooms]);
+    // 3. If there is a new selected chat room has been added to database, select it:
+    if (newSelectedChatRoomID !== '') {
+      let count = 0;
+      for (let i = 0; i < chatRooms.length; i++) {
+        if (chatRooms[i].id === newSelectedChatRoomID) {
+          dispatch(setSelectedChatRoom(i));
+          count++;
+          break;
+        }
+      }
+    }
+  }, [dispatch, chatRooms, newSelectedChatRoomID]);
 
   // - Get all members of the selected room.
   useEffect(() => {

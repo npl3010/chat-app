@@ -13,7 +13,8 @@ import '../styles/scss/components/AvatarGroup.scss';
  */
 function AvatarGroup(props) {
     const {
-        imgsData = []
+        imgsData = [],
+        moreAvatarsNumber = 0
     } = props;
 
 
@@ -26,26 +27,42 @@ function AvatarGroup(props) {
             className = ' three-imgs';
         } else if (imgsData.length === 4) {
             className = ' four-imgs';
+        } else if (imgsData.length > 4) {
+            className = ' four-imgs';
         }
         return className;
     };
 
     const renderAvatars = () => {
+        let count = 0;
         return (
             <div className='avatar-wrapper'>
                 {
                     imgsData.map((data, index) => {
-                        return (
-                            <div className='avatar' key={`avatar${index}`}>
-                                {data.imgSrc ? (
-                                    <img className='avatar__img' src={data.imgSrc} alt='' ></img>
-                                ) : (
+                        count++;
+                        if (imgsData.length > 4 && count === 4) {
+                            return (
+                                <div className='avatar' key={`avatar${index}`}>
                                     <div className='avatar__character'>
-                                        <span>{data.displayName?.charAt(0)?.toUpperCase()}</span>
+                                        <span>+{imgsData.length - 3 + moreAvatarsNumber}</span>
                                     </div>
-                                )}
-                            </div>
-                        );
+                                </div>
+                            );
+                        } else if (imgsData.length > 4 && count > 4) {
+                            return (null);
+                        } else {
+                            return (
+                                <div className='avatar' key={`avatar${index}`}>
+                                    {data.imgSrc ? (
+                                        <img className='avatar__img' src={data.imgSrc} alt='' ></img>
+                                    ) : (
+                                        <div className='avatar__character'>
+                                            <span>{data.displayName?.charAt(0)?.toUpperCase()}</span>
+                                        </div>
+                                    )}
+                                </div>
+                            );
+                        }
                     })
                 }
             </div>

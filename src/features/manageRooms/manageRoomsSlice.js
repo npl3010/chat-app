@@ -12,6 +12,7 @@ const initialState = {
     rooms: [],
     selectedChatRoom: -1,
     selectedChatRoomUsers: [],
+    newSelectedChatRoomID: '',
 }
 
 const manageRoomsSlice = createSlice({
@@ -26,6 +27,7 @@ const manageRoomsSlice = createSlice({
         },
         setSelectedChatRoom: (state, action) => {
             state.selectedChatRoom = action.payload;
+            state.newSelectedChatRoomID = '';
         },
         clearSelectedChatRoomUserList: (state) => {
             state.selectedChatRoomUsers = [];
@@ -37,6 +39,9 @@ const manageRoomsSlice = createSlice({
             state.selectedChatRoom = -1;
             state.selectedChatRoomUsers = action.payload.users;
         },
+        setNewSelectedChatRoomID: (state, action) => {
+            state.newSelectedChatRoomID = action.payload;
+        }
     },
     extraReducers: {}
 });
@@ -48,7 +53,8 @@ export const {
     setSelectedChatRoom,
     clearSelectedChatRoomUserList,
     setSelectedChatRoomUserList,
-    selectTemporaryChatRoom
+    selectTemporaryChatRoom,
+    setNewSelectedChatRoomID
 } = manageRoomsSlice.actions;
 // Slice Reducer:
 export default manageRoomsSlice.reducer;

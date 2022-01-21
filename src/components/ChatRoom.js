@@ -6,7 +6,8 @@ import { faInfoCircle, faExclamation } from '@fortawesome/free-solid-svg-icons';
 import AvatarGroup from './AvatarGroup';
 
 // Redux:
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { clearSelectedChatRoomUserList, setNewSelectedChatRoomID, setSelectedChatRoom } from '../features/manageRooms/manageRoomsSlice';
 
 // Services:
 import { addDocument } from '../firebase/services';
@@ -29,9 +30,8 @@ function ChatRoom(props) {
 
     // Redux:
     const user = useSelector((state) => state.userAuth.user);
-    const rooms = useSelector((state) => state.manageRooms.rooms);
-    const selectedChatRoom = useSelector((state) => state.manageRooms.selectedChatRoom);
-    const selectedChatRoomUsers = useSelector((state) => state.manageRooms.selectedChatRoomUsers);
+    const { rooms, selectedChatRoom, selectedChatRoomUsers } = useSelector((state) => state.manageRooms);
+    const dispatch = useDispatch();
 
 
     // Side effects:
@@ -86,7 +86,20 @@ function ChatRoom(props) {
             } else {
                 if (selectedChatRoomUsers.length > 0 && Object.keys(roomData).length > 0) {
                     // Add data to Cloud Firestore:
-                    addDocument('rooms', roomData);
+                    addDocument('rooms', {
+                        ...roomData,
+                        name: 'Room\'s name'
+                    }).then((roomRef) => {
+                        addDocument('messages', {
+                            roomId: roomRef.id,
+                            content: inputMessage,
+                            uid: user.uid,
+                        }).then((messageRef) => {
+                            dispatch(setSelectedChatRoom(-1));
+                            dispatch(clearSelectedChatRoomUserList());
+                            dispatch(setNewSelectedChatRoomID(roomRef.id))
+                        });
+                    });
 
                     // Clear form:
                     setInputMessage('');
@@ -113,7 +126,7 @@ function ChatRoom(props) {
     }, [rooms, selectedChatRoom]);
 
     // (REALTIME) Get all messages that belong to this room.
-    const messages = useFirestore('messages', messagesCondition);
+    let messages = useFirestore('messages', messagesCondition);
 
     // Scroll to bottom if there are new messages:
     useEffect(() => {
@@ -155,7 +168,7 @@ function ChatRoom(props) {
                 <div className='person-img-wrapper'></div>
             );
         }
-    }
+    };
 
     const renderGroupChatImg = () => {
         if (selectedChatRoomUsers.length > 0) {
@@ -177,6 +190,7 @@ function ChatRoom(props) {
                     <div className='group-img-wrapper'>
                         <AvatarGroup
                             imgsData={imgGroup}
+                            moreAvatarsNumber={1}
                         ></AvatarGroup>
                     </div>
                 );
@@ -186,7 +200,7 @@ function ChatRoom(props) {
                 <div className='group-img-wrapper'></div>
             );
         }
-    }
+    };
 
     const renderChatRoomImage = () => {
         if (selectedChatRoom !== -1) {
@@ -198,7 +212,57 @@ function ChatRoom(props) {
         } else {
             return renderOneToOneChatRoomImg();
         }
-    }
+    };
+
+    const renderChatRoomMessages = () => {
+        if (selectedChatRoom === -1 && selectedChatRoomUsers.length > 0) {
+            messages = [];
+        }
+        return (
+            <>
+                {
+                    messages.slice(0).reverse().map((msg, index) => {
+                        if (msg.uid === user.uid) {
+                            const strDateTime = getDateAndTimeFromDateString(msg.createdAt);
+                            return (
+                                <div key={`msg-${index}`} className='message from-me'>
+                                    <div className='message__content'>
+                                        <i>{strDateTime}</i> {/*Delele this line later!*/}
+                                        <span className='message-piece'>{msg.content}</span>
+                                    </div>
+                                </div>
+                            );
+                        } else {
+                            // Get user data:
+                            let data = null;
+                            for (let i = 0; i < selectedChatRoomUsers.length; i++) {
+                                if (selectedChatRoomUsers[i].uid === msg.uid) {
+                                    data = selectedChatRoomUsers[i];
+                                    break;
+                                }
+                            }
+
+                            // Return:
+                            const strDateTime = getDateAndTimeFromDateString(msg.createdAt);
+                            return (
+                                <div key={`msg-${index}`} className='message from-others'>
+                                    <div className='message__person-img'>
+                                        <img className='person-img' src={data ? data.photoURL : ''} alt='' ></img>
+                                    </div>
+                                    <div className='message__content'>
+                                        <i>{strDateTime}</i> {/*Delele this line later!*/}
+                                        <span className='message-piece'>{msg.content}</span>
+                                    </div>
+                                </div>
+                            );
+                        }
+                    })
+                }
+
+                <div ref={messagesEndRef} />
+            </>
+        );
+    };
 
     const renderChatRoomComponent = () => {
         return (
@@ -227,6 +291,8 @@ function ChatRoom(props) {
                     <div className='content-wrapper'>
                         <div className='content'>
 
+                            {renderChatRoomMessages()}
+
                             {/* <div className='message from-others'>
                                 <div className='message__person-img'>
                                     <img className='person-img' src='' alt='' ></img>
@@ -250,50 +316,12 @@ function ChatRoom(props) {
 
                             <div className='message from-me'>
                                 <div className='message__content'>
-                                    <span className='message-piece'>Ừ xin chào bạn mà tôi méo quen bạn nhé!</span>
+                                    <span className='message-piece'>Ừ xin chào bạn mà tôi không quen bạn nhé!</span>
                                 </div>
-                            </div> */}
+                            </div>
 
-                            {
-                                messages.slice(0).reverse().map((msg, index) => {
-                                    if (msg.uid === user.uid) {
-                                        const strDateTime = getDateAndTimeFromDateString(msg.createdAt);
-                                        return (
-                                            <div key={`msg-${index}`} className='message from-me'>
-                                                <div className='message__content'>
-                                                    <i>{strDateTime}</i> {/*Delele this line later!*/}
-                                                    <span className='message-piece'>{msg.content}</span>
-                                                </div>
-                                            </div>
-                                        );
-                                    } else {
-                                        // Get user data:
-                                        let data = null;
-                                        for (let i = 0; i < selectedChatRoomUsers.length; i++) {
-                                            if (selectedChatRoomUsers[i].uid === msg.uid) {
-                                                data = selectedChatRoomUsers[i];
-                                                break;
-                                            }
-                                        }
+                            <div ref={messagesEndRef} /> */}
 
-                                        // Return:
-                                        const strDateTime = getDateAndTimeFromDateString(msg.createdAt);
-                                        return (
-                                            <div key={`msg-${index}`} className='message from-others'>
-                                                <div className='message__person-img'>
-                                                    <img className='person-img' src={data ? data.photoURL : ''} alt='' ></img>
-                                                </div>
-                                                <div className='message__content'>
-                                                    <i>{strDateTime}</i> {/*Delele this line later!*/}
-                                                    <span className='message-piece'>{msg.content}</span>
-                                                </div>
-                                            </div>
-                                        );
-                                    }
-                                })
-                            }
-
-                            <div ref={messagesEndRef} />
                         </div>
                     </div>
                 </div>
