@@ -308,10 +308,6 @@ $avatar_size: 96px;
     &__item {
         padding: 0 8px;
     }
-
-    &__item.active .chatbox {
-        background-color: rgba(70, 130, 180, 0.3);
-    }
 }
 
 .modal-search-user-form .user {

@@ -1,5 +1,5 @@
 import { db, getDocs, collection, query, where, orderBy, limit } from './config';
-import { capitalizeAllWords } from './services';
+import { toPascalCaseForAllWords } from './services';
 
 
 // Get users by email:
@@ -39,7 +39,7 @@ export async function fetchUserListByUserEmail(userEmail = '', excludedUsers = [
  * @returns {array} The list of users.
  */
 export async function fetchUserListByUserName(userName = '', excludedUsers = [], limitValue = 10) {
-    const capitalizedUsername = capitalizeAllWords(userName);
+    const capitalizedUsername = toPascalCaseForAllWords(userName);
 
     const q = query(collection(db, "users"),
         where("displayNameSearchKeywords", "array-contains-any", [userName, capitalizedUsername]),
@@ -81,4 +81,35 @@ export async function fetchUserListByUserID(userID = '') {
     });
 
     return results;
+}
+
+
+// Get list of users by list of uids:
+/**
+ * 
+ * @param {string} listOfUserIDs This is the list of strings.
+ * @returns {array} The list of users.
+ */
+export async function fetchUserListByUidList(listOfUserIDs = []) {
+    const results = await Promise.all(listOfUserIDs.map(async (uid) => {
+        const q = query(collection(db, "users"),
+            where("uid", "==", uid),
+            limit(1)
+        );
+
+        const querySnapshot = await getDocs(q);
+        let temp = null;
+        querySnapshot.forEach((doc) => {
+            temp = {
+                ...doc.data(),
+                createdAt: (doc.data().createdAt) && (doc.data().createdAt.toDate().toString()),
+                id: doc.id
+            };
+        });
+        return temp;
+    }));
+
+    return results.filter((item) => {
+        return !(item === null);
+    });
 }

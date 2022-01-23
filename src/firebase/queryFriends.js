@@ -1,5 +1,5 @@
 import { db, collection, addDoc, getDocs, updateDoc, query, where, orderBy, limit } from './config';
-import { capitalizeAllWords } from './services';
+import { toPascalCaseForAllWords } from './services';
 
 
 // 1. INSTRUCTIONS:
@@ -193,19 +193,19 @@ export async function markAllNotificationsAsReadByUID(uid) {
 // Get friends by name:
 /**
  * 
- * @param {string} userId This is the id of the user who is searhing his friends.
+ * @param {string} userID This is the id of the user who is searhing his friends.
  * @param {string} userName This is a keyword to search for. 
  * @param {array} excludedUsers The list of users to be excluded from the result list.
  * @returns {array} The list of users.
  */
-export async function fetchFriendListByUserName(userId = '', userName = '', excludedUsers = []) {
-    const capitalizedUsername = capitalizeAllWords(userName);
+export async function fetchFriendListByUserName(userID = '', userName = '', excludedUsers = []) {
+    const capitalizedUsername = toPascalCaseForAllWords(userName);
 
     let results = [];
 
     // 1. Get all friends' id:
     const qFriendList = query(collection(db, "friends"),
-        where("friends", "array-contains", userId),
+        where("friends", "array-contains", userID),
     );
     await getDocs(qFriendList)
         .then(async (res) => {

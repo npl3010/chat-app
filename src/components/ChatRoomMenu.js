@@ -169,6 +169,8 @@ function ChatRoomMenu(props) {
         return result;
     };
 
+    console.log('rerender ' + selectedChatRoomID, rooms)
+
     return (
         <div className='chatroom-menu'>
             <div className='chatroom-menu__header'>
@@ -188,4 +190,4 @@ function ChatRoomMenu(props) {
     );
 }
 
-export default ChatRoomMenu;
+export default React.memo(ChatRoomMenu);

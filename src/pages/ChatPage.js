@@ -18,7 +18,7 @@ import '../styles/scss/pages/ChatPage.scss';
 
 function ChatPage(props) {
     // Redux:
-    const selectedChatRoom = useSelector((state) => state.manageRooms.selectedChatRoom);
+    const selectedChatRoomID = useSelector((state) => state.manageRooms.selectedChatRoomID);
 
 
     // State:
@@ -34,11 +34,11 @@ function ChatPage(props) {
 
     // Side effects:
     useEffect(() => {
-        if (isNaN(selectedChatRoom) === false && selectedChatRoom !== -1 && isThereASelectedRoom === false) {
+        if (typeof selectedChatRoomID === 'string' && selectedChatRoomID !== '' && isThereASelectedRoom === false) {
             handleDisplayChatRoomMenu();
             setIsThereASelectedRoom(true);
         }
-    }, [selectedChatRoom, isThereASelectedRoom, handleDisplayChatRoomMenu]);
+    }, [selectedChatRoomID, isThereASelectedRoom, handleDisplayChatRoomMenu]);
 
 
     // Component:

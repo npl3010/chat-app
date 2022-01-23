@@ -1,15 +1,19 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEllipsisH, faUserPlus, faUsers, faSearch, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 
 // Redux:
 import { useDispatch, useSelector } from 'react-redux';
-import { selectTemporaryChatRoom, setSelectedChatRoomID } from '../features/manageRooms/manageRoomsSlice';
+import { selectRoom, selectTemporaryChatRoom, setIsLoadingARoom, setRoomList } from '../features/manageRooms/manageRoomsSlice';
 
 // Context:
 import { ModalControlContext } from '../context/ModalControlProvider';
 
+// Custom hooks:
+import useRooms from '../customHooks/useRooms';
+
 // Services:
+import { fetchUserListByUidList } from '../firebase/queryUsers';
 import { fetchFriendListByUserName } from '../firebase/queryFriends';
 
 // CSS:
@@ -29,22 +33,35 @@ function ChatMenu(props) {
 
     // Redux:
     const user = useSelector((state) => state.userAuth.user);
-    const chatRooms = useSelector((state) => state.manageRooms.rooms);
-    const selectedChatRoomID = useSelector((state) => state.manageRooms.selectedChatRoomID);
+    const { rooms, selectedChatRoomID } = useSelector((state) => state.manageRooms);
     const dispatch = useDispatch();
 
 
     // State:
     const [isSearchBoxInputFocused, setIsSearchBoxInputFocused] = useState(false);
     const [searchResultList, setSearchResultList] = useState([]);
-    const [searchResultSelected, setSearchResultSelected] = useState(null);
     const [stateForSearching, setStateForSearching] = useState('none'); // Value: none, fetching, empty-search-result.
 
 
     // Methods:
     const handleClickChatRoom = (roomID) => {
-        const action = setSelectedChatRoomID(roomID);
-        dispatch(action);
+        let uidList = [];
+        for (let i = 0; i < rooms.length; i++) {
+            if (rooms[i].id === roomID) {
+                uidList = [...rooms[i].members];
+                dispatch(setIsLoadingARoom(true));
+                break;
+            }
+        }
+
+        fetchUserListByUidList(uidList)
+            .then((users) => {
+                dispatch(selectRoom({
+                    roomID: roomID,
+                    users: users
+                }));
+                dispatch(setIsLoadingARoom(false));
+            });
     }
 
     const handleFocusSearchBox = () => {
@@ -94,8 +111,30 @@ function ChatMenu(props) {
     }
 
 
+    // Hooks:
+    const paramsToGetRooms = useMemo(() => {
+        const uid = (user === null) ? '' : user.uid;
+        return {
+            userID: uid,
+            limit: 50
+        };
+    }, [user]);
+    // (GET REALTIME UPDATES) Get all rooms that the user is a member of:
+    const chatRooms = useRooms('rooms', paramsToGetRooms);
+
+
+    // Side effects:
+    useEffect(() => {
+        // Get all rooms that the user is a member of:
+        if (chatRooms.length > 0) {
+            const action = setRoomList(chatRooms);
+            dispatch(action);
+        }
+    }, [dispatch, chatRooms]);
+
+
     // Component:
-    const renderSearchResultList = () => {
+    const renderNonEmptySearchResult = () => {
         return (
             <div className='results-wrapper'>
                 <div className='results'>
@@ -129,6 +168,52 @@ function ChatMenu(props) {
                 </div>
             </div>
         );
+    };
+
+    const renderSearchResultOnLoading = () => {
+        return (
+            <div className='results-wrapper'>
+                <div className='results skeleton-loading'>
+                    <div className='results__item'>
+                        <div className='object'>
+                            <div className='object__img-wrapper'>
+                                <div className='object-character-name'>
+                                    <span>U</span>
+                                </div>
+                            </div>
+                            <div className='object__info-wrapper'>
+                                <div className='object-title'>Name</div>
+                                <div className='object-more-info'>More info</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        );
+    };
+
+    const renderEmptySearchResult = () => {
+        return (
+            <div className='results-wrapper'>
+                <div className='results empty'>
+                    <div className='empty-search-result'>
+                        <div className='empty-search-result__msg'>Không tìm thấy kết quả tương ứng!</div>
+                    </div>
+                </div>
+            </div>
+        );
+    };
+
+    const renderSearchResult = () => {
+        if (stateForSearching === 'fetching') {
+            return renderSearchResultOnLoading();
+        } else if (stateForSearching === 'empty-search-result') {
+            return renderEmptySearchResult();
+        } else if (stateForSearching === 'none') {
+            return renderNonEmptySearchResult();
+        } else {
+            return (<></>);
+        }
     };
 
     return (
@@ -191,7 +276,7 @@ function ChatMenu(props) {
                     <div className={`search-results-wrapper${isSearchBoxInputFocused === true ? ' visible' : ''}`}>
                         <div className='search-results-panel'>
                             <div className='search-results'>
-                                {renderSearchResultList()}
+                                {renderSearchResult()}
                             </div>
                         </div>
                     </div>
@@ -202,7 +287,7 @@ function ChatMenu(props) {
                 <div className='chatlist-wrapper'>
                     <div className='chatlist'>
                         {
-                            chatRooms.map((element, index) => {
+                            rooms.map((element, index) => {
                                 return (
                                     <div
                                         className={`chatlist__item${selectedChatRoomID === element.id ? ' active' : ''}`}

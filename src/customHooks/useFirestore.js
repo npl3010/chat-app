@@ -10,7 +10,7 @@ import { db, collection, onSnapshot, query, where, orderBy } from '../firebase/c
  * @param {string} collectionName Name of document to listen for realtime updates.
  * @param {Object} condition This object is used for where() function.
  * { fieldName: 'az', operator: '==', value: 'abc' }
- * @returns {Array}} List of updated results.
+ * @returns {Array} List of updated results.
  */
 const useFirestore = (collectionName, condition) => {
     // State:

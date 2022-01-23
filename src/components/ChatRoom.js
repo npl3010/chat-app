@@ -10,7 +10,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { clearSelectedChatRoomUserList, setNewSelectedChatRoomID, setSelectedChatRoomID } from '../features/manageRooms/manageRoomsSlice';
 
 // Services:
-import { addDocument } from '../firebase/services';
+import { addDocument, addDocumentWithTimestamps, updateDocumentByIDWithTimestamps } from '../firebase/services';
 
 // CSS:
 import '../styles/scss/components/ChatRoom.scss';
@@ -30,9 +30,10 @@ function ChatRoom(props) {
 
     // Redux:
     const user = useSelector((state) => state.userAuth.user);
-    const { rooms, selectedChatRoomID, selectedChatRoomUsers } = useSelector((state) => state.manageRooms);
+    const { rooms, selectedChatRoomID, selectedChatRoomUsers, isLoadingARoom } = useSelector((state) => state.manageRooms);
     const dispatch = useDispatch();
 
+    console.log(isLoadingARoom)
 
     // Side effects:
     useEffect(() => {
@@ -59,9 +60,12 @@ function ChatRoom(props) {
                     description: 'One To One chat',
                     type: 'one-to-one-chat',
                     members: members,
+                    // membersAddedBy: [],
+                    // membersRole: [],
                     latestMessage: '',
-                    membersAddedBy: [],
-                    membersRole: []
+                    isSeenBy: [],
+                    fromOthers_BgColor: '',
+                    fromMe_BgColor: '',
                 });
             }
         }
@@ -78,12 +82,14 @@ function ChatRoom(props) {
             if (selectedChatRoomID !== '') {
                 if (inputMessage.length > 0) {
                     // Add data to Cloud Firestore:
-                    const data = {
+                    addDocument('messages', {
                         roomId: selectedChatRoomID,
                         content: inputMessage,
                         uid: user.uid,
-                    };
-                    addDocument('messages', data);
+                    })
+                        .then((messageRef) => {
+                            updateDocumentByIDWithTimestamps('rooms', selectedChatRoomID, {}, ['lastActiveAt']);
+                        });
 
                     // Clear form:
                     setInputMessage('');
@@ -91,20 +97,21 @@ function ChatRoom(props) {
             } else {
                 if (selectedChatRoomUsers.length > 0 && Object.keys(roomData).length > 0) {
                     // Add data to Cloud Firestore:
-                    addDocument('rooms', {
+                    addDocumentWithTimestamps('rooms', {
                         ...roomData,
                         name: 'Room\'s name'
-                    }).then((roomRef) => {
-                        addDocument('messages', {
-                            roomId: roomRef.id,
-                            content: inputMessage,
-                            uid: user.uid,
-                        }).then((messageRef) => {
-                            dispatch(setSelectedChatRoomID(''));
-                            dispatch(clearSelectedChatRoomUserList());
-                            dispatch(setNewSelectedChatRoomID(roomRef.id))
+                    }, ['createdAt', 'lastActiveAt'])
+                        .then((roomRef) => {
+                            addDocument('messages', {
+                                roomId: roomRef.id,
+                                content: inputMessage,
+                                uid: user.uid,
+                            }).then((messageRef) => {
+                                dispatch(setSelectedChatRoomID(''));
+                                dispatch(clearSelectedChatRoomUserList());
+                                dispatch(setNewSelectedChatRoomID(roomRef.id))
+                            });
                         });
-                    });
 
                     // Clear form:
                     setInputMessage('');

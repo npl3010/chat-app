@@ -8,6 +8,9 @@ import { db, doc, getDocs, updateDoc, collection, query, where, orderBy, limit }
 // Redux:
 import { useSelector } from 'react-redux';
 
+// Services:
+import { toPascalCaseForAllWords } from '../firebase/services';
+
 // Context:
 import { ModalControlContext } from '../context/ModalControlProvider';
 
@@ -87,24 +90,8 @@ async function fetchUserList(username = '', membersAlreadyInRoom = []) {
      * @returns 
      */
 
-    // Capitalize text:
-    const capitalizeSingleWord = (word) => {
-        if (word.length > 0) {
-            return word[0].toUpperCase() + word.slice(1);
-        }
-        return '';
-    }
-
-    const capitalizeAllWords = (text) => {
-        const arrOfSubstr = text.split(" ")
-        for (let i = 0; i < arrOfSubstr.length; i++) {
-            arrOfSubstr[i] = capitalizeSingleWord(arrOfSubstr[i]);
-        }
-        return arrOfSubstr.join(" ");
-    }
-
     // Get all documents in a collection from Firestore:
-    const capitalizedUsername = capitalizeAllWords(username);
+    const capitalizedUsername = toPascalCaseForAllWords(username);
 
     const q = query(collection(db, "users"),
         where("displayNameSearchKeywords", "array-contains-any", [username, capitalizedUsername]),
@@ -147,32 +134,43 @@ function ModalInviteMember(props) {
 
     // Redux:
     const user = useSelector((state) => state.userAuth.user);
-    const { rooms, selectedChatRoom } = useSelector((state) => state.manageRooms);
+    const { rooms, selectedChatRoomID } = useSelector((state) => state.manageRooms);
 
 
     // Methods:
     const handleOk = async () => {
-        if (selectedChatRoom !== -1 && rooms.length > 0) {
-            // Update member list in the current room:
-            const roomRef = doc(db, "rooms", rooms[selectedChatRoom].id);
+        if (selectedChatRoomID !== '' && rooms.length > 0) {
+            // Get index of selected room:
+            let indexOfRoom = -1;
+            for (let i = 0; i < rooms.length; i++) {
+                if (rooms[i].id === selectedChatRoomID) {
+                    indexOfRoom = i;
+                    break;
+                }
+            }
 
-            // Set the "members" field of the selected room:
-            const newMemberList = [...rooms[selectedChatRoom].members, ...value.map((val) => val)];
-            const newMembersAddedBy = [...rooms[selectedChatRoom].membersAddedBy, ...value.map(() => (user.uid))];
-            const newmembersRole = [...rooms[selectedChatRoom].membersRole, ...value.map(() => ('group-member'))];
+            if (indexOfRoom !== -1) {
+                // Update member list in the current room:
+                const roomRef = doc(db, "rooms", rooms[indexOfRoom].id);
 
-            await updateDoc(roomRef, {
-                members: newMemberList,
-                membersAddedBy: newMembersAddedBy,
-                membersRole: newmembersRole
-            });
+                // Set the "members" field of the selected room:
+                const newMemberList = [...rooms[indexOfRoom].members, ...value.map((val) => val)];
+                const newMembersAddedBy = [...rooms[indexOfRoom].membersAddedBy, ...value.map(() => (user.uid))];
+                const newmembersRole = [...rooms[indexOfRoom].membersRole, ...value.map(() => ('group-member'))];
 
-            // Clear form:
-            form.resetFields();
-            setValue([]);
+                await updateDoc(roomRef, {
+                    members: newMemberList,
+                    membersAddedBy: newMembersAddedBy,
+                    membersRole: newmembersRole
+                });
 
-            // Hide form:
-            setisModalInviteVisible(false);
+                // Clear form:
+                form.resetFields();
+                setValue([]);
+
+                // Hide form:
+                setisModalInviteVisible(false);
+            }
         }
     };
 
@@ -185,8 +183,22 @@ function ModalInviteMember(props) {
     };
 
     const getMemberAlreadyInRoom = () => {
-        if (selectedChatRoom !== -1 && rooms.length > 0) {
-            return { membersAlreadyInRoom: rooms[selectedChatRoom].members };
+        if (selectedChatRoomID !== '' && rooms.length > 0) {
+            // Get index of selected room:
+            let indexOfRoom = -1;
+            for (let i = 0; i < rooms.length; i++) {
+                if (rooms[i].id === selectedChatRoomID) {
+                    indexOfRoom = i;
+                    break;
+                }
+            }
+
+            // Return room members:
+            if (indexOfRoom !== -1) {
+                return { membersAlreadyInRoom: rooms[indexOfRoom].members };
+            } else {
+                return { membersAlreadyInRoom: [] };
+            }
         } else {
             return { membersAlreadyInRoom: [] };
         }

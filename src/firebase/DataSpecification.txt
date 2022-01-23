@@ -22,6 +22,7 @@ All fields:
 - fromOthers_BgColor (string)
 - fromMe_BgColor (string)
 - latestMessage (string)
+- isSeenBy (array): List of uids.
 
 
 3. messages (A message object represents a message of a chat room):

@@ -1,7 +1,13 @@
-import { db, collection, addDoc, serverTimestamp } from '../firebase/config';
+import { db, collection, doc, getDoc, addDoc, updateDoc, serverTimestamp } from '../firebase/config';
 
 
 // Add data to Cloud Firestore:
+/**
+ * 
+ * @param {string} collectionName Name of collection.
+ * @param {Object} data Data to be inserted.
+ * @returns 
+ */
 export const addDocument = async (collectionName, data) => {
     const docRef = await addDoc(collection(db, collectionName), {
         ...data,
@@ -12,6 +18,12 @@ export const addDocument = async (collectionName, data) => {
 
 
 // Add data to Cloud Firestore without timestamp:
+/**
+ * 
+ * @param {string} collectionName Name of collection.
+ * @param {Object} data Data to be inserted.
+ * @returns 
+ */
 export const addDocumentWithoutTimestamp = async (collectionName, data) => {
     const docRef = await addDoc(collection(db, collectionName), {
         ...data
@@ -20,8 +32,66 @@ export const addDocumentWithoutTimestamp = async (collectionName, data) => {
 }
 
 
+// Add data to Cloud Firestore with timestamps:
+/**
+ * 
+ * @param {string} collectionName Name of collection.
+ * @param {Object} data Data to be inserted.
+ * @param {Array} timestampKeys List of string.
+ * @returns 
+ */
+export const addDocumentWithTimestamps = async (collectionName, data, timestampKeys) => {
+    let timestamps = {};
+    for (let i = 0; i < timestampKeys.length; i++) {
+        if (typeof timestampKeys[i] === 'string') {
+            timestamps[timestampKeys[i]] = serverTimestamp();
+        }
+    }
+    const docRef = await addDoc(collection(db, collectionName), {
+        ...data,
+        ...timestamps
+    });
+    return docRef;
+}
+
+
+// Update a document by its ID:
+/**
+ * 
+ * @param {string} collectionName Name of collection.
+ * @param {string} docID Id of a document.
+ * @param {Object} data Updated data to be inserted.
+ * @param {Array} timestampKeys List of string.
+ * @returns 
+ */
+export const updateDocumentByIDWithTimestamps = async (collectionName, docID, data, timestampKeys) => {
+    let timestamps = {};
+    for (let i = 0; i < timestampKeys.length; i++) {
+        if (typeof timestampKeys[i] === 'string') {
+            timestamps[timestampKeys[i]] = serverTimestamp();
+        }
+    }
+    const docRef = doc(db, collectionName, docID);
+    const docSnapshot = await getDoc(docRef);
+
+    if (docSnapshot.exists()) {
+        await updateDoc(docSnapshot.ref, {
+            ...data,
+            ...timestamps,
+        });
+    }
+
+    return docRef;
+}
+
+
 // Create keywords for displayName.
 // Keywords are used for implementing full-text search without third party (Elastic, Algolia,...).
+/**
+ * 
+ * @param {string} displayName A user's full name.
+ * @returns 
+ */
 export const generateUserNameKeywords = (displayName) => {
 
     // 1. List all permutations. Example: name = ["Nguyen", "Gia", "Tran"]
@@ -85,18 +155,30 @@ export const generateUserNameKeywords = (displayName) => {
 };
 
 
-// Capitalize text:
-export const capitalizeSingleWord = (word) => {
+// (Pascal Case) Capitalize the first letter of a word:
+/**
+ * 
+ * @param {string} word A word.
+ * @returns 
+ */
+export const toPascalCaseForSingleWord = (word) => {
     if (word.length > 0) {
         return word[0].toUpperCase() + word.slice(1);
     }
     return '';
 }
 
-export const capitalizeAllWords = (text) => {
+
+// (Pascal Case) Capitalize the first letter of each word:
+/**
+ * 
+ * @param {string} text Text (contains multiple words).
+ * @returns 
+ */
+export const toPascalCaseForAllWords = (text) => {
     const arrOfSubstr = text.split(" ")
     for (let i = 0; i < arrOfSubstr.length; i++) {
-        arrOfSubstr[i] = capitalizeSingleWord(arrOfSubstr[i]);
+        arrOfSubstr[i] = toPascalCaseForSingleWord(arrOfSubstr[i]);
     }
     return arrOfSubstr.join(" ");
 }

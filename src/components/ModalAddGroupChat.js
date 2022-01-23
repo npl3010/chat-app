@@ -3,13 +3,13 @@ import { Avatar, Form, Input, Modal, Select, Spin } from 'antd';
 
 // Redux:
 import { useDispatch, useSelector } from 'react-redux';
-import { setSelectedChatRoom } from '../features/manageRooms/manageRoomsSlice';
+import { setSelectedChatRoomID } from '../features/manageRooms/manageRoomsSlice';
 
 // Context:
 import { ModalControlContext } from '../context/ModalControlProvider';
 
 // Services:
-import { addDocument } from '../firebase/services';
+import { addDocumentWithTimestamps } from '../firebase/services';
 import { fetchUserListByUserEmail, fetchUserListByUserName } from '../firebase/queryUsers';
 
 // CSS:
@@ -57,25 +57,29 @@ function ModalAddGroupChat(props) {
 
         // Insert data to database:
         if (formData.groupChatName) {
-            addDocument('rooms', {
+            addDocumentWithTimestamps('rooms', {
                 name: formData.groupChatName,
                 description: 'Group chat',
                 type: 'group-chat',
                 members: [user.uid, ...optionsSelected],
                 membersAddedBy: [user.uid, ...optionsSelected.map(() => user.uid)],
                 membersRole: ['group-admin', ...optionsSelected.map(() => 'group-member')],
-                latestMessage: ''
-            });
+                latestMessage: '',
+                isSeenBy: [],
+                fromOthers_BgColor: '',
+                fromMe_BgColor: ''
+            }, ['createdAt', 'lastActiveAt'])
+                .then((res) => {
+                    // Select the last created chat room:
+                    const action = setSelectedChatRoomID(res.id);
+                    dispatch(action);
+                });
 
             // Clear form:
             form.resetFields();
 
             // Hide form:
             setisModalAddGroupVisible(false);
-
-            // Select the last created chat room:
-            const action = setSelectedChatRoom(0);
-            dispatch(action);
         } else {
             return;
         }

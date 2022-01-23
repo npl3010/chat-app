@@ -25,7 +25,7 @@ function ModalSearchUserFormPage1(props) {
 
 
     // Component:
-    const renderUserList = () => {
+    const renderNonEmptyUserList = () => {
         return (
             <div className='userlist-wrapper'>
                 <div className='userlist'>
@@ -73,8 +73,8 @@ function ModalSearchUserFormPage1(props) {
                                 <div className='person-img'></div>
                             </div>
                             <div className='user__info'>
-                                <div className='user-title'>User's name</div>
-                                <div className='user-more-info'>User's email</div>
+                                <div className='user-title'>Name</div>
+                                <div className='user-more-info'>More info</div>
                             </div>
                         </div>
                     </div>
@@ -101,7 +101,7 @@ function ModalSearchUserFormPage1(props) {
         } else if (stateForSearching === 'empty-search-result') {
             return renderEmptyUserList();
         } else if (stateForSearching === 'none') {
-            return renderUserList();
+            return renderNonEmptyUserList();
         } else {
             return (<></>);
         }

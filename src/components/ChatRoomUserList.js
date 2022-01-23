@@ -54,12 +54,19 @@ function ChatRoomUserList(props) {
     // Side effects:
     useEffect(() => {
         if (selectedChatRoomID !== '' && rooms.length > 0) {
+            let count = 0;
             for (let i = 0; i < rooms.length; i++) {
                 if (rooms[i].id === selectedChatRoomID) {
                     setIndexOfRoom(i);
+                    count++;
                     break;
                 }
             }
+            if (count === 0) {
+                setIndexOfRoom(-1);
+            }
+        } else {
+            setIndexOfRoom(-1);
         }
     }, [rooms, selectedChatRoomID]);
 

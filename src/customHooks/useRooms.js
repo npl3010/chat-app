@@ -12,7 +12,7 @@ import { db, collection, onSnapshot, query, where, orderBy, limit } from '../fir
  * { userID: 'abc', limit: 15 }
  * @returns {Array} List of updated results.
  */
-const useFriendRequests = (collectionName, params) => {
+const useRooms = (collectionName, params) => {
     // State:
     const [document, setDocument] = useState([]);
 
@@ -29,8 +29,8 @@ const useFriendRequests = (collectionName, params) => {
 
         // Create a query against the collection:
         const q = query(collectionRef,
-            where('users', 'array-contains', params.userID),
-            orderBy('createdAt', 'desc'),
+            where('members', 'array-contains', params.userID),
+            orderBy('lastActiveAt', 'desc'),
             limit(params.limit)
         );
 
@@ -38,7 +38,12 @@ const useFriendRequests = (collectionName, params) => {
         const unsubscribe = onSnapshot(q, (snapshot) => {
             const data = [];
             snapshot.forEach((doc) => {
-                data.push(doc.data());
+                data.push({
+                    ...doc.data(),
+                    createdAt: (doc.data().createdAt) && (doc.data().createdAt.toDate().toString()),
+                    lastActiveAt: (doc.data().lastActiveAt) && (doc.data().lastActiveAt.toDate().toString()),
+                    id: doc.id
+                });
             });
 
             setDocument(data);
@@ -54,4 +59,4 @@ const useFriendRequests = (collectionName, params) => {
     return document;
 }
 
-export default useFriendRequests;
+export default useRooms;
