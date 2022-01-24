@@ -137,7 +137,7 @@ function ChatMenu(props) {
     const renderNonEmptySearchResult = () => {
         return (
             <div className='results-wrapper'>
-                <div className='results'>
+                <div className='results nonempty'>
                     {
                         searchResultList.map((listItem, index) => {
                             return (
@@ -145,6 +145,7 @@ function ChatMenu(props) {
                                     className='results__item'
                                     key={`search-result-${listItem.uid}`}
                                     onClick={() => createTemporaryChatRoom(listItem)}
+                                    style={{ '--order': index }}
                                 >
                                     <div className='object'>
                                         <div className='object__img-wrapper'>

@@ -261,6 +261,13 @@
     .results {
         display: block;
 
+        &__item {
+            opacity: 0;
+            animation: staggeredListForChatMenuSearchResults 0.3s ease 1 normal;
+            animation-fill-mode: forwards;
+            animation-delay: calc(var(--order) * 0.2s);
+        }
+
         .object {
             display: flex;
             flex-direction: row;
@@ -393,6 +400,43 @@
                     left: 0;
                     right: 0;
                     bottom: 0;
+                    border-radius: 50%;
+                    border: 2px solid steelblue;
+                    border-right-color: transparent;
+                    border-bottom-color: transparent;
+                    border-left-color: transparent;
+                    background-color: hsl(200, 20%, 70%);
+                    animation:
+                        skeletonLoadingChangeBgColor 0.5s ease infinite alternate, 
+                        skeletonLoadingSpin 0.5s ease infinite normal forwards;
+                }
+            }
+
+            &__info-wrapper {
+                
+                .object-title::before,
+                .object-more-info::before {
+                    content: '';
+                    position: absolute;
+                    background-color: #ddd;
+                    width: 100%;
+                    height: 100%;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    bottom: 0;
+                }
+
+                .object-title::after,
+                .object-more-info::after {
+                    content: '';
+                    position: absolute;
+                    width: 100%;
+                    height: 100%;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    bottom: 0;
                     background-color: hsl(200, 20%, 70%);
                     animation: skeletonLoadingChangeBgColor 0.5s ease infinite alternate;
                 }
@@ -403,13 +447,31 @@
 
 
 // Animations:
+@keyframes staggeredListForChatMenuSearchResults {
+    from {
+        opacity: 0;
+        transform: scaleX(0.5) translateY(50px);
+    }
+    to {
+        opacity: 1;
+        transform: scaleX(1) translateY(0)
+    }
+}
+
 @keyframes skeletonLoadingChangeBgColor {
     0% {
         background-color: hsl(200, 20%, 80%);
-        transform: scale(0) rotateZ(0deg);
     }
     100% {
         background-color: hsl(200, 20%, 95%);
-        transform: scale(1) rotateZ(180deg);
+    }
+}
+
+@keyframes skeletonLoadingSpin {
+    0% {
+        transform: rotateZ(0deg);
+    }
+    100% {
+        transform: rotateZ(360deg);
     }
 }

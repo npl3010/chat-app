@@ -28,7 +28,7 @@ function ModalSearchUserFormPage1(props) {
     const renderNonEmptyUserList = () => {
         return (
             <div className='userlist-wrapper'>
-                <div className='userlist'>
+                <div className='userlist nonempty'>
                     {
                         userSearchResultList.map((userListItem, index) => {
                             return (
@@ -36,6 +36,7 @@ function ModalSearchUserFormPage1(props) {
                                     className='userlist__item'
                                     key={`user-${userListItem.uid}`}
                                     onClick={() => hanldeSelectUserToViewQuickProfile(userListItem.uid)}
+                                    style={{ '--order': index }}
                                 >
                                     <div className='user'>
                                         <div className='user__person-img'>
