@@ -115,7 +115,7 @@ function ChatRoomCollapsibleMenu(props) {
                                     style={idOfInlineMenuToBeDisplayed === 1 ? { height: inlineMenuHeight, overflow: inlineMenuOverflow } : {}}
                                 >
                                     <div className='inline-menu' ref={(el) => inlineMenusRef.current[1] = el}>
-                                        <ChatRoomUserList
+                                        {/* <ChatRoomUserList
                                             usedForInlineMenuId={1}
                                             setInlineMenuOverflow={setInlineMenuOverflow}
                                             idOfInlineMenuToBeDisplayed={idOfInlineMenuToBeDisplayed}
@@ -123,7 +123,7 @@ function ChatRoomCollapsibleMenu(props) {
                                             selectedChatRoom={selectedChatRoom}
                                             selectedChatRoomID={selectedChatRoomID}
                                             selectedChatRoomUsers={selectedChatRoomUsers}
-                                        ></ChatRoomUserList>
+                                        ></ChatRoomUserList> */}
                                     </div>
                                 </div>
                             </div>

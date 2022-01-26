@@ -87,6 +87,7 @@ $topnav_paddingTopBottom: 8px;
         display: flex;
         justify-content: center;
         align-items: center;
+        min-width: 40px;
         width: 40px;
         height: 40px;
         cursor: pointer;
@@ -137,6 +138,7 @@ $topnav_paddingTopBottom: 8px;
 
     .user-img-wrapper {
         display: inline-block;
+        min-width: 35px;
         width: 35px;
         height: 35px;
         margin-right: 5px;

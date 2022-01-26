@@ -8,6 +8,8 @@ All fields:
 - photoURL (string)
 - providerId (string)
 - uid (string)
+- phoneNumber (string)
+- gender (string)
 
 2. rooms (A room object represents a chat room information):
 All fields:
@@ -15,6 +17,7 @@ All fields:
 - lastActiveAt (timestamp)
 - name (string)
 - description (string)
+- state (string)
 - members (array): List of uids.
 - membersAddedBy (array): List of uids.
 - membersRole (array): List of role, they are: 'group-admin', 'group-member'.

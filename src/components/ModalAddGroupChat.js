@@ -3,7 +3,7 @@ import { Avatar, Form, Input, Modal, Select, Spin } from 'antd';
 
 // Redux:
 import { useDispatch, useSelector } from 'react-redux';
-import { setSelectedChatRoomID } from '../features/manageRooms/manageRoomsSlice';
+import { setRoomIDWillBeSelected } from '../features/manageRooms/manageRoomsSlice';
 
 // Context:
 import { ModalControlContext } from '../context/ModalControlProvider';
@@ -71,7 +71,7 @@ function ModalAddGroupChat(props) {
             }, ['createdAt', 'lastActiveAt'])
                 .then((res) => {
                     // Select the last created chat room:
-                    const action = setSelectedChatRoomID(res.id);
+                    const action = setRoomIDWillBeSelected(res.id);
                     dispatch(action);
                 });
 

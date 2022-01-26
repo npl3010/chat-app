@@ -38,6 +38,8 @@ function LoginPage(props) {
                         photoURL: result.user.photoURL,
                         providerId: moreInfo.providerId,
                         displayNameSearchKeywords: generateUserNameKeywords(result.user.displayName),
+                        phoneNumber: result.user.phoneNumber,
+                        gender: ''
                     });
                     // - Table 'friends':
                     addDocumentWithoutTimestamp("friends", {

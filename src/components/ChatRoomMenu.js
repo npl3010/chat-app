@@ -139,7 +139,7 @@ function ChatRoomMenu(props) {
 
     const generateChatRoomName = () => {
         let result = '';
-        if (selectedChatRoomID !== '' && rooms.length > 0) {
+        if (selectedChatRoomID !== '') {
             let roomType = '';
             let indexOfRoom = -1;
             for (let i = 0; i < rooms.length; i++) {
@@ -155,6 +155,7 @@ function ChatRoomMenu(props) {
                     for (let i = 0; i < selectedChatRoomUsers.length; i++) {
                         if (selectedChatRoomUsers[i].uid !== user.uid) {
                             result = selectedChatRoomUsers[i].displayName;
+                            break;
                         }
                     }
                 }
@@ -168,8 +169,6 @@ function ChatRoomMenu(props) {
         }
         return result;
     };
-
-    console.log('rerender ' + selectedChatRoomID, rooms)
 
     return (
         <div className='chatroom-menu'>

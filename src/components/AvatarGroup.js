@@ -7,14 +7,15 @@ import '../styles/scss/components/AvatarGroup.scss';
 /**
  * 
  * @param {Array} props.imgsData
- * @param {string} props.imgsData.imgSrc Image's URL.
- * @param {string} props.imgsData.displayName Name of the image.
+ * @param {string} props.imgsData[index].imgSrc Image's URL.
+ * @param {string} props.imgsData[index].displayName Name of the image.
  * @returns 
  */
 function AvatarGroup(props) {
     const {
         imgsData = [],
-        moreAvatarsNumber = 0
+        moreAvatarsNumber = 0,
+        className = ''
     } = props;
 
 
@@ -70,7 +71,7 @@ function AvatarGroup(props) {
     };
 
     return (
-        <div className={`avatar-group${renderClassNameForAvatarGroup()}`}>
+        <div className={`avatar-group${renderClassNameForAvatarGroup()}${className ? (' ' + className) : ''}`}>
             {renderAvatars()}
         </div>
     );

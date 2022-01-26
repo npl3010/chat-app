@@ -7,7 +7,7 @@ import AvatarGroup from './AvatarGroup';
 
 // Redux:
 import { useDispatch, useSelector } from 'react-redux';
-import { clearSelectedChatRoomUserList, setNewSelectedChatRoomID, setSelectedChatRoomID } from '../features/manageRooms/manageRoomsSlice';
+import { setRoomIDWillBeSelected } from '../features/manageRooms/manageRoomsSlice';
 
 // Services:
 import { addDocument, addDocumentWithTimestamps, updateDocumentByIDWithTimestamps } from '../firebase/services';
@@ -44,32 +44,8 @@ function ChatRoom(props) {
                     break;
                 }
             }
-        } else {
-            if (selectedChatRoomUsers.length > 0) {
-                let members = [user.uid];
-                let indexOfMember = -1;
-                for (let i = 0; i < selectedChatRoomUsers.length; i++) {
-                    if (selectedChatRoomUsers[i].uid !== user.uid) {
-                        members.push(selectedChatRoomUsers[i].uid);
-                        indexOfMember = i;
-                        break;
-                    }
-                }
-                setRoomData({
-                    name: `${indexOfMember === -1 ? '' : selectedChatRoomUsers[indexOfMember].displayName}`,
-                    description: 'One To One chat',
-                    type: 'one-to-one-chat',
-                    members: members,
-                    // membersAddedBy: [],
-                    // membersRole: [],
-                    latestMessage: '',
-                    isSeenBy: [],
-                    fromOthers_BgColor: '',
-                    fromMe_BgColor: '',
-                });
-            }
         }
-    }, [rooms, selectedChatRoomID, selectedChatRoomUsers, user.uid]);
+    }, [rooms, selectedChatRoomID]);
 
 
     // Methods:
@@ -81,40 +57,48 @@ function ChatRoom(props) {
         if (e.charCode === 13) {
             if (selectedChatRoomID !== '') {
                 if (inputMessage.length > 0) {
-                    // Add data to Cloud Firestore:
-                    addDocument('messages', {
-                        roomId: selectedChatRoomID,
-                        content: inputMessage,
-                        uid: user.uid,
-                    })
-                        .then((messageRef) => {
-                            updateDocumentByIDWithTimestamps('rooms', selectedChatRoomID, {}, ['lastActiveAt']);
-                        });
-
-                    // Clear form:
-                    setInputMessage('');
-                }
-            } else {
-                if (selectedChatRoomUsers.length > 0 && Object.keys(roomData).length > 0) {
-                    // Add data to Cloud Firestore:
-                    addDocumentWithTimestamps('rooms', {
-                        ...roomData,
-                        name: 'Room\'s name'
-                    }, ['createdAt', 'lastActiveAt'])
-                        .then((roomRef) => {
-                            addDocument('messages', {
-                                roomId: roomRef.id,
-                                content: inputMessage,
-                                uid: user.uid,
-                            }).then((messageRef) => {
-                                dispatch(setSelectedChatRoomID(''));
-                                dispatch(clearSelectedChatRoomUserList());
-                                dispatch(setNewSelectedChatRoomID(roomRef.id))
+                    if (roomData.state === 'temporary') {
+                        // Add data to Cloud Firestore:
+                        addDocumentWithTimestamps('rooms', {
+                            id: 'temporary',
+                            name: 'Room\'s name',
+                            description: 'One To One chat',
+                            type: 'one-to-one-chat',
+                            members: roomData.members,
+                            latestMessage: inputMessage,
+                            isSeenBy: [user.uid],
+                            fromOthers_BgColor: '',
+                            fromMe_BgColor: '',
+                        }, ['createdAt', 'lastActiveAt'])
+                            .then((roomRef) => {
+                                addDocument('messages', {
+                                    roomId: roomRef.id,
+                                    content: inputMessage,
+                                    uid: user.uid,
+                                }).then((messageRef) => {
+                                    dispatch(setRoomIDWillBeSelected(roomRef.id));
+                                });
                             });
-                        });
 
-                    // Clear form:
-                    setInputMessage('');
+                        // Clear form:
+                        setInputMessage('');
+                    } else {
+                        // Add data to Cloud Firestore:
+                        addDocument('messages', {
+                            roomId: selectedChatRoomID,
+                            content: inputMessage,
+                            uid: user.uid,
+                        })
+                            .then((messageRef) => {
+                                updateDocumentByIDWithTimestamps('rooms', selectedChatRoomID, {
+                                    latestMessage: inputMessage,
+                                    isSeenBy: [user.uid]
+                                }, ['lastActiveAt']);
+                            });
+
+                        // Clear form:
+                        setInputMessage('');
+                    }
                 }
             }
         }
@@ -136,8 +120,7 @@ function ChatRoom(props) {
             value: comparisonValue
         };
     }, [rooms, selectedChatRoomID]);
-
-    // (REALTIME) Get all messages that belong to this room.
+    // (GET REALTIME UPDATES) Get all messages that belong to this room.
     let messages = useFirestore('messages', messagesCondition);
 
     // Scroll to bottom if there are new messages:
@@ -149,6 +132,25 @@ function ChatRoom(props) {
 
 
     // Component:
+    const generateChatRoomName = () => {
+        let result = '';
+        if (selectedChatRoomID !== '') {
+            if (roomData.type === 'one-to-one-chat') {
+                if (selectedChatRoomUsers.length > 0) {
+                    for (let i = 0; i < selectedChatRoomUsers.length; i++) {
+                        if (selectedChatRoomUsers[i].uid !== user.uid) {
+                            result = selectedChatRoomUsers[i].displayName;
+                            break;
+                        }
+                    }
+                }
+            } else if (roomData.type === 'group-chat') {
+                result = roomData.name ? roomData.name : '';
+            }
+        }
+        return result;
+    };
+
     const renderOneToOneChatRoomImg = () => {
         if (selectedChatRoomUsers.length > 0) {
             let indexOfMember = -1;
@@ -201,6 +203,7 @@ function ChatRoom(props) {
                 return (
                     <div className='group-img-wrapper'>
                         <AvatarGroup
+                            className='small-size'
                             imgsData={imgGroup}
                             moreAvatarsNumber={1}
                         ></AvatarGroup>
@@ -290,8 +293,8 @@ function ChatRoom(props) {
                     <div className='chat-info__person'>
                         {renderChatRoomImage()}
                         <div className='person-info'>
-                            <span className='person-name'>{roomData.name ? roomData.name : ''}</span>
-                            <span className='person-active-status'>Hoạt động 1 giờ trước</span>
+                            <span className='person-name'>{generateChatRoomName()}</span>
+                            <span className='person-active-status'>???</span>
                         </div>
                     </div>
 

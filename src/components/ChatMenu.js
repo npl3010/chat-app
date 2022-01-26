@@ -1,10 +1,13 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEllipsisH, faUserPlus, faUsers, faSearch, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 
+// Components:
+import ChatMenuItem from './ChatMenuItem';
+
 // Redux:
 import { useDispatch, useSelector } from 'react-redux';
-import { selectRoom, selectTemporaryChatRoom, setIsLoadingARoom, setRoomList } from '../features/manageRooms/manageRoomsSlice';
+import { selectRoom, setIsLoadingARoom, setRoomIDWillBeSelected, setRoomList, setTemporaryRoom } from '../features/manageRooms/manageRoomsSlice';
 
 // Context:
 import { ModalControlContext } from '../context/ModalControlProvider';
@@ -33,7 +36,7 @@ function ChatMenu(props) {
 
     // Redux:
     const user = useSelector((state) => state.userAuth.user);
-    const { rooms, selectedChatRoomID } = useSelector((state) => state.manageRooms);
+    const { rooms, selectedChatRoomID, roomIDWillBeSelected } = useSelector((state) => state.manageRooms);
     const dispatch = useDispatch();
 
 
@@ -44,16 +47,7 @@ function ChatMenu(props) {
 
 
     // Methods:
-    const handleClickChatRoom = (roomID) => {
-        let uidList = [];
-        for (let i = 0; i < rooms.length; i++) {
-            if (rooms[i].id === roomID) {
-                uidList = [...rooms[i].members];
-                dispatch(setIsLoadingARoom(true));
-                break;
-            }
-        }
-
+    const getUsersByUids = useCallback((roomID, uidList) => {
         fetchUserListByUidList(uidList)
             .then((users) => {
                 dispatch(selectRoom({
@@ -62,15 +56,27 @@ function ChatMenu(props) {
                 }));
                 dispatch(setIsLoadingARoom(false));
             });
-    }
+    }, [dispatch]);
+
+    const handleClickChatRoom = useCallback((roomID) => {
+        let uidList = [];
+        for (let i = 0; i < rooms.length; i++) {
+            if (rooms[i].id === roomID) {
+                uidList = [...rooms[i].members];
+                dispatch(setIsLoadingARoom(true));
+                break;
+            }
+        }
+        getUsersByUids(roomID, uidList);
+    }, [dispatch, rooms, getUsersByUids]);
 
     const handleFocusSearchBox = () => {
         setIsSearchBoxInputFocused(true);
-    }
+    };
 
     const handleBlurSearchBox = () => {
         setIsSearchBoxInputFocused(false);
-    }
+    };
 
     const handleSearchInputChange = (e) => {
         // We must clearTimeout to prevent autocomplete on submitting many requests when fetching API:
@@ -86,9 +92,9 @@ function ChatMenu(props) {
             let keywordToSearchFor = e.target.value;
             timeout.current = setTimeout(async () => {
                 fetchFriendListByUserName(user.uid, keywordToSearchFor, [])
-                    .then((newOptions) => {
-                        setSearchResultList(newOptions);
-                        if (newOptions.length === 0) {
+                    .then((userList) => {
+                        setSearchResultList(userList);
+                        if (userList.length === 0) {
                             setStateForSearching('empty-search-result');
                         } else {
                             setStateForSearching('none');
@@ -98,17 +104,66 @@ function ChatMenu(props) {
         } else {
             setStateForSearching('none');
         }
-    }
+    };
 
-    const createTemporaryChatRoom = (userData) => {
-        const payload = {
-            users: [{
-                ...userData,
-                createdAt: (userData.createdAt) && (userData.createdAt.toDate().toString())
-            }]
+    const goToChatRoomWith = (userData) => {
+        const usersOfRoom = [user.uid, userData.uid];
+
+        // Check if a room (of local room list) for the users above already exists:
+        let idOfRoom = '';
+        for (let i = 0; i < rooms.length; i++) {
+            if (rooms[i].type === 'one-to-one-chat' && rooms[i].members.length === 2) {
+                const allFounded = usersOfRoom.every(uid => {
+                    return rooms[i].members.includes(uid);
+                });
+                if (allFounded === true) {
+                    idOfRoom = rooms[i].id;
+                    break;
+                }
+            }
         }
-        dispatch(selectTemporaryChatRoom(payload));
-    }
+
+        // If idOfRoom === '', it is probably because of the pagination/load-more.
+        // (This means that the app hasn't loaded all the rooms yet).
+        if (idOfRoom === '') {
+            // Do these steps below:
+            // 1. Check if roomIDWillBeSelected is equal to a room's id already exists in database.
+            // - If yes:
+            // Load the room and store it in temporaryRoom.
+            // Load and store all data related to the room, like selectedChatRoomID, selectedChatRoomUsers,... .
+            // - If no: do nothing.
+        }
+
+        // If a room for the users above already exists, select this room,
+        // otherwise you must create a new one.
+        if (idOfRoom === '') {
+            const newTemporaryRoom = {
+                id: 'temporary',
+                name: 'Room\'s name',
+                description: 'One To One chat',
+                type: 'one-to-one-chat',
+                members: usersOfRoom,
+                state: 'temporary',
+                latestMessage: '',
+                isSeenBy: [],
+                fromOthers_BgColor: '',
+                fromMe_BgColor: '',
+                createdAt: '',
+                lastActiveAt: ''
+            };
+            dispatch(setTemporaryRoom(newTemporaryRoom));
+
+            // Select the last created chat room.
+            dispatch(setRoomIDWillBeSelected(newTemporaryRoom.id));
+            // Reset some states:
+            handleBlurSearchBox();
+        } else {
+            // Select chat room.
+            dispatch(setRoomIDWillBeSelected(idOfRoom));
+            // Reset some states:
+            handleBlurSearchBox();
+        }
+    };
 
 
     // Hooks:
@@ -127,10 +182,22 @@ function ChatMenu(props) {
     useEffect(() => {
         // Get all rooms that the user is a member of:
         if (chatRooms.length > 0) {
-            const action = setRoomList(chatRooms);
-            dispatch(action);
+            dispatch(setRoomList(chatRooms));
         }
     }, [dispatch, chatRooms]);
+
+    useEffect(() => {
+        // If user selects new room using setRoomIDWillBeSelected(), run these code below:
+        if (roomIDWillBeSelected !== '') {
+            for (let i = 0; i < rooms.length; i++) {
+                if (rooms[i].id === roomIDWillBeSelected) {
+                    getUsersByUids(rooms[i].id, rooms[i].members);
+                    dispatch(setRoomIDWillBeSelected(''));
+                    break;
+                }
+            }
+        }
+    }, [dispatch, rooms, roomIDWillBeSelected, handleClickChatRoom, getUsersByUids]);
 
 
     // Component:
@@ -144,7 +211,7 @@ function ChatMenu(props) {
                                 <div
                                     className='results__item'
                                     key={`search-result-${listItem.uid}`}
-                                    onClick={() => createTemporaryChatRoom(listItem)}
+                                    onClick={() => goToChatRoomWith(listItem)}
                                     style={{ '--order': index }}
                                 >
                                     <div className='object'>
@@ -266,7 +333,7 @@ function ChatMenu(props) {
                                     <input
                                         className='search-box__input'
                                         type='text'
-                                        placeholder='Tìm bạn để chat'
+                                        placeholder='Tìm trong danh bạ'
                                         onFocus={handleFocusSearchBox}
                                         onChange={(e) => handleSearchInputChange(e)}
                                     ></input>
@@ -295,15 +362,12 @@ function ChatMenu(props) {
                                         key={`chatRoom-${index}`}
                                         onClick={() => handleClickChatRoom(element.id)}
                                     >
-                                        <div className='chatbox'>
-                                            <div className='chatbox__person-img'>
-                                                <img className='person-img' src='' alt='' ></img>
-                                            </div>
-                                            <div className='chatbox__info'>
-                                                <div className='chatbox-title'>{element.name}</div>
-                                                <div className='chatbox-latest-message'>Tin nhắn mới nhất nè!</div>
-                                            </div>
-                                        </div>
+                                        <ChatMenuItem
+                                            membersOfARoom={element.members}
+                                            roomType={element.type}
+                                            title={element.name}
+                                            content={element.latestMessage ? element.latestMessage : '(Không có tin nhắn)'}
+                                        ></ChatMenuItem>
                                     </div>
                                 );
                             })
