@@ -294,7 +294,7 @@ function ChatRoom(props) {
                         {renderChatRoomImage()}
                         <div className='person-info'>
                             <span className='person-name'>{generateChatRoomName()}</span>
-                            <span className='person-active-status'>???</span>
+                            <span className='person-active-status'>{roomData.type === 'group-chat' ? roomData.lastActiveAt : ''}</span>
                         </div>
                     </div>
 

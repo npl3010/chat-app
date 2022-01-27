@@ -5,6 +5,35 @@
     font-family: 'Comfortaa', cursive;
 }
 
+
+// Scrollbar:
+::-webkit-scrollbar {
+    width: 16px;
+}
+
+::-webkit-scrollbar-track {
+    background-color: rgba(240, 242, 245, 0.5);
+}
+
+::-webkit-scrollbar-track:hover {
+    background-color: rgb(240, 242, 245);
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #ccc;
+  border-radius: 10px;
+  border: calc((16px / 2) / 2) solid transparent;
+  background-clip: padding-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background-color: #aaa;
+    border: calc((16px / 2) / 2) solid transparent;
+    background-clip: padding-box;
+}
+
+
+// Body:
 body {
     padding: 0;
     margin: 0;

@@ -7,7 +7,7 @@ import ChatMenuItem from './ChatMenuItem';
 
 // Redux:
 import { useDispatch, useSelector } from 'react-redux';
-import { selectRoom, setIsLoadingARoom, setRoomIDWillBeSelected, setRoomList, setTemporaryRoom } from '../features/manageRooms/manageRoomsSlice';
+import { selectRoom, setIsLoadingARoom, setRoomIDWillBeSelected, setRoomList, setselectedChatRoomUsers, setTemporaryRoom } from '../features/manageRooms/manageRoomsSlice';
 
 // Context:
 import { ModalControlContext } from '../context/ModalControlProvider';
@@ -185,6 +185,21 @@ function ChatMenu(props) {
             dispatch(setRoomList(chatRooms));
         }
     }, [dispatch, chatRooms]);
+
+    useEffect(() => {
+        // Check if there are some updates with the selected room:
+        if (selectedChatRoomID !== '') {
+            for (let i = 0; i < rooms.length; i++) {
+                if (rooms[i].id === selectedChatRoomID) {
+                    fetchUserListByUidList(rooms[i].members)
+                        .then((users) => {
+                            dispatch(setselectedChatRoomUsers(users));
+                        });
+                    break;
+                }
+            }
+        }
+    }, [dispatch, rooms, selectedChatRoomID]);
 
     useEffect(() => {
         // If user selects new room using setRoomIDWillBeSelected(), run these code below:

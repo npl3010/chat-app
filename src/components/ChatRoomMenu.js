@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Avatar, Tooltip } from 'antd';
 
 // Components:
@@ -15,6 +15,23 @@ function ChatRoomMenu(props) {
     // Redux:
     const user = useSelector((state) => state.userAuth.user);
     const { rooms, selectedChatRoomID, selectedChatRoomUsers } = useSelector((state) => state.manageRooms);
+
+
+    // State:
+    const [roomData, setRoomData] = useState({});
+
+
+    // Side effects:
+    useEffect(() => {
+        if (selectedChatRoomID !== '') {
+            for (let i = 0; i < rooms.length; i++) {
+                if (rooms[i].id === selectedChatRoomID) {
+                    setRoomData(rooms[i]);
+                    break;
+                }
+            }
+        }
+    }, [rooms, selectedChatRoomID]);
 
 
     // Component:
@@ -42,12 +59,6 @@ function ChatRoomMenu(props) {
                         )
                     })
                 }
-                {/* <Tooltip title="Username" placement="bottom">
-                    <Avatar style={{ backgroundColor: '#eee' }} src="" />
-                </Tooltip>
-                <Tooltip title="Username" placement="bottom">
-                    <Avatar style={{ backgroundColor: 'yellowgreen' }}>K</Avatar>
-                </Tooltip> */}
             </Avatar.Group>
         );
     };
@@ -57,11 +68,12 @@ function ChatRoomMenu(props) {
         let imgIndex = -1;
         if (selectedChatRoomUsers.length > 0) {
             if (roomType === 'one-to-one-chat') {
-                selectedChatRoomUsers.forEach((element, index) => {
-                    if (element.uid !== user.uid) {
-                        imgIndex = index;
+                for (let i = 0; i < selectedChatRoomUsers.length; i++) {
+                    if (selectedChatRoomUsers[i].uid !== user.uid) {
+                        imgIndex = i;
+                        break;
                     }
-                });
+                }
             } else if (roomType === 'self-chat') {
                 imgIndex = 0;
             } else {
@@ -89,18 +101,12 @@ function ChatRoomMenu(props) {
 
     const renderRoomUserAvatars = () => {
         if (selectedChatRoomID !== '' && rooms.length > 0) {
-            let roomType = '';
-            for (let i = 0; i < rooms.length; i++) {
-                if (rooms[i].id === selectedChatRoomID) {
-                    roomType = rooms[i].type;
-                    break;
-                }
-            }
+            let roomType = roomData.type ? roomData.type : '';
 
-            if (roomType === 'one-to-one-chat') {
-                return renderSingleUserAvatar('one-to-one-chat');
-            } else if (roomType === 'group-chat') {
+            if (roomType === 'group-chat') {
                 return renderGroupOfAvatars();
+            } else if (roomType === 'one-to-one-chat') {
+                return renderSingleUserAvatar('one-to-one-chat');
             } else if (roomType === 'self-chat') {
                 return renderSingleUserAvatar('self-chat');
             } else {
@@ -111,20 +117,13 @@ function ChatRoomMenu(props) {
 
     const renderOptionList = () => {
         if (selectedChatRoomID !== '' && rooms.length > 0) {
-            let roomType = '';
-            for (let i = 0; i < rooms.length; i++) {
-                if (rooms[i].id === selectedChatRoomID) {
-                    roomType = rooms[i].type;
-                    break;
-                }
-            }
+            let roomType = roomData.type ? roomData.type : '';
 
             if (roomType === 'group-chat') {
                 return (
                     <>
                         <ChatRoomCollapsibleMenu
-                            rooms={rooms}
-                            selectedChatRoomID={selectedChatRoomID}
+                            roomData={roomData}
                             selectedChatRoomUsers={selectedChatRoomUsers}
                         ></ChatRoomCollapsibleMenu>
                     </>
@@ -140,15 +139,7 @@ function ChatRoomMenu(props) {
     const generateChatRoomName = () => {
         let result = '';
         if (selectedChatRoomID !== '') {
-            let roomType = '';
-            let indexOfRoom = -1;
-            for (let i = 0; i < rooms.length; i++) {
-                if (rooms[i].id === selectedChatRoomID) {
-                    roomType = rooms[i].type;
-                    indexOfRoom = i;
-                    break;
-                }
-            }
+            let roomType = roomData.type ? roomData.type : '';
 
             if (roomType === 'one-to-one-chat') {
                 if (selectedChatRoomUsers.length > 0) {
@@ -160,11 +151,7 @@ function ChatRoomMenu(props) {
                     }
                 }
             } else if (roomType === 'group-chat') {
-                if (indexOfRoom !== -1) {
-                    result = rooms[indexOfRoom].name;
-                } else {
-                    result = '';
-                }
+                result = roomData.name ? roomData.name : '';
             }
         }
         return result;

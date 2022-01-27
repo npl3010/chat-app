@@ -113,6 +113,11 @@ const manageRoomsSlice = createSlice({
                 }
             }
         },
+
+        // Set selectedChatRoomUsers:
+        setselectedChatRoomUsers: (state, action) => {
+            state.selectedChatRoomUsers = action.payload;
+        },
     },
     extraReducers: {}
 });
@@ -125,7 +130,8 @@ export const {
     setRoomIDWillBeSelected,
     setTemporaryRoom,
     clearRoomList,
-    setRoomList
+    setRoomList,
+    setselectedChatRoomUsers
 } = manageRoomsSlice.actions;
 // Slice Reducer:
 export default manageRoomsSlice.reducer;

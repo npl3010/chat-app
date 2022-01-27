@@ -4,9 +4,36 @@
 }
 
 
+// Modal style:
 .antd-modal-add-group-chat {
     min-width: 500px;
     width: 650px !important;
+
+    .ant-modal-content {
+        border-radius: 10px;
+        overflow: hidden;
+    }
+
+    .ant-modal-footer {
+        padding-left: 24px;
+        padding-right: 24px;
+    }
+    
+    .ant-btn-primary {
+        background-color: rgba(70, 130, 180, 1);
+        border-color: rgba(70, 130, 180, 1);
+        color: #fff;
+
+        &:hover {
+            background-color: rgba(70, 130, 180, 0.8);
+            border-color: rgba(70, 130, 180, 0.8);
+        }
+    }
+}
+
+
+// Select options:
+.antd-modal-add-group-chat {
 
     .ant-select-multiple .ant-select-selection-item {
         height: auto;
@@ -27,6 +54,31 @@
     }
 }
 
+
+// Fields:
+.antd-modal-add-group-chat {
+
+    .ant-input:hover {
+        border-color: steelblue;
+    }
+
+    .ant-input-focused, .ant-input:focus {
+        border-color: steelblue;
+        box-shadow: 0 0 0 2px rgba(70, 130, 180, 0.3);
+    }
+
+    .ant-select-focused:not(.ant-select-disabled).ant-select:not(.ant-select-customize-input) .ant-select-selector {
+        border-color: steelblue;
+        box-shadow: 0 0 0 2px rgba(70, 130, 180, 0.3);
+    }
+
+    .ant-select:not(.ant-select-disabled):hover .ant-select-selector {
+        border-color: steelblue;
+    }
+}
+
+
+// Loading style:
 .loading-msg.for-antd-modal-add-group-chat {
     display: flex;
     justify-content: flex-start;
