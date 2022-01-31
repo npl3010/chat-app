@@ -3,16 +3,16 @@ import { Form, Modal, Select, Spin, Avatar } from 'antd';
 import debounce from 'lodash/debounce';
 
 // Firebase:
-import { db, doc, getDocs, updateDoc, collection, query, where, orderBy, limit } from '../firebase/config';
+import { db, doc, updateDoc } from '../firebase/config';
 
 // Redux:
 import { useSelector } from 'react-redux';
 
-// Services:
-import { toPascalCaseForAllWords } from '../firebase/services';
-
 // Context:
 import { ModalControlContext } from '../context/ModalControlProvider';
+
+// Services:
+import { fetchUserListByUserEmail, fetchUserListByUserName } from '../firebase/queryUsers';
 
 // CSS:
 import '../styles/scss/components/ModalInviteMember.scss';
@@ -20,7 +20,7 @@ import '../styles/scss/components/ModalInviteMember.scss';
 
 const { Option } = Select;
 
-function DebounceSelect({ fetchOptions, debounceTimeout = 500, ...props }) {
+function DebounceSelect({ debounceTimeout = 500, ...props }) {
     const [fetching, setFetching] = React.useState(false);
     const [options, setOptions] = React.useState([]);
     const fetchRef = React.useRef(0);
@@ -34,18 +34,31 @@ function DebounceSelect({ fetchOptions, debounceTimeout = 500, ...props }) {
             // Data is being fetched or not:
             setFetching(true);
             // Fetch API using the callback which is passed to this component:
-            fetchOptions(value, props.custom_attr.membersAlreadyInRoom)
-                .then((newOptions) => {
-                    if (fetchId !== fetchRef.current) {
-                        // for fetch callback order
-                        return;
-                    }
-                    setOptions(newOptions);
-                    setFetching(false);
-                });
+            const regexForEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (regexForEmail.test(value) === true) {
+                fetchUserListByUserEmail(value, props.custom_attr.membersAlreadyInRoom, 1)
+                    .then((newOptions) => {
+                        if (fetchId !== fetchRef.current) {
+                            // for fetch callback order
+                            return;
+                        }
+                        setOptions(newOptions);
+                        setFetching(false);
+                    });
+            } else {
+                fetchUserListByUserName(value, props.custom_attr.membersAlreadyInRoom)
+                    .then((newOptions) => {
+                        if (fetchId !== fetchRef.current) {
+                            // for fetch callback order
+                            return;
+                        }
+                        setOptions(newOptions);
+                        setFetching(false);
+                    });
+            }
         };
         return debounce(loadOptions, debounceTimeout);
-    }, [fetchOptions, debounceTimeout, props.custom_attr.membersAlreadyInRoom]);
+    }, [debounceTimeout, props.custom_attr.membersAlreadyInRoom]);
 
     useEffect(() => {
         return () => {
@@ -64,58 +77,19 @@ function DebounceSelect({ fetchOptions, debounceTimeout = 500, ...props }) {
             {...props}
         >
             {
-                // Variable: options = [{ label: '', value: '', photoURL: '' }, ...];
                 options.map((element) => {
                     return (
-                        <Option key={`uid-${element.value}`} title={`${element.label}`} value={`${element.value}`}>
+                        <Option key={`uid-${element.uid}`} title={`${element.displayName}`} value={`${element.uid}`}>
                             <Avatar src={element.photoURL} shape='circle' draggable={false} style={{ marginRight: '10px' }}>
-                                {element.photoURL ? '' : element.label?.charAt(0)?.toUpperCase()}
+                                {element.photoURL ? '' : element.displayName?.charAt(0)?.toUpperCase()}
                             </Avatar>
-                            <span>{`${element.label}`}</span>
+                            <span>{`${element.displayName}`}</span>
                         </Option>
                     );
                 })
             }
         </Select>
     );
-}
-
-
-async function fetchUserList(username = '', membersAlreadyInRoom = []) {
-    /**
-     * 
-     * @param {string} username This is a keyword to search for. 
-     * @param {array} membersAlreadyInRoom The list of users who are already existed in this room,
-     * we need to hide these users in Select options.
-     * @returns 
-     */
-
-    // Get all documents in a collection from Firestore:
-    const capitalizedUsername = toPascalCaseForAllWords(username);
-
-    const q = query(collection(db, "users"),
-        where("displayNameSearchKeywords", "array-contains-any", [username, capitalizedUsername]),
-        orderBy("displayName"),
-        limit(10)
-    );
-
-    const querySnapshot = await getDocs(q);
-
-    let results = [];
-
-    querySnapshot.forEach((doc) => {
-        const docData = doc.data();
-        const resultItem = {
-            label: `${docData.displayName}`,
-            value: docData.uid,
-            photoURL: docData.photoURL,
-        }
-        results.push(resultItem);
-    });
-
-    return results.filter((element) => {
-        return !membersAlreadyInRoom.includes(element.value);
-    });
 }
 
 
@@ -233,8 +207,7 @@ function ModalInviteMember(props) {
                     <DebounceSelect
                         mode="multiple"
                         value={value}
-                        placeholder="Nhập tên người dùng"
-                        fetchOptions={fetchUserList}
+                        placeholder="Nhập tên, email của người dùng"
                         onChange={(newValue) => {
                             setValue(newValue);
                         }}

@@ -1,10 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 // Components:
 import Notification from './Notification';
 
 // Services:
-import { acceptFriendRequest } from '../firebase/queryFriends';
+import { acceptFriendRequest, cancelFriendRequestSent } from '../firebase/queryFriends';
 
 // CSS:
 import '../styles/scss/components/NotificationForFriendRequest.scss';
@@ -17,21 +17,42 @@ function NotificationForFriendRequest(props) {
         userName,
         userImgSrc,
         objectSentAt,
-        unread
+        unread = false
     } = props;
+
+
+    // State:
+    // Values for loadingStateFor: "action-OK", "action-Cancel", "".
+    const [loadingStateFor, setLoadingStateFor] = useState('');
 
 
     // Methods:
     const handleAcceptFriendRequest = () => {
         if (typeof requestFrom === 'string' && typeof requestTo === 'string') {
             if (requestFrom.length > 0 && requestTo.length > 0) {
-                acceptFriendRequest(requestFrom, requestTo);
+                setLoadingStateFor('action-OK');
+                acceptFriendRequest(requestFrom, requestTo)
+                    .then((res) => {
+                        if (res === true) {
+                            // setLoadingStateFor('');
+                        }
+                    });
             }
         }
     };
 
-    const handleOnCancel = () => {
-        console.log('Cancel!');
+    const handleCancelFriendRequestReceived = () => {
+        if (typeof requestFrom === 'string' && typeof requestTo === 'string') {
+            if (requestFrom.length > 0 && requestTo.length > 0) {
+                setLoadingStateFor('action-Cancel');
+                cancelFriendRequestSent(requestFrom, requestTo)
+                    .then((res) => {
+                        if (res === true) {
+                            // setLoadingStateFor('');
+                        }
+                    });
+            }
+        }
     };
 
 
@@ -49,7 +70,8 @@ function NotificationForFriendRequest(props) {
             actionNameForOK='Chấp nhận'
             actionNameForCancel='Từ chối'
             onOK={handleAcceptFriendRequest}
-            onCancel={handleOnCancel}
+            onCancel={handleCancelFriendRequestReceived}
+            loadingStateFor={loadingStateFor}
         ></Notification>
     );
 }

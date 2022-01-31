@@ -5,12 +5,16 @@ import '../styles/scss/components/Notification.scss';
 
 
 function Notification(props) {
+    /**
+     * Props:
+     * Values for loadingStateFor: "action-OK", "action-Cancel", "".
+     */
     const {
         className = '',
         objectName = '',
         objectImgSrc = '',
         createdAt = '',
-        isHighlighted = true,
+        isHighlighted = false,
         label = '',
         textBeforeObjectName = '',
         textAfterObjectName = '',
@@ -18,7 +22,10 @@ function Notification(props) {
         actionNameForOK = '',
         actionNameForCancel = '',
         onOK = () => { },
-        onCancel = () => { }
+        onCancel = () => { },
+        loadingStateFor = '',
+        allActionsIsDisabled = false,
+        message = ''
     } = props;
 
 
@@ -42,12 +49,12 @@ function Notification(props) {
     };
 
     const renderActionsIfTheyExist = () => {
-        if (hasActions === true) {
+        if (hasActions === true && allActionsIsDisabled === false) {
             return (
                 <div className='notification__actions'>
                     <div className='action-btn-wrapper'>
                         <div
-                            className='action-btn accept-friend-request'
+                            className={`action-btn${loadingStateFor === 'action-OK' ? ' is-loading' : ''}`}
                             onClick={() => onOK()}
                         >
                             {actionNameForOK ? actionNameForOK : 'OK'}
@@ -55,7 +62,7 @@ function Notification(props) {
                     </div>
                     <div className='action-btn-wrapper'>
                         <div
-                            className='action-btn decline-friend-request'
+                            className={`action-btn${loadingStateFor === 'action-Cancel' ? ' is-loading' : ''}`}
                             onClick={() => onCancel()}
                         >
                             {actionNameForCancel ? actionNameForCancel : 'Cancel'}
@@ -65,6 +72,14 @@ function Notification(props) {
             );
         } else {
             return (<></>);
+        }
+    };
+
+    const renderMessageIfItExists = () => {
+        if (message) {
+            return (
+                <div className='notification__message'>{message}</div>
+            );
         }
     };
 
@@ -88,6 +103,7 @@ function Notification(props) {
                         </div>
                         <div className='notification__date-time'>{createdAt}</div>
                     </div>
+                    {renderMessageIfItExists()}
                     {renderActionsIfTheyExist()}
                 </div>
                 <div className='notification__state'>

@@ -90,6 +90,8 @@ function NotificationForFriendRequestPanel(props) {
                         }
                     });
             });
+        } else {
+            setNotificationsData([...result]);
         }
         return result;
     }, [user.uid, friendRequestNotifications]);
