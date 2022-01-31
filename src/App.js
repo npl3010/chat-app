@@ -74,7 +74,6 @@ function App() {
 
   // - Get all friends of the logged in user.
   useEffect(() => {
-    console.log(`APP: get friends`)
     if (userFriends.length === 1) {
       // 1. Clear friend list:
       dispatch(resetFriendListState());

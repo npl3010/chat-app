@@ -41,6 +41,14 @@ function ChatRoomCollapsibleMenu(props) {
 
     // Side effects:
     useEffect(() => {
+        // Set inlineMenuHeight:
+        if (idOfInlineMenuToBeDisplayed !== -1) {
+            setInlineMenuHeight(inlineMenusRef.current[idOfInlineMenuToBeDisplayed].clientHeight);
+        }
+    }, [idOfInlineMenuToBeDisplayed, roomData, selectedChatRoomUsers])
+
+    useEffect(() => {
+        // Set inlineMenuHeight:
         if (idOfInlineMenuToBeDisplayed !== -1) {
             setInlineMenuHeight(inlineMenusRef.current[idOfInlineMenuToBeDisplayed].clientHeight);
         } else {

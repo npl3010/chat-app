@@ -1,4 +1,4 @@
-import { db, collection, addDoc, getDocs, updateDoc, query, where, orderBy, limit } from './config';
+import { db, collection, doc, addDoc, getDocs, updateDoc, deleteDoc, query, where, orderBy, limit } from './config';
 import { toPascalCaseForAllWords } from './services';
 
 
@@ -17,33 +17,81 @@ import { toPascalCaseForAllWords } from './services';
 
 
 // 2. METHODS:
+// Get friend request between two users:
+/**
+ * 
+ * @param {string} fromUID (called 'The First User') This is the user who want to make friend with someone.
+ * @param {string} toUID (called 'The Second User') This is the user who receives a friend request.
+ * @returns {} 
+ */
+export async function getFriendRequestsBetweenTwoUsers(fromUID, toUID) {
+    let results = [];
+
+    const q1 = query(collection(db, 'notificationsForFriendRequests'),
+        where("senderUID", "==", fromUID),
+        where("receiverUID", "==", toUID),
+        where("state", "==", "pending"),
+        limit(1)
+    );
+    const querySnapshot1 = await getDocs(q1);
+    querySnapshot1.forEach((doc) => {
+        results.push(doc.data());
+    });
+
+    const q2 = query(collection(db, 'notificationsForFriendRequests'),
+        where("senderUID", "==", toUID),
+        where("receiverUID", "==", fromUID),
+        where("state", "==", "pending"),
+        limit(1)
+    );
+    const querySnapshot2 = await getDocs(q2);
+    querySnapshot2.forEach((doc) => {
+        results.push(doc.data());
+    });
+
+    return results;
+}
+
+
 // Send friend request:
 /**
  * 
- * @param {string} fromUID (called 'The First User') This is the user who want to make friend with someone. 
+ * @param {string} fromUID (called 'The First User') This is the user who want to make friend with someone.
  * @param {string} toUID (called 'The Second User') This is the user who receives a friend request.
- * @returns {} 
+ * @returns {Object} Object or null.
  */
 export async function sendFriendRequest(fromUID, toUID) {
     // Check params:
     if (fromUID === toUID) {
         alert('Bạn không thể kết bạn với chính mình!');
-        return;
+        return null;
     }
 
     // Get date & time:
     const dUTC = new Date().toUTCString();
 
-    // Add notifications for friend requests:
+    // Add notifications for friend requests if there are no friend requests between these users:
     const q1 = query(collection(db, 'notificationsForFriendRequests'),
         where("senderUID", "==", fromUID),
         where("receiverUID", "==", toUID),
         limit(1)
     );
-    const querySnapshot1 = await getDocs(q1);
-    if (querySnapshot1.docs.length === 0) {
-        // Add data:
-        await addDoc(collection(db, 'notificationsForFriendRequests'), {
+    const q2 = query(collection(db, 'notificationsForFriendRequests'),
+        where("senderUID", "==", toUID),
+        where("receiverUID", "==", fromUID),
+        limit(1)
+    );
+
+    const [querySnapshot1, querySnapshot2] = await Promise.all([
+        getDocs(q1),
+        getDocs(q2)
+    ]);
+
+    let docRef = null;
+
+    if (querySnapshot1.docs.length === 0 && querySnapshot2.docs.length === 0) {
+        // Add friend request:
+        docRef = await addDoc(collection(db, 'notificationsForFriendRequests'), {
             createdAt: dUTC,
             senderUID: fromUID,
             receiverUID: toUID,
@@ -53,12 +101,82 @@ export async function sendFriendRequest(fromUID, toUID) {
             users: [fromUID, toUID]
         });
     }
+
+    return docRef;
 }
 
 
-// Cancel friend request:
-export async function cancelFriendRequest(fromUID, toUID) {
-    // Code this function later!
+// Cancel friend request sent:
+export async function cancelFriendRequestSent(fromUID, toUID) {
+    // 1. Find document to delete:
+    const q = query(collection(db, 'notificationsForFriendRequests'),
+        where("senderUID", "==", fromUID),
+        where("receiverUID", "==", toUID),
+        where("state", "==", "pending")
+    );
+
+    const querySnapshot = await getDocs(q);
+
+    let documentIDToBeDeleted = '';
+    let result = false;
+
+    querySnapshot.forEach((document) => {
+        documentIDToBeDeleted = document.id;
+    });
+
+    // 2. Delete document by its ID:
+    if (documentIDToBeDeleted !== '') {
+        await deleteDoc(doc(db, "notificationsForFriendRequests", documentIDToBeDeleted));
+        result = true;
+    }
+
+    return result;
+}
+
+
+// Delete all friend requests between two users:
+/**
+ * 
+ * @param {string} fromUID (called 'The First User').
+ * @param {string} toUID (called 'The Second User').
+ * @returns {Object} Object or null.
+ */
+export async function deleteFriendRequestBetweenTwoUsers(fromUID, toUID) {
+    const params = [
+        { from: fromUID, to: toUID },
+        { from: toUID, to: fromUID }
+    ];
+
+    const results = await Promise.all(
+        params.map(async (params) => {
+            // 1. Find document to delete:
+            const q = query(collection(db, 'notificationsForFriendRequests'),
+                where("senderUID", "==", params.from),
+                where("receiverUID", "==", params.to),
+            );
+
+            const querySnapshot = await getDocs(q);
+
+            let documentIDToBeDeleted = '';
+            let result = false;
+
+            querySnapshot.forEach((document) => {
+                documentIDToBeDeleted = document.id;
+            });
+
+            // 2. Delete document by its ID:
+            if (documentIDToBeDeleted !== '') {
+                await deleteDoc(doc(db, "notificationsForFriendRequests", documentIDToBeDeleted));
+                result = true;
+            }
+
+            return result;
+        })
+    );
+
+    return results.every((element) => {
+        return element === true;
+    });
 }
 
 
@@ -93,7 +211,7 @@ export async function getFriendRequestsByUID(uid) {
 // Accept friend request:
 /**
  * 
- * @param {string} fromUID (called 'The First User') This is the user who want to make friend with someone. 
+ * @param {string} fromUID (called 'The First User') This is the user who want to make friend with someone.
  * @param {string} toUID (called 'The Second User') This is the user who receives a friend request.
  * @returns {} 
  */
@@ -118,39 +236,46 @@ export async function acceptFriendRequest(fromUID, toUID) {
         });
     });
 
-    // Update friends & friendsFrom list of 'The First User':
-    const q1 = query(collection(db, "friends"),
-        where("uid", "==", fromUID),
-        limit(1)
-    );
-    const querySnapshot1 = await getDocs(q1);
-    querySnapshot1.forEach(async (doc) => {
-        // Get current data:
-        const currentFriends = doc.data().friends;
-        const currentFriendsFrom = doc.data().friendsFrom;
-        // Update data:
-        await updateDoc(doc.ref, {
-            friends: [...currentFriends, toUID],
-            friendsFrom: [...currentFriendsFrom, dUTC]
+    // If there is no friend request between them, do not update their friend lists:
+    if (querySnapshot.docs.length === 0) {
+        return false;
+    } else {
+        // Update friends & friendsFrom list of 'The First User':
+        const q1 = query(collection(db, "friends"),
+            where("uid", "==", fromUID),
+            limit(1)
+        );
+        const querySnapshot1 = await getDocs(q1);
+        querySnapshot1.forEach(async (doc) => {
+            // Get current data:
+            const currentFriends = doc.data().friends;
+            const currentFriendsFrom = doc.data().friendsFrom;
+            // Update data:
+            await updateDoc(doc.ref, {
+                friends: [...currentFriends, toUID],
+                friendsFrom: [...currentFriendsFrom, dUTC]
+            });
         });
-    });
 
-    // Update friends & friendsFrom list of 'The Second User':
-    const q2 = query(collection(db, "friends"),
-        where("uid", "==", toUID),
-        limit(1)
-    );
-    const querySnapshot2 = await getDocs(q2);
-    querySnapshot2.forEach(async (doc) => {
-        // Get current data:
-        const currentFriends = doc.data().friends;
-        const currentFriendsFrom = doc.data().friendsFrom;
-        // Update data:
-        await updateDoc(doc.ref, {
-            friends: [...currentFriends, fromUID],
-            friendsFrom: [...currentFriendsFrom, dUTC]
+        // Update friends & friendsFrom list of 'The Second User':
+        const q2 = query(collection(db, "friends"),
+            where("uid", "==", toUID),
+            limit(1)
+        );
+        const querySnapshot2 = await getDocs(q2);
+        querySnapshot2.forEach(async (doc) => {
+            // Get current data:
+            const currentFriends = doc.data().friends;
+            const currentFriendsFrom = doc.data().friendsFrom;
+            // Update data:
+            await updateDoc(doc.ref, {
+                friends: [...currentFriends, fromUID],
+                friendsFrom: [...currentFriendsFrom, dUTC]
+            });
         });
-    });
+
+        return true;
+    }
 }
 
 
@@ -232,4 +357,69 @@ export async function fetchFriendListByUserName(userID = '', userName = '', excl
 
     // 3. Return result:
     return results;
+}
+
+
+// Unfriend:
+/**
+ * 
+ * @param {string} fromUID (called 'The First User') This is the user who want to unfriend someone. 
+ * @param {string} toUID (called 'The Second User') This is the user who is unfriended by 'The First User'.
+ * @returns {} 
+ */
+export async function unfriend(fromUID, toUID) {
+    // 1. Update the friend list of both users:
+    const q = query(collection(db, 'friends'),
+        where("uid", "in", [fromUID, toUID]),
+    );
+
+    const querySnapshot = await getDocs(q);
+
+    let results1 = await Promise.all(
+        querySnapshot.docs.map(async (document) => {
+            let uidToBeRemoved = '';
+            if (document.data().uid === fromUID) {
+                uidToBeRemoved = toUID;
+            } else if (document.data().uid === toUID) {
+                uidToBeRemoved = fromUID;
+            }
+
+            // Preparation:
+            let indexOfFriendList = -1;
+            const newFriends = document.data().friends.filter((fID, i) => {
+                if (fID === uidToBeRemoved) {
+                    indexOfFriendList = i;
+                    return false;
+                } else {
+                    return true;
+                }
+            });
+
+            let newFriendsFrom = [...document.data().friendsFrom];
+            if (indexOfFriendList !== -1) {
+                newFriendsFrom.splice(indexOfFriendList, 1);
+            }
+
+            // Update data:
+            await updateDoc(document.ref, {
+                friends: newFriends,
+                friendsFrom: newFriendsFrom
+            });
+
+            return true;
+        })
+    );
+
+    results1 = results1.every((element) => {
+        return element === true;
+    });
+
+    // 2. Delete all friend requests between them:
+    const results2 = deleteFriendRequestBetweenTwoUsers(fromUID, toUID);
+
+    // 3. Return result:
+    if (results1 === results2 && results1 === true) {
+        return true;
+    }
+    return false;
 }

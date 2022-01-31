@@ -162,12 +162,21 @@ function ChatRoomUserList(props) {
                             <div className={`object${indexOfObjectToBeDisplayed === index ? ' active' : ''}`} key={`object-${index}`}>
                                 <div className='object__left-section'>
                                     <div className='object__img-wrapper'>
-                                        <img className='object__img' src={imgURL} alt=''></img>
+                                        {imgURL ? (
+                                            <img className='object__img' src={imgURL} alt=''></img>
+                                        ) : (
+                                            <div className='object__character-name'>
+                                                <span>{title?.charAt(0)?.toUpperCase()}</span>
+                                            </div>
+                                        )}
                                     </div>
                                     <div className='object__info-wrapper'>
                                         <div className='object__info'>
                                             <div className="object__title">{title}</div>
-                                            <div className="object_role">{role === 'group-admin' ? '(Quản trị viên)' : ''}</div>
+                                            <div className={`object_role${role === 'group-admin' ? ' label-arrow' : ''}`}>
+                                                <span>{role === 'group-admin' ? '(Quản trị viên)' : ''}</span>
+                                                <div className='triangle-right'></div>
+                                            </div>
                                             <div className="object__content">{addedBy === 'group-creator' ? 'Người tạo nhóm' : `Do ${addedBy} thêm`}</div>
                                         </div>
                                     </div>

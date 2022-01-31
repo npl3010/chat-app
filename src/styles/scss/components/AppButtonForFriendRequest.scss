@@ -1,0 +1,15 @@
+.app-btns.for-friend-request {
+
+    .app-btns-on-loading {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .app-message {
+
+        &.unhighlighted {
+            color: #888;
+        }
+    }
+}

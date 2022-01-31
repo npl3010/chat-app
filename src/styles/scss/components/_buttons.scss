@@ -1,0 +1,147 @@
+// Wrapper for list of app-buttons:
+.app-btns-wrapper {
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    flex-direction: column;
+    flex-wrap: wrap;
+
+    .app-btn-wrapper {
+        margin-bottom: 8px;
+    }
+
+    .app-btn-wrapper:last-child {
+        margin-bottom: 0;
+    }
+
+    .app-btn-wrapper {
+        width: 100%;
+
+        .app-btn {
+            width: 100%;
+        }
+    }
+}
+
+
+// .app-buttons:
+.app-btn-wrapper {
+    display: block; //Not 'inline-block'!
+
+    // .app-btn default style:
+    .app-btn {
+        cursor: pointer;
+        user-select: none;
+        position: relative;
+        padding: 5px 10px;
+        background: linear-gradient(to right, rgb(70, 130, 180), rgb(135, 206, 235));
+        color: #fff;
+        font-size: 14px;
+        letter-spacing: 0px;
+        border-radius: 5px;
+        text-decoration: none;
+        text-transform: none;
+        text-align: center;
+        overflow: hidden;
+
+        &:hover {
+            background: linear-gradient(to right, rgba(70, 130, 180, 0.8), rgba(135, 206, 235, 0.8));
+        }
+    }
+
+    // .app-btn 'highlighted' style:
+    .app-btn {
+        &.highlighted {
+            background: linear-gradient(to right, rgb(70, 130, 180), rgb(135, 206, 235), rgb(70, 130, 180));
+            background-size: 300%;
+        }
+
+        &.highlighted:hover {
+            animation: GlowingGradient 1.5s linear infinite;
+        }
+
+        &.highlighted:not(:hover)::after {
+            position: absolute;
+            content: '';
+            background-color: #fff;
+            top: 0;
+            left: 0;
+            width: 15px;
+            height: 100%;
+            transform: skewX(30deg);
+            box-shadow: 0 0 10px #fff;
+            filter: blur(1px);
+            opacity: 0.3;
+            animation: ShiningEffect 1.5s ease infinite;
+        }
+    }
+
+    // .app-btn 'unhighlighted' style:
+    .app-btn {
+        &.unhighlighted {
+            color: #555;
+            background: linear-gradient(to right, #ddd, #eee);
+        }
+
+        &.unhighlighted:hover {
+            color: #000;
+            background: #eee;
+        }
+    }
+
+    // .app-btn 'is-loading' style:
+    .app-btn {
+        &.is-loading {
+            color: transparent;
+            background: #eee
+        }
+
+        &.is-loading:hover {
+            color: transparent;
+            background: #eee;
+        }
+
+        &.is-loading::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 15px;
+            height: 15px;
+            border: 3px solid transparent;
+            border-top-color: steelblue;
+            border-radius: 50%;
+            animation: AppBtnOnLoading 1s ease infinite;
+        }
+    }
+}
+
+
+// Animations:
+@keyframes GlowingGradient {
+    0% {
+        background-position: 0%;
+    }
+    100% {
+        background-position: 300%;
+    }
+}
+
+@keyframes ShiningEffect {
+    0% {
+        left: -50%;
+    }
+    100% {
+        left: 150%;
+    }
+}
+
+@keyframes AppBtnOnLoading {
+    0% {
+        transform: translate(-50%, -50%) rotate(0deg);
+    }
+    100% {
+        transform: translate(-50%, -50%) rotate(360deg);
+    }
+}

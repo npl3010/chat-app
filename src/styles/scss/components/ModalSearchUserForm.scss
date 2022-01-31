@@ -280,15 +280,28 @@ $avatar_size: 96px;
     
         &__action-list {
             display: flex;
-            justify-content: center;
+            justify-content: space-between;
             align-items: center;
+            padding: 8px 0;
+            border-top: 1px solid #eee;
+            border-bottom: 1px solid #eee;
         }
     
         &__action-button {
             margin-right: 8px;
         }
+
+        &__action-buttons {
+            margin-right: 8px;
+            display: flex;
+            justify-content: flex-start;
+            align-items: flex-start;
+            flex-direction: column;
+            flex-wrap: wrap;
+        }
     
-        &__action-button:last-child {
+        &__action-button:last-child,
+        &__action-buttons:last-child {
             margin-right: 0;
         }
     }

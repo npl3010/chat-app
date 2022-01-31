@@ -40,6 +40,21 @@
             background-color: #eee;
         }
 
+        &__character-name {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background-color: #eee;
+            border: 2px solid #ddd;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
         &__action-icon-wrapper {
             border-radius: 50%;
             display: flex;
@@ -86,6 +101,53 @@
         &_role {
             font-size: 12px;
             font-style: normal;
+        }
+
+        &_role.label-arrow {
+            position: relative;
+            padding: 0 5px;
+            background: steelblue;
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            z-index: 1;
+            // Height = 20px;
+            height: 20px;
+            // Left Margin = tan(30deg) * 20/2;
+            margin-left: 5.773502692px;
+
+            &::before, &::after {
+                position: absolute;
+                content: '';
+                top: 0;
+                left: 0;
+                width: 50%;
+                height: 100%;
+                background: steelblue;
+                z-index: -1;
+            }
+
+            &::before {
+                transform: skewX(30deg);
+            }
+
+            &::after {
+                transform: skewX(-30deg);
+            }
+
+            .triangle-right {
+                position: absolute;
+                top: 0;
+                left: 100%;
+                width: 0;
+                height: 0;
+                border-left: 5.773502692px solid steelblue;
+                border-right: 5.773502692px solid transparent;
+                border-top: calc(20px / 2) solid transparent;
+                border-bottom: calc(20px / 2) solid transparent;
+            }
         }
 
         &__dropdown-button {

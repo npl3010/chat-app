@@ -2,11 +2,12 @@ import React, { useRef } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronLeft, faTimes } from '@fortawesome/free-solid-svg-icons';
 
+// Components:
+import AppButtonForFriendRequest from './AppButtonForFriendRequest';
+import AppButtonForJoiningChatRoom from './AppButtonForJoiningChatRoom';
+
 // Redux:
 import { useSelector } from 'react-redux';
-
-// Services:
-import { sendFriendRequest } from '../firebase/queryFriends';
 
 
 function ModalSearchUserFormPage2(props) {
@@ -22,12 +23,6 @@ function ModalSearchUserFormPage2(props) {
 
     // Redux:
     const user = useSelector((state) => state.userAuth.user);
-
-
-    // Methods:
-    const handleSendFriendRequest = (fromUID, toUID) => {
-        sendFriendRequest(fromUID, toUID);
-    };
 
 
     // Component:
@@ -62,11 +57,18 @@ function ModalSearchUserFormPage2(props) {
                         <div className='info__actions'>
                             <div className='info__action-list-wrapper'>
                                 <div className='info__action-list'>
-                                    <button className='info__action-button'
-                                        onClick={() => handleSendFriendRequest(user.uid, userProfile.current?.uid)}
-                                    >Thêm bạn</button>
-                                    <button className='info__action-button'
-                                    >Nhắn tin</button>
+                                    <div className='info__action-button'>
+                                        <AppButtonForFriendRequest
+                                            userID={user.uid}
+                                            otherUserID={userProfile.current?.uid}
+                                        ></AppButtonForFriendRequest>
+                                    </div>
+                                    <div className='info__action-button'>
+                                        <AppButtonForJoiningChatRoom
+                                            userData={userProfile.current}
+                                            doActionAfter={() => setIsModalSearchUserVisible(!isModalSearchUserVisible)}
+                                        ></AppButtonForJoiningChatRoom>
+                                    </div>
                                 </div>
                             </div>
                         </div>
