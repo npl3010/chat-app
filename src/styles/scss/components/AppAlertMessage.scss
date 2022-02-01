@@ -1,0 +1,167 @@
+// Wrapper for app-message:
+.app-alert-message-wrapper {
+    // Position:
+    position: fixed;
+    bottom: 16px;
+    left: 16px;
+    // Others:
+    z-index: 100;
+
+    .app-alert-message {
+        color: #000;
+        background-color: #fff;
+        box-shadow: 0px 2px 10px 3px #ddd;
+        border-radius: 5px;
+        padding: 8px 8px;
+        margin: 0;
+        // Display:
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        animation: SlideAppAlertMessage 0.5s linear forwards;
+        // Default values:
+        border: 1px solid #fff;
+        border-left: 5px solid #fff;
+        min-width: 350px;
+        width: 350px;
+
+        &__icon {
+            margin-right: 8px;
+            color: inherit;
+        }
+
+        &__content {
+            margin-right: 8px;
+            color: inherit;
+            // flex-grow: 1;
+            width: 100%;
+        }
+
+        &__actions {
+            color: inherit;
+        }
+
+        .static-icon-wrapper {
+            background-color: #000;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-width: 30px;
+            min-height: 30px;
+            width: 30px;
+            height: 30px;
+    
+            .static-icon {
+                color: #fff;
+                font-size: 18px;
+                display: block;
+            }
+        }
+
+        .content-wrapper {
+
+            .title {
+                font-weight: bold;
+                font-size: 16px;
+            }
+
+            .msg {
+                font-weight: normal;
+                font-size: 14px;
+            }
+        }
+
+        .action-button {
+            background-color: transparent;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-width: 30px;
+            min-height: 30px;
+            width: 30px;
+            height: 30px;
+            cursor: pointer;
+
+            .action-button-icon {
+                color: inherit;
+                font-size: 18px;
+                display: block;
+                opacity: 0.5;
+                transition: all 0.5s ease;
+            }
+        }
+
+        .action-button.close-btn:hover {
+
+            .action-button-icon {
+                opacity: 1;
+                transform: rotateZ(180deg);
+            }
+        }
+    }
+
+    .app-alert-message.success {
+        color: #3c763d;
+        background-color: #dff0d8;
+        border: 1px solid #d6e9c6;
+        border-left: 5px solid #3c763d;
+
+        .static-icon-wrapper {
+            background-color: #3c763d;
+        }
+    }
+
+    .app-alert-message.info {
+        color: #31708f;
+        background-color: #d9edf7;
+        border: 1px solid #bce8f1;
+        border-left: 5px solid #31708f;
+
+        .static-icon-wrapper {
+            background-color: #31708f;
+        }
+    }
+
+    .app-alert-message.warning {
+        color: #8a6d3b;
+        background-color: #fcf8e3;
+        border: 1px solid #faebcc;
+        border-left: 5px solid #8a6d3b;
+
+        .static-icon-wrapper {
+            background-color: #8a6d3b;
+        }
+    }
+
+    .app-alert-message.danger {
+        color: #a94442;
+        background-color: #f2dede;
+        border: 1px solid #ebccd1;
+        border-left: 5px solid #a94442;
+
+        .static-icon-wrapper {
+            background-color: #a94442;
+        }
+    }
+}
+
+
+// Animations:
+@keyframes SlideAppAlertMessage {
+    0% {
+        transform: translateX(-100%);
+    }
+    50% {
+        transform: translateX(0px);
+    }
+    80% {
+        transform: translateX(-10px);
+    }
+    100% {
+        transform: translateX(0px);
+    }
+}

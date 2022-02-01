@@ -9,6 +9,7 @@ import {
 // Components:
 import LoginPage from './pages/LoginPage';
 import ChatPage from './pages/ChatPage';
+import AppAlertMessage from "./components/AppAlertMessage";
 
 // CSS:
 import 'antd/dist/antd.min.css';
@@ -25,6 +26,7 @@ import { resetFriendListState, setFriendListState } from "./features/manageFrien
 
 // Provider:
 import ModalControlProvider from "./context/ModalControlProvider";
+import AlertControlProvider from "./context/AlertControlProvider";
 
 // Custom hooks:
 import useFirestoreCustomized from "./customHooks/useFirestoreCustomized";
@@ -91,13 +93,24 @@ function App() {
   // Component:
   return (
     <BrowserRouter>
+
+      {/* Provider: */}
       <ModalControlProvider>
-        <Routes>
-          <Route exact path="/chat" element={user === null ? <Navigate to="/login" /> : <ChatPage />}></Route>
-          <Route exact path="/login" element={user !== null ? <Navigate to="/" /> : <LoginPage />}></Route>
-          <Route exact path="/" element={user === null ? <Navigate to="/login" /> : <ChatPage />}></Route>
-        </Routes>
+        <AlertControlProvider>
+
+          {/* Routes: */}
+          <Routes>
+            <Route exact path="/chat" element={user === null ? <Navigate to="/login" /> : <ChatPage />}></Route>
+            <Route exact path="/login" element={user !== null ? <Navigate to="/" /> : <LoginPage />}></Route>
+            <Route exact path="/" element={user === null ? <Navigate to="/login" /> : <ChatPage />}></Route>
+          </Routes>
+
+          {/* Others: */}
+          <AppAlertMessage></AppAlertMessage>
+
+        </AlertControlProvider>
       </ModalControlProvider>
+
     </BrowserRouter>
   );
 }

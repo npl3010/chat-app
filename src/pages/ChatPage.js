@@ -43,10 +43,10 @@ function ChatPage(props) {
 
     // Component:
     return (
-        <div>
+        <div className='app-page-wrapper'>
             <TopNavigation></TopNavigation>
 
-            <div className='chat-page'>
+            <div className='app-page'>
                 <div className='chatpage-wrapper'>
                     <div className='chatpage'>
                         <div className='chatpage__left-section'>
