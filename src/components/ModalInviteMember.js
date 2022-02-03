@@ -13,6 +13,7 @@ import { ModalControlContext } from '../context/ModalControlProvider';
 
 // Services:
 import { fetchUserListByUserEmail, fetchUserListByUserName } from '../firebase/queryUsers';
+import { updateNotificationVisibleToUsers } from '../firebase/queryNotifications';
 
 // CSS:
 import '../styles/scss/components/ModalInviteMember.scss';
@@ -136,7 +137,10 @@ function ModalInviteMember(props) {
                     members: newMemberList,
                     membersAddedBy: newMembersAddedBy,
                     membersRole: newmembersRole
-                });
+                })
+                    .then((res) => {
+                        updateNotificationVisibleToUsers(rooms[indexOfRoom].id, [...value.map((val) => val)]);
+                    });
 
                 // Clear form:
                 form.resetFields();

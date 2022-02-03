@@ -10,6 +10,7 @@ All fields:
 - uid (string)
 - phoneNumber (string)
 - gender (string)
+- displayNameSearchKeywords (array)
 
 2. rooms (A room object represents a chat room information):
 All fields:
@@ -45,7 +46,7 @@ All fields:
 
 5. notificationsForFriendRequests:
 All fields:
-- users (array): List of uids.
+- users (array): List of uids (People who are involved in a friend request).
 - createdAt (timestamp)
 - senderUID (string)
 - receiverUID (string)
@@ -55,6 +56,11 @@ All fields:
 
 
 6. notificationsForOthers:
+- users (array): List of uids (People who will receive this notification).
 - createdAt (timestamp)
-- forUid (string)
-- type (string): 'join-chat-room'.
+- createdBy (uid)
+- type (string): 'be-added-to-a-group-chat'.
+- isSeenBy (array): List of uids.
+- objectType (string): 'group-chat',
+- objectID (string)
+Use this property if there is only an object, it means that the notification is about a person, an event,...

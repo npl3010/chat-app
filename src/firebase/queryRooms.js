@@ -66,3 +66,25 @@ export async function markNewMessagesAsReadByUID(roomID, userID) {
         // doc.data() will be undefined in this case.
     }
 }
+
+
+// Get room by room id:
+/**
+ * 
+ * @param {string} roomID This is id of a room. 
+ * @returns {array} The room.
+ */
+export async function fetchRoomByRoomID(roomID = '') {
+    const docRef = doc(db, "rooms", roomID);
+    const docSnap = await getDoc(docRef);
+
+    if (docSnap.exists()) {
+        return {
+            ...docSnap.data(),
+            id: docSnap.id
+        };
+    } else {
+        // doc.data() will be undefined in this case
+        return null
+    }
+}

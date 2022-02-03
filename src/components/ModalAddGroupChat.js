@@ -73,6 +73,16 @@ function ModalAddGroupChat(props) {
                     // Select the last created chat room:
                     const action = setRoomIDWillBeSelected(res.id);
                     dispatch(action);
+
+                    // Create notification:
+                    addDocumentWithTimestamps('notificationsForOthers', {
+                        users: [...optionsSelected],
+                        type: 'be-added-to-a-group-chat',
+                        isSeenBy: [],
+                        objectType: 'group-chat',
+                        objectID: res.id,
+                        createdBy: user.uid
+                    }, ['createdAt']);
                 });
 
             // Clear form:

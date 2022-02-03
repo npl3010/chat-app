@@ -25,7 +25,8 @@ function Notification(props) {
         onCancel = () => { },
         loadingStateFor = '',
         allActionsIsDisabled = false,
-        message = ''
+        message = '',
+        handleOnClick = () => { }
     } = props;
 
 
@@ -85,7 +86,7 @@ function Notification(props) {
 
     return (
         <div className={`notification-wrapper${className ? (' ' + className) : ''}`}>
-            <div className={`notification${isHighlighted ? ' highlighted' : ''}`}>
+            <div className={`notification${isHighlighted ? ' highlighted' : ''}`} onClick={() => handleOnClick()}>
                 <div className='notification__object-img'>
                     {objectImgSrc ? (
                         <img className='object-img' src={objectImgSrc} alt='' ></img>
