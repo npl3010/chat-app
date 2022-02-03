@@ -1,5 +1,5 @@
 import React from 'react';
-import swal from 'sweetalert';
+// import swal from 'sweetalert';
 
 // Firebase:
 import { auth, signInWithPopup, fb_provider, getAdditionalUserInfo } from '../firebase/config';
@@ -8,11 +8,20 @@ import { auth, signInWithPopup, fb_provider, getAdditionalUserInfo } from '../fi
 import { useDispatch } from 'react-redux';
 import { setUser } from '../features/auth/userAuthSlice';
 
+// Context:
+import { AlertControlContext } from '../context/AlertControlProvider';
+
 // Services:
 import { addDocument, addDocumentWithoutTimestamp, generateUserNameKeywords } from '../firebase/services';
 
 
 function LoginPage(props) {
+    // Context:
+    const {
+        showAppAlertMessage
+    } = React.useContext(AlertControlContext);
+
+
     // Redux:
     const dispatch = useDispatch();
 
@@ -50,14 +59,16 @@ function LoginPage(props) {
                 }
 
                 // Display result:
-                swal("Successfully logged in!", `Your email: ${email}`, "success");
+                // swal("Successfully logged in!", `Your email: ${email}`, "success");
+                showAppAlertMessage('success', 'Đăng nhập thành công', `Tài khoản: ${email}`, 3);
             })
             .catch((error) => {
                 // Handle Errors:
                 const errorCode = error.code;
                 const errorMessage = error.message;
                 // Display result:
-                swal(errorCode, errorMessage, "error");
+                // swal(errorCode, errorMessage, "error");
+                showAppAlertMessage('danger', errorCode, errorMessage, 5);
             });
     }
 

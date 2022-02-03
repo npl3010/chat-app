@@ -3,6 +3,9 @@ import React, { useState } from 'react';
 // Components:
 import Notification from './Notification';
 
+// Context:
+import { AlertControlContext } from '../context/AlertControlProvider';
+
 // Services:
 import { acceptFriendRequest, cancelFriendRequestSent } from '../firebase/queryFriends';
 
@@ -19,6 +22,12 @@ function NotificationForFriendRequest(props) {
         objectSentAt,
         unread = false
     } = props;
+
+
+    // Context:
+    const {
+        showAppAlertMessage
+    } = React.useContext(AlertControlContext);
 
 
     // State:
@@ -49,6 +58,7 @@ function NotificationForFriendRequest(props) {
                     .then((res) => {
                         if (res === true) {
                             // setLoadingStateFor('');
+                            showAppAlertMessage('', 'Thông báo', `Đã xóa lời mời kết bạn của ${userName}.`, 5);
                         }
                     });
             }

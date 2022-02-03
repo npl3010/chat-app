@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheck, faExclamation, faQuestion, faTimes } from '@fortawesome/free-solid-svg-icons';
 
@@ -22,13 +22,33 @@ function AppAlertMessage(props) {
 
 
     // Context:
-    const { isAppAlertMessageVisible, setIsAppAlertMessageVisible, appAlertMessageData } = React.useContext(AlertControlContext);
+    const {
+        isAppAlertMessageVisible,
+        appAlertMessageData,
+        removeAppAlertMessage
+    } = React.useContext(AlertControlContext);
+
+
+    // State:
+    // const [timeLeft, setTimeLeft] = useState(false);
 
 
     // Methods:
     const handleClickCloseBtn = () => {
-        setIsAppAlertMessageVisible(!isAppAlertMessageVisible);
+        removeAppAlertMessage();
     };
+
+
+    // Side effects:
+    useEffect(() => {
+        if (typeof appAlertMessageData.duration === "number") {
+            if (appAlertMessageData.duration > 0) {
+                setTimeout(() => {
+                    removeAppAlertMessage();
+                }, appAlertMessageData.duration * 1000);
+            }
+        }
+    }, [appAlertMessageData.duration, removeAppAlertMessage]);
 
 
     // Component:

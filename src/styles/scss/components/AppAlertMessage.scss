@@ -12,7 +12,7 @@
         background-color: #fff;
         box-shadow: 0px 2px 10px 3px #ddd;
         border-radius: 5px;
-        padding: 8px 8px;
+        padding: 8px 16px;
         margin: 0;
         // Display:
         display: flex;
@@ -25,15 +25,16 @@
         border: 1px solid #fff;
         border-left: 5px solid #fff;
         min-width: 350px;
-        width: 350px;
+        max-width: 500px;
+        // width: 350px;
 
         &__icon {
-            margin-right: 8px;
+            margin-right: 16px;
             color: inherit;
         }
 
         &__content {
-            margin-right: 8px;
+            margin-right: 16px;
             color: inherit;
             // flex-grow: 1;
             width: 100%;
@@ -71,6 +72,7 @@
             .msg {
                 font-weight: normal;
                 font-size: 14px;
+                word-wrap: break-word;
             }
         }
 
@@ -85,6 +87,7 @@
             width: 30px;
             height: 30px;
             cursor: pointer;
+            transition: all 0.5s ease;
 
             .action-button-icon {
                 color: inherit;
@@ -96,10 +99,10 @@
         }
 
         .action-button.close-btn:hover {
+            transform: rotateZ(180deg);
 
             .action-button-icon {
                 opacity: 1;
-                transform: rotateZ(180deg);
             }
         }
     }
