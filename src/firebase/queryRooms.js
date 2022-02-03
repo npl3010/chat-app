@@ -1,4 +1,4 @@
-import { db, collection, getDocs, query, where } from './config';
+import { db, collection, doc, getDoc, getDocs, updateDoc, query, where } from './config';
 
 
 // 1. INSTRUCTIONS:
@@ -39,4 +39,30 @@ export async function fetchRoomListByUserID(userID = '') {
     });
 
     return results;
+}
+
+
+// Mark new messages of a room as read by uid:
+/**
+ * 
+ * @param {string} uid The user who read the new messages.
+ * @returns {} 
+ */
+export async function markNewMessagesAsReadByUID(roomID, userID) {
+    const roomRef = doc(db, "rooms", roomID);
+    const docSnap = await getDoc(roomRef);
+
+    if (docSnap.exists()) {
+        if (docSnap.data().isSeenBy.includes(userID) === false) {
+            // Preparation:
+            const newIsSeenBy = [...docSnap.data().isSeenBy];
+            newIsSeenBy.push(userID);
+            // Update data:
+            await updateDoc(docSnap.ref, {
+                isSeenBy: newIsSeenBy
+            });
+        }
+    } else {
+        // doc.data() will be undefined in this case.
+    }
 }

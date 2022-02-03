@@ -30,7 +30,7 @@
         margin-bottom: 10px;
 
         .title {
-            font-size: 16px;
+            font-size: 20px;
             font-weight: bold;
         }
     }
@@ -142,6 +142,10 @@
     }
 }
 
+.chatmenu .chatbox-wrapper {
+    position: relative;
+}
+
 .chatmenu .chatbox {
     display: flex;
     flex-direction: row;
@@ -205,6 +209,7 @@
         .chatbox-latest-message {
             font-size: 13px;
             overflow: hidden;
+            font-style: italic;
             text-overflow: ellipsis;
             display: -webkit-box;
             -webkit-line-clamp: 1;
@@ -212,6 +217,31 @@
             line-height: 20px;
             color: #888;
         }
+    }
+
+    &__status {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        align-self:stretch;
+        padding: 0 16px;
+
+        .chatbox-dot {
+            width: 12px;
+            height: 12px;
+            background-color: steelblue;
+            border-radius: 50%;
+        }
+    }
+}
+
+.chatmenu .chatbox.unseen {
+
+    .chatbox-latest-message {
+        color: steelblue;
+        font-weight: bold;
+        font-style: normal;
+        text-shadow: 0px 0px 0px steelblue;
     }
 }
 

@@ -176,7 +176,7 @@
         }
 
         .notification__dot {
-            animation: ripple-animation 1s infinite;
+            animation: RippleAnimation 1s infinite;
             animation-fill-mode: both;
         }
     }
@@ -184,7 +184,7 @@
 
 
 // Animations:
-@keyframes ripple-animation {
+@keyframes RippleAnimation {
     0% {
         box-shadow: 0 0 0 0 rgb(70, 130, 180, 0.3), 0 0 0 0 rgb(70, 130, 180, 0.1);
     }

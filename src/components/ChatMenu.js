@@ -18,6 +18,7 @@ import useRooms from '../customHooks/useRooms';
 // Services:
 import { fetchUserListByUidList } from '../firebase/queryUsers';
 import { fetchFriendListByUserName } from '../firebase/queryFriends';
+import { markNewMessagesAsReadByUID } from '../firebase/queryRooms';
 
 // CSS:
 import '../styles/scss/components/ChatMenu.scss';
@@ -50,6 +51,7 @@ function ChatMenu(props) {
     const getUsersByUids = useCallback((roomID, uidList) => {
         fetchUserListByUidList(uidList)
             .then((users) => {
+                // Select this room after the data of is room is already loaded:
                 dispatch(selectRoom({
                     roomID: roomID,
                     users: users
@@ -67,8 +69,20 @@ function ChatMenu(props) {
                 break;
             }
         }
-        getUsersByUids(roomID, uidList);
-    }, [dispatch, rooms, getUsersByUids]);
+
+        fetchUserListByUidList(uidList)
+            .then((users) => {
+                // Select this room after the data of is room is already loaded:
+                dispatch(selectRoom({
+                    roomID: roomID,
+                    users: users
+                }));
+                dispatch(setIsLoadingARoom(false));
+
+                // Then, new messages of this room is seen by the user:
+                markNewMessagesAsReadByUID(roomID, user.uid);
+            });
+    }, [dispatch, rooms, user.uid]);
 
     const handleFocusSearchBox = () => {
         setIsSearchBoxInputFocused(true);
@@ -303,7 +317,7 @@ function ChatMenu(props) {
         <div className='chatmenu'>
             <div className='chatmenu__header'>
                 <div className='chatmenu__actions'>
-                    <div className='title'>Chat</div>
+                    <div className='title'>Chats</div>
 
                     <div className='action-list'>
                         <div className='action-item action-button more-options-btn'>
@@ -382,6 +396,7 @@ function ChatMenu(props) {
                                             roomType={element.type}
                                             title={element.name}
                                             content={element.latestMessage ? element.latestMessage : '(Không có tin nhắn)'}
+                                            isSeenBy={element.isSeenBy ? element.isSeenBy : []}
                                         ></ChatMenuItem>
                                     </div>
                                 );

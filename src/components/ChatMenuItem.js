@@ -15,7 +15,8 @@ function ChatMenuItem(props) {
         membersOfARoom = [],
         roomType = '',
         title = '',
-        content = ''
+        content = '',
+        isSeenBy = []
     } = props;
 
 
@@ -25,6 +26,7 @@ function ChatMenuItem(props) {
 
     // State:
     const [membersDetails, setMembersDetails] = useState(false);
+    const [isSeen, setIsSeen] = useState(false);
 
 
     // Side effects:
@@ -46,6 +48,20 @@ function ChatMenuItem(props) {
                 });;
         }
     }, [user.uid, membersOfARoom]);
+
+    useEffect(() => {
+        let count = 0;
+        for (let i = 0; i < isSeenBy.length; i++) {
+            if (isSeenBy[i] === user.uid) {
+                setIsSeen(true);
+                count++;
+                break;
+            }
+        }
+        if (count === 0) {
+            setIsSeen(false);
+        }
+    }, [user.uid, isSeenBy]);
 
 
     // Component:
@@ -111,13 +127,24 @@ function ChatMenuItem(props) {
     };
 
     return (
-        <div className='chatbox'>
-            <div className='chatbox__img'>
-                {renderChatRoomImage()}
-            </div>
-            <div className='chatbox__info'>
-                <div className='chatbox-title'>{renderChatRoomName()}</div>
-                <div className='chatbox-latest-message'>{content}</div>
+        <div className='chatbox-wrapper'>
+            <div className={`chatbox${isSeen === false ? ' unseen' : ''}`}>
+                <div className='chatbox__img'>
+                    {renderChatRoomImage()}
+                </div>
+                <div className='chatbox__info'>
+                    <div className='chatbox-title'>{renderChatRoomName()}</div>
+                    <div className='chatbox-latest-message'>{content}</div>
+                </div>
+                <div className='chatbox__status'>
+                    {
+                        isSeen === false ? (
+                            <div className='chatbox-dot'></div>
+                        ) : (
+                            <></>
+                        )
+                    }
+                </div>
             </div>
         </div>
     );
