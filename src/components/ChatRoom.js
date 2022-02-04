@@ -250,8 +250,10 @@ function ChatRoom(props) {
                             return (
                                 <div key={`msg-${index}`} className='message from-me'>
                                     <div className='message__content'>
-                                        <i>{relativeDateTime}</i> {/*Delele this line later!*/}
-                                        <span className='message-piece'>{msg.content}</span>
+                                        <span className='message-piece'>
+                                            {msg.content}
+                                            <span className='message-piece__tooltip'>{relativeDateTime}</span>
+                                        </span>
                                     </div>
                                 </div>
                             );
@@ -274,8 +276,10 @@ function ChatRoom(props) {
                                         <img className='person-img' src={data ? data.photoURL : ''} alt='' ></img>
                                     </div>
                                     <div className='message__content'>
-                                        <i>{relativeDateTime}</i> {/*Delele this line later!*/}
-                                        <span className='message-piece'>{msg.content}</span>
+                                        <span className='message-piece'>
+                                            {msg.content}
+                                            <span className='message-piece__tooltip'>{relativeDateTime}</span>
+                                        </span>
                                     </div>
                                 </div>
                             );
