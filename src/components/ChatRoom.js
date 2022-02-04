@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faInfoCircle, faExclamation } from '@fortawesome/free-solid-svg-icons';
+import { faInfoCircle, faExclamation, faChevronCircleRight } from '@fortawesome/free-solid-svg-icons';
 
 // Components:
 import AvatarGroup from './AvatarGroup';
@@ -53,54 +53,58 @@ function ChatRoom(props) {
         setInputMessage(e.target.value);
     }
 
-    const handleInputOnKeyPress = (e) => {
-        if (e.charCode === 13) {
-            if (selectedChatRoomID !== '') {
-                if (inputMessage.length > 0) {
-                    if (roomData.state === 'temporary') {
-                        // Add data to Cloud Firestore:
-                        addDocumentWithTimestamps('rooms', {
-                            id: 'temporary',
-                            name: 'Room\'s name',
-                            description: 'One To One chat',
-                            type: 'one-to-one-chat',
-                            members: roomData.members,
-                            latestMessage: inputMessage,
-                            isSeenBy: [user.uid],
-                            fromOthers_BgColor: '',
-                            fromMe_BgColor: '',
-                        }, ['createdAt', 'lastActiveAt'])
-                            .then((roomRef) => {
-                                addDocument('messages', {
-                                    roomId: roomRef.id,
-                                    content: inputMessage,
-                                    uid: user.uid,
-                                }).then((messageRef) => {
-                                    dispatch(setRoomIDWillBeSelected(roomRef.id));
-                                });
+    const sendMessage = () => {
+        if (selectedChatRoomID !== '') {
+            if (inputMessage.length > 0) {
+                if (roomData.state === 'temporary') {
+                    // Add data to Cloud Firestore:
+                    addDocumentWithTimestamps('rooms', {
+                        id: 'temporary',
+                        name: 'Room\'s name',
+                        description: 'One To One chat',
+                        type: 'one-to-one-chat',
+                        members: roomData.members,
+                        latestMessage: inputMessage,
+                        isSeenBy: [user.uid],
+                        fromOthers_BgColor: '',
+                        fromMe_BgColor: '',
+                    }, ['createdAt', 'lastActiveAt'])
+                        .then((roomRef) => {
+                            addDocument('messages', {
+                                roomId: roomRef.id,
+                                content: inputMessage,
+                                uid: user.uid,
+                            }).then((messageRef) => {
+                                dispatch(setRoomIDWillBeSelected(roomRef.id));
                             });
+                        });
 
-                        // Clear form:
-                        setInputMessage('');
-                    } else {
-                        // Add data to Cloud Firestore:
-                        addDocument('messages', {
-                            roomId: selectedChatRoomID,
-                            content: inputMessage,
-                            uid: user.uid,
-                        })
-                            .then((messageRef) => {
-                                updateDocumentByIDWithTimestamps('rooms', selectedChatRoomID, {
-                                    latestMessage: inputMessage,
-                                    isSeenBy: [user.uid]
-                                }, ['lastActiveAt']);
-                            });
+                    // Clear form:
+                    setInputMessage('');
+                } else {
+                    // Add data to Cloud Firestore:
+                    addDocument('messages', {
+                        roomId: selectedChatRoomID,
+                        content: inputMessage,
+                        uid: user.uid,
+                    })
+                        .then((messageRef) => {
+                            updateDocumentByIDWithTimestamps('rooms', selectedChatRoomID, {
+                                latestMessage: inputMessage,
+                                isSeenBy: [user.uid]
+                            }, ['lastActiveAt']);
+                        });
 
-                        // Clear form:
-                        setInputMessage('');
-                    }
+                    // Clear form:
+                    setInputMessage('');
                 }
             }
+        }
+    }
+
+    const handleInputOnKeyPress = (e) => {
+        if (e.charCode === 13) {
+            sendMessage();
         }
     }
 
@@ -363,6 +367,9 @@ function ChatRoom(props) {
                                 onChange={(e) => handleInputChange(e)}
                                 onKeyPress={(e) => handleInputOnKeyPress(e)}
                             ></input>
+                            <div className='action-button send-btn' onClick={(e) => sendMessage()}>
+                                <FontAwesomeIcon className='action-button__icon send-icon' icon={faChevronCircleRight} />
+                            </div>
                         </div>
                     </div>
                 </div>

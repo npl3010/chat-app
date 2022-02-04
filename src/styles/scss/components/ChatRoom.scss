@@ -156,15 +156,53 @@
     .chat-tools {
         padding: 10px 16px;
     }
+
+    .chat-tools .textbox-wrapper .textbox {
+        position: relative;
+    }
     
     .chat-tools .textbox-wrapper .textbox input[type=text] {
         border: none;
         outline: none;
-        border-radius: 15px;
-        padding: 10px 15px;
+        // border-radius: 15px;
+        border-radius: 100px;
+        padding: 10px 50px 10px 15px;
         background-color: #f0f2f5;
         font-size: 15px;
         width: 100%;
+    }
+
+    .chat-tools {
+
+        .action-button {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 25px;
+            height: 25px;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #eee;
+            border-radius: 50%;
+
+            &:hover {
+                box-shadow: 0 0 0 5px #dedede;
+            }
+        }
+
+        .send-btn {
+            right: 15px;
+            color: steelblue;
+        }
+
+        .send-icon {
+            // font-size: 25px;
+            width: 25px;
+            height: 25px;
+            display: block;
+        }
     }
 }
 
