@@ -1,4 +1,5 @@
 import { db, collection, doc, getDoc, addDoc, updateDoc, serverTimestamp } from '../firebase/config';
+import formatRelative from 'date-fns/formatRelative'
 
 
 // Add data to Cloud Firestore:
@@ -181,4 +182,24 @@ export const toPascalCaseForAllWords = (text) => {
         arrOfSubstr[i] = toPascalCaseForSingleWord(arrOfSubstr[i]);
     }
     return arrOfSubstr.join(" ");
+}
+
+
+// Relative Date Formatting with date-fns:
+/**
+ * 
+ * @param {string} dateString A string
+ * @returns 
+ */
+export const formatDateTimeFromDateString = (dateString) => {
+    let result = '';
+    if (dateString) {
+        result = formatRelative(
+            new Date(dateString),
+            new Date()
+        );
+
+        result = result.charAt(0).toUpperCase() + result.slice(1);
+    }
+    return result;
 }

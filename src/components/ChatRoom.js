@@ -10,7 +10,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setRoomIDWillBeSelected } from '../features/manageRooms/manageRoomsSlice';
 
 // Services:
-import { addDocument, addDocumentWithTimestamps, updateDocumentByIDWithTimestamps } from '../firebase/services';
+import { addDocument, addDocumentWithTimestamps, formatDateTimeFromDateString, updateDocumentByIDWithTimestamps } from '../firebase/services';
 
 // CSS:
 import '../styles/scss/components/ChatRoom.scss';
@@ -246,10 +246,11 @@ function ChatRoom(props) {
                     messages.slice(0).reverse().map((msg, index) => {
                         if (msg.uid === user.uid) {
                             const strDateTime = getDateAndTimeFromDateString(msg.createdAt);
+                            const relativeDateTime = formatDateTimeFromDateString(strDateTime);
                             return (
                                 <div key={`msg-${index}`} className='message from-me'>
                                     <div className='message__content'>
-                                        <i>{strDateTime}</i> {/*Delele this line later!*/}
+                                        <i>{relativeDateTime}</i> {/*Delele this line later!*/}
                                         <span className='message-piece'>{msg.content}</span>
                                     </div>
                                 </div>
@@ -266,13 +267,14 @@ function ChatRoom(props) {
 
                             // Return:
                             const strDateTime = getDateAndTimeFromDateString(msg.createdAt);
+                            const relativeDateTime = formatDateTimeFromDateString(strDateTime);
                             return (
                                 <div key={`msg-${index}`} className='message from-others'>
                                     <div className='message__person-img'>
                                         <img className='person-img' src={data ? data.photoURL : ''} alt='' ></img>
                                     </div>
                                     <div className='message__content'>
-                                        <i>{strDateTime}</i> {/*Delele this line later!*/}
+                                        <i>{relativeDateTime}</i> {/*Delele this line later!*/}
                                         <span className='message-piece'>{msg.content}</span>
                                     </div>
                                 </div>
@@ -294,7 +296,7 @@ function ChatRoom(props) {
                         {renderChatRoomImage()}
                         <div className='person-info'>
                             <span className='person-name'>{generateChatRoomName()}</span>
-                            <span className='person-active-status'>{roomData.type === 'group-chat' ? roomData.lastActiveAt : ''}</span>
+                            <span className='person-active-status'>{roomData.type === 'group-chat' ? formatDateTimeFromDateString(roomData.lastActiveAt) : ''}</span>
                         </div>
                     </div>
 

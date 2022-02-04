@@ -10,6 +10,7 @@ import { useSelector } from 'react-redux';
 // Services:
 import { fetchRoomByRoomID } from '../firebase/queryRooms';
 import { markNotificationAsReadByUID } from '../firebase/queryNotifications';
+import { formatDateTimeFromDateString } from '../firebase/services';
 
 // CSS:
 import '../styles/scss/components/NotificationForOthersPanel.scss';
@@ -69,13 +70,14 @@ function NotificationForOthersPanel(props) {
                     {
                         notificationsData.map((nData, index) => {
                             const date = new Date(nData.createdAt.toDate().toString());
+                            const relativeDateTime = formatDateTimeFromDateString(date);
                             if (nData.type === 'be-added-to-a-group-chat') {
                                 return (
                                     <Notification
                                         key={`notification-${index}`}
                                         objectName={nData.objectName}
                                         objectImgSrc={groupChatImg}
-                                        createdAt={date.toString()}
+                                        createdAt={relativeDateTime}
                                         isHighlighted={!(nData.isSeenBy.includes(user.uid))}
                                         label='Nhóm chat mới'
                                         textBeforeObjectName='Bạn được thêm vào nhóm chat'

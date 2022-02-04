@@ -14,6 +14,7 @@ import { ModalControlContext } from '../context/ModalControlProvider';
 // Services:
 import { fetchUserListByUserID } from '../firebase/queryUsers';
 import { markAllNotificationsAsReadByUID } from '../firebase/queryFriends';
+import { formatDateTimeFromDateString } from '../firebase/services';
 
 // CSS:
 import '../styles/scss/components/NotificationForFriendRequestPanel.scss';
@@ -75,7 +76,7 @@ function NotificationForFriendRequestPanel(props) {
                     .then((userData) => {
                         const date = new Date(fRequest.createdAt);
                         result.push({
-                            sentAt: date.toString(),
+                            sentAt: formatDateTimeFromDateString(date.toString()),
                             fromUID: fRequest.senderUID,
                             toUID: fRequest.receiverUID,
                             displayName: userData[0].displayName,
