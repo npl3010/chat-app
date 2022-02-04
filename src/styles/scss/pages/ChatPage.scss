@@ -25,7 +25,8 @@
         width: 0;
         opacity: 0;
         visibility: hidden;
-        transition: all 0.3s ease;
+        transition: min-width 0.3s ease;
+        overflow: auto;
     }
 
     input#checkbox-for-chatroom-menu {
@@ -36,5 +37,6 @@
         min-width: 300px;
         opacity: 1;
         visibility: visible;
+        transition: min-width 0.3s ease, opacity 0s ease 0.3s;
     }
 }
