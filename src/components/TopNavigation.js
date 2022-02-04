@@ -17,6 +17,9 @@ import { setUser } from '../features/auth/userAuthSlice';
 // CSS:
 import '../styles/scss/components/TopNavigation.scss';
 
+// Assets:
+import appLogo from '../assets/images/AppLogo.png';
+
 
 function TopNavigation(props) {
     // State:
@@ -54,7 +57,11 @@ function TopNavigation(props) {
                 <div className='topnav'>
                     <div className='topnav__left-section'>
                         <div className='topnav__quick-menu'>
-                            <span className='topnav__logo'>FMc</span>
+                            <span className='topnav__logo'>
+                                <span className='logo-wrapper'>
+                                    <img className='logo' src={appLogo} alt='' draggable={false}></img>
+                                </span>
+                            </span>
                             <div className='search-box-wrapper'>
                                 <div className='search-box--primary'>
                                     <FontAwesomeIcon className='search-box__icon' icon={faSearch} />
