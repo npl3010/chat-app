@@ -7,7 +7,7 @@ import ChatMenuItem from './ChatMenuItem';
 
 // Redux:
 import { useDispatch, useSelector } from 'react-redux';
-import { selectRoom, setIsLoadingARoom, setRoomIDWillBeSelected, setRoomList, setselectedChatRoomUsers, setTemporaryRoom } from '../features/manageRooms/manageRoomsSlice';
+import { resetRoomsStatesToInitial, selectRoom, setIsLoadingARoom, setRoomIDWillBeSelected, setRoomList, setselectedChatRoomUsers, setTemporaryRoom } from '../features/manageRooms/manageRoomsSlice';
 
 // Context:
 import { ModalControlContext } from '../context/ModalControlProvider';
@@ -197,6 +197,8 @@ function ChatMenu(props) {
         // Get all rooms that the user is a member of:
         if (chatRooms.length > 0) {
             dispatch(setRoomList(chatRooms));
+        } else {
+            dispatch(resetRoomsStatesToInitial())
         }
     }, [dispatch, chatRooms]);
 

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheck, faExclamation, faQuestion, faTimes } from '@fortawesome/free-solid-svg-icons';
 
@@ -19,6 +19,7 @@ function AppAlertMessage(props) {
     //     title = '',
     //     msg = ''
     // } = props;
+    const timeoutID = useRef(null);
 
 
     // Context:
@@ -36,6 +37,7 @@ function AppAlertMessage(props) {
     // Methods:
     const handleClickCloseBtn = () => {
         removeAppAlertMessage();
+        clearTimeout(timeoutID.current);
     };
 
 
@@ -43,11 +45,15 @@ function AppAlertMessage(props) {
     useEffect(() => {
         if (typeof appAlertMessageData.duration === "number") {
             if (appAlertMessageData.duration > 0) {
-                setTimeout(() => {
+                timeoutID.current = setTimeout(() => {
                     removeAppAlertMessage();
                 }, appAlertMessageData.duration * 1000);
             }
         }
+
+        return (() => {
+            clearTimeout(timeoutID.current);
+        });
     }, [appAlertMessageData.duration, removeAppAlertMessage]);
 
 

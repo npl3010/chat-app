@@ -45,10 +45,12 @@ function NotificationForOthersPanel(props) {
                 if (ntf.objectType === 'group-chat') {
                     fetchRoomByRoomID(ntf.objectID)
                         .then((roomData) => {
-                            result.push({
-                                ...ntf,
-                                objectName: roomData.name
-                            });
+                            if (roomData) {
+                                result.push({
+                                    ...ntf,
+                                    objectName: roomData.name
+                                });
+                            }
                             if (index === notifications.length - 1) {
                                 setNotificationsData([...result]);
                             }

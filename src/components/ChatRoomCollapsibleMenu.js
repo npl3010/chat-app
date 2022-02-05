@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { Modal } from 'antd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
     faChevronDown, faPen, faSignOutAlt
@@ -9,6 +10,12 @@ import {
 
 // Components:
 import ChatRoomUserList from './ChatRoomUserList';
+
+// Redux:
+import { useSelector } from 'react-redux';
+
+// Services:
+import { leaveRoom } from '../firebase/queryRooms';
 
 // CSS:
 import '../styles/scss/components/ChatRoomCollapsibleMenu.scss';
@@ -22,11 +29,15 @@ function ChatRoomCollapsibleMenu(props) {
     } = props;
 
 
+    // Redux:
+    const user = useSelector((state) => state.userAuth.user);
+
+
     // State:
     const [idOfInlineMenuToBeDisplayed, setIdOfInlineMenuToBeDisplayed] = useState(-1);
     const [inlineMenuHeight, setInlineMenuHeight] = useState(0);
     const [inlineMenuOverflow, setInlineMenuOverflow] = useState('hidden'); // If value is 'hidden', child elements can not display outside of inline-menu-wrapper.
-
+    const [isModalLeaveRoomVisible, setIsModalLeaveRoomVisible] = useState(false);
 
     // Methods:
     const handleToggleBetweenHidingAndShowingMenu = (e, menuNumber) => {
@@ -37,6 +48,21 @@ function ChatRoomCollapsibleMenu(props) {
             setIdOfInlineMenuToBeDisplayed(menuNumber);
         }
     }
+
+    const showModalLeaveRoom = () => {
+        setIsModalLeaveRoomVisible(true);
+    };
+
+    const handleLeaveRoomOk = () => {
+        setIsModalLeaveRoomVisible(false);
+        leaveRoom(roomData.id, user.uid)
+            .then((res) => {
+            });
+    };
+
+    const handleLeaveRoomCancel = () => {
+        setIsModalLeaveRoomVisible(false);
+    };
 
 
     // Side effects:
@@ -150,7 +176,7 @@ function ChatRoomCollapsibleMenu(props) {
                                     style={idOfInlineMenuToBeDisplayed === 2 ? { height: inlineMenuHeight } : {}}
                                 >
                                     <div className='inline-menu' ref={(el) => inlineMenusRef.current[2] = el}>
-                                        <div className='inline-menu__option'>
+                                        <div className='inline-menu__option' onClick={showModalLeaveRoom}>
                                             <div className='inline-menu__option-icon-wrapper'>
                                                 <FontAwesomeIcon className='inline-menu__option-icon' icon={faSignOutAlt} />
                                             </div>
@@ -163,6 +189,19 @@ function ChatRoomCollapsibleMenu(props) {
                     </div>
                 </div>
             </div>
+
+            <Modal
+                className='antd-modal-leave-room'
+                title="Xác nhận"
+                visible={isModalLeaveRoomVisible}
+                onOk={handleLeaveRoomOk}
+                onCancel={handleLeaveRoomCancel}
+                centered
+                okText={'Rời khỏi nhóm'}
+                cancelText={'Hủy'}
+            >
+                <div>Bạn có thật sự muốn rời khỏi nhóm chat?</div>
+            </Modal>
         </div >
     );
 }

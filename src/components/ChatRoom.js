@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faInfoCircle, faExclamation, faChevronCircleRight } from '@fortawesome/free-solid-svg-icons';
+import { faInfoCircle, faExclamation, faChevronCircleRight, faUser } from '@fortawesome/free-solid-svg-icons';
 
 // Components:
 import AvatarGroup from './AvatarGroup';
@@ -30,20 +30,26 @@ function ChatRoom(props) {
 
     // Redux:
     const user = useSelector((state) => state.userAuth.user);
-    const { rooms, selectedChatRoomID, selectedChatRoomUsers, isLoadingARoom } = useSelector((state) => state.manageRooms);
+    const { rooms, selectedChatRoomID, selectedChatRoomUsers } = useSelector((state) => state.manageRooms);
     const dispatch = useDispatch();
 
-    console.log(isLoadingARoom)
 
     // Side effects:
     useEffect(() => {
         if (selectedChatRoomID !== '') {
+            let count = 0;
             for (let i = 0; i < rooms.length; i++) {
                 if (rooms[i].id === selectedChatRoomID) {
                     setRoomData(rooms[i]);
+                    count++;
                     break;
                 }
             }
+            if (count === 0) {
+                setRoomData([]);
+            }
+        } else {
+            setRoomData([]);
         }
     }, [rooms, selectedChatRoomID]);
 
@@ -277,7 +283,13 @@ function ChatRoom(props) {
                             return (
                                 <div key={`msg-${index}`} className='message from-others'>
                                     <div className='message__person-img'>
-                                        <img className='person-img' src={data ? data.photoURL : ''} alt='' ></img>
+                                        {data?.photoURL ? (
+                                            <img className='person-img' src={data.photoURL} alt='' ></img>
+                                        ) : (
+                                            <div className='person-icon-wrapper'>
+                                                <FontAwesomeIcon className='person-icon' icon={faUser} />
+                                            </div>
+                                        )}
                                     </div>
                                     <div className='message__content'>
                                         <span className='message-piece'>
