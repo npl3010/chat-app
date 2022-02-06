@@ -120,53 +120,46 @@ function ChatRoomUserList(props) {
         }
     };
 
+    // 1. Leave room:
     const showModalLeaveRoom = () => {
-        // Leave room:
+        setIndexOfObjectToBeDisplayed(-1);
         setIsModalLeaveRoomVisible(true);
     };
-
     const handleLeaveRoomOk = () => {
         setIsModalLeaveRoomVisible(false);
-        // Leave room:
         leaveRoom(roomData.id, user.uid)
             .then((res) => {
             });
     };
-
     const handleLeaveRoomCancel = () => {
-        // Leave room:
         setIsModalLeaveRoomVisible(false);
     };
 
+    // 2. Reomove user from a room:
     const showModalRemoveUser = (userData) => {
-        // Reomove user from a room:
+        setIndexOfObjectToBeDisplayed(-1);
         if (userData) {
             setIsModalRemoveUserVisible(true);
             setTempUserData(userData);
         }
     };
-
     const handleRemoveUserOk = () => {
-        setIndexOfObjectToBeDisplayed(-1);
         setIsModalRemoveUserVisible(false);
-        // Reomove user from a room:
         if (tempUserData) {
             leaveRoom(roomData.id, tempUserData.uid)
                 .then((res) => {
                 });
         }
     };
-
     const handleRemoveUserCancel = () => {
-        // Reomove user from a room:
         setIsModalRemoveUserVisible(false);
     };
 
+    // 3. Set role:
     const setAdminRoleFor = (userData) => {
         setRoleForChatRoomMember(roomData.id, userData.uid, 'group-admin');
         setIndexOfObjectToBeDisplayed(-1);
     };
-
     const setMemberRoleFor = (userData) => {
         let count = 0;
         for (let i = 0; i < roomData?.membersRole?.length; i++) {
@@ -181,7 +174,7 @@ function ChatRoomUserList(props) {
             setRoleForChatRoomMember(roomData.id, userData.uid, 'group-member');
             setIndexOfObjectToBeDisplayed(-1);
         } else {
-            showAppAlertMessage('info', 'Lưu ý', `Nhóm phải có ít nhất một quản trị viên!`, 10);
+            showAppAlertMessage('warning', 'Lưu ý', `Nhóm phải có ít nhất một quản trị viên!`, 10);
             setIndexOfObjectToBeDisplayed(-1);
         }
     };

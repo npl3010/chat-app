@@ -138,6 +138,21 @@
 // .action-list:
 .chatroom {
 
+    .action-list-wrapper .action-list .action-item {
+        width: 35px;
+        height: 35px;
+        cursor: pointer;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: transparent;
+        border-radius: 50%;
+
+        &:hover {
+            background-color: #eee;
+        }
+    }
+
     .action-list-wrapper .action-list .action-item .action-icon {
         font-size: 25px;
         color: rgba(70, 130, 180, 0.8);
@@ -194,13 +209,14 @@
 
         .send-btn {
             right: 15px;
-            color: steelblue;
+            color: #fff;
+            background-color: steelblue;
         }
 
         .send-icon {
-            // font-size: 25px;
-            width: 25px;
-            height: 25px;
+            font-size: 25px;
+            // width: 25px;
+            // height: 25px;
             display: block;
         }
     }

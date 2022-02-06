@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faInfoCircle, faExclamation, faChevronCircleRight, faUser } from '@fortawesome/free-solid-svg-icons';
+import { faAngleRight, faInfoCircle, faExclamation, faUser } from '@fortawesome/free-solid-svg-icons';
 
 // Components:
 import AvatarGroup from './AvatarGroup';
@@ -380,7 +380,7 @@ function ChatRoom(props) {
                                 onKeyPress={(e) => handleInputOnKeyPress(e)}
                             ></input>
                             <div className='action-button send-btn' onClick={(e) => sendMessage()}>
-                                <FontAwesomeIcon className='action-button__icon send-icon' icon={faChevronCircleRight} />
+                                <FontAwesomeIcon className='action-button__icon send-icon' icon={faAngleRight} />
                             </div>
                         </div>
                     </div>

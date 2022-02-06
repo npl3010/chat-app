@@ -210,3 +210,26 @@ export async function setRoleForChatRoomMember(roomID, userID, role) {
         // doc.data() will be undefined in this case.
     }
 }
+
+
+// Rename a group chat room:
+/**
+ * 
+ * @param {string} roomID This is id of a room. 
+ * @param {string} newRoomName The new name for the room.
+ */
+export async function renameGroupChatRoom(roomID, newRoomName) {
+    const roomRef = doc(db, "rooms", roomID);
+    const docSnap = await getDoc(roomRef);
+
+    if (docSnap.exists()) {
+        // Update data:
+        await updateDoc(docSnap.ref, {
+            name: newRoomName
+        });
+        return true;
+    } else {
+        // doc.data() will be undefined in this case.
+        return false;
+    }
+}

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Modal } from 'antd';
+import { Form, Input, Modal } from 'antd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
     faChevronDown, faPen, faSignOutAlt
@@ -15,7 +15,7 @@ import ChatRoomUserList from './ChatRoomUserList';
 import { useSelector } from 'react-redux';
 
 // Services:
-import { leaveRoom } from '../firebase/queryRooms';
+import { leaveRoom, renameGroupChatRoom } from '../firebase/queryRooms';
 
 // CSS:
 import '../styles/scss/components/ChatRoomCollapsibleMenu.scss';
@@ -37,7 +37,15 @@ function ChatRoomCollapsibleMenu(props) {
     const [idOfInlineMenuToBeDisplayed, setIdOfInlineMenuToBeDisplayed] = useState(-1);
     const [inlineMenuHeight, setInlineMenuHeight] = useState(0);
     const [inlineMenuOverflow, setInlineMenuOverflow] = useState('hidden'); // If value is 'hidden', child elements can not display outside of inline-menu-wrapper.
+    // Modal 1:
     const [isModalLeaveRoomVisible, setIsModalLeaveRoomVisible] = useState(false);
+    // Modal 2:
+    const [isModalRenameRoomVisible, setIsModalRenameRoomVisible] = useState(false);
+
+
+    // Hooks:
+    const [formRenameRoom] = Form.useForm();
+
 
     // Methods:
     const handleToggleBetweenHidingAndShowingMenu = (e, menuNumber) => {
@@ -49,19 +57,38 @@ function ChatRoomCollapsibleMenu(props) {
         }
     }
 
+    // 1. Leave room:
     const showModalLeaveRoom = () => {
         setIsModalLeaveRoomVisible(true);
     };
-
     const handleLeaveRoomOk = () => {
         setIsModalLeaveRoomVisible(false);
         leaveRoom(roomData.id, user.uid)
             .then((res) => {
             });
     };
-
     const handleLeaveRoomCancel = () => {
         setIsModalLeaveRoomVisible(false);
+    };
+
+    // 2. Rename room:
+    const showModalRenameRoom = () => {
+        setIsModalRenameRoomVisible(true);
+    };
+    const handleRenameRoomOk = () => {
+        formRenameRoom.submit();
+        // Rename the room:
+        if (formRenameRoom.getFieldValue('newRoomName')) {
+            renameGroupChatRoom(roomData.id, formRenameRoom.getFieldValue('newRoomName'))
+                .then((res) => {
+                    formRenameRoom.resetFields();
+                    setIsModalRenameRoomVisible(false);
+                });
+        }
+    };
+    const handleRenameRoomCancel = () => {
+        formRenameRoom.resetFields();
+        setIsModalRenameRoomVisible(false);
     };
 
 
@@ -107,7 +134,7 @@ function ChatRoomCollapsibleMenu(props) {
                                     style={idOfInlineMenuToBeDisplayed === 0 ? { height: inlineMenuHeight } : {}}
                                 >
                                     <div className='inline-menu' ref={(el) => inlineMenusRef.current[0] = el}>
-                                        <div className='inline-menu__option'>
+                                        <div className='inline-menu__option' onClick={showModalRenameRoom}>
                                             <div className='inline-menu__option-icon-wrapper'>
                                                 <FontAwesomeIcon className='inline-menu__option-icon' icon={faPen} />
                                             </div>
@@ -190,17 +217,47 @@ function ChatRoomCollapsibleMenu(props) {
                 </div>
             </div>
 
+            {/* Modals: */}
             <Modal
                 className='antd-modal-leave-room'
                 title="Xác nhận"
+                centered
                 visible={isModalLeaveRoomVisible}
                 onOk={handleLeaveRoomOk}
                 onCancel={handleLeaveRoomCancel}
-                centered
                 okText={'Rời khỏi nhóm'}
                 cancelText={'Hủy'}
             >
                 <div>Bạn có thật sự muốn rời khỏi nhóm chat?</div>
+            </Modal>
+
+            <Modal
+                className='antd-modal-rename-group-chat'
+                title="Đổi tên nhóm chat"
+                centered
+                visible={isModalRenameRoomVisible}
+                onOk={handleRenameRoomOk}
+                onCancel={handleRenameRoomCancel}
+                okText='Đổi tên'
+                cancelText='Hủy'
+            >
+                <Form
+                    className='antd-rename-group-chat-form'
+                    form={formRenameRoom}
+                    name="basic"
+                    labelCol={{ span: 6 }}
+                    wrapperCol={{ span: 18 }}
+                    initialValues={{ remember: true }}
+                    autoComplete="off"
+                >
+                    <Form.Item
+                        label="Tên mới"
+                        name="newRoomName"
+                        rules={[{ required: true, message: 'Hãy nhập tên mới cho nhóm!' }]}
+                    >
+                        <Input placeholder='Nhập tên nhóm' />
+                    </Form.Item>
+                </Form>
             </Modal>
         </div >
     );
