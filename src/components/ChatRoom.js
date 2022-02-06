@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faAngleRight, faInfoCircle, faExclamation, faUser } from '@fortawesome/free-solid-svg-icons';
+import { faAngleRight, faExclamation, faUser, faInfo } from '@fortawesome/free-solid-svg-icons';
 
 // Components:
 import AvatarGroup from './AvatarGroup';
@@ -308,6 +308,102 @@ function ChatRoom(props) {
         );
     };
 
+    const renderChatRoomMessagesWithGrouping = () => {
+        if (selectedChatRoomID === '' && selectedChatRoomUsers.length > 0) {
+            messages = [];
+        }
+
+        const messageList = messages.slice(0).reverse();
+        let messageGroup = [];
+        let result = [];
+
+        for (let i = 0; i < messageList.length; i++) {
+            if (messageList[i].uid === user.uid) {
+                let indexSkipTo = i;
+                for (let j = i; j < messageList.length; j++) {
+                    const d1 = new Date(messageList[i].createdAt);
+                    const d2 = new Date(messageList[j].createdAt);
+                    if (messageList[i].uid === messageList[j].uid && Math.abs(d1 - d2) <= 60000) {
+                        const strDateTime = getDateAndTimeFromDateString(messageList[j].createdAt);
+                        const relativeDateTime = formatDateTimeFromDateString(strDateTime);
+                        messageGroup.push(
+                            <span key={`msgpiece-${j}`} className='message-piece'>
+                                {messageList[j].content}
+                                <span className='message-piece__tooltip'>{relativeDateTime}</span>
+                            </span>
+                        );
+                        indexSkipTo++;
+                    } else {
+                        break;
+                    }
+                }
+                result.push(
+                    <div key={`msg-${i}`} className='message from-me'>
+                        <div className='message__content'>
+                            {messageGroup.map((msg) => msg)}
+                        </div>
+                    </div>
+                );
+                messageGroup = [];
+                i = indexSkipTo - 1;
+            } else {
+                // Get user data:
+                let data = null;
+                for (let i = 0; i < selectedChatRoomUsers.length; i++) {
+                    if (messageList[i].uid === selectedChatRoomUsers[i].uid) {
+                        data = selectedChatRoomUsers[i];
+                        break;
+                    }
+                }
+
+                // Group messages:
+                let indexSkipTo = i;
+                for (let j = i; j < messageList.length; j++) {
+                    const d1 = new Date(messageList[i].createdAt);
+                    const d2 = new Date(messageList[j].createdAt);
+                    if (messageList[i].uid === messageList[j].uid && Math.abs(d1 - d2) <= 60000) {
+                        const strDateTime = getDateAndTimeFromDateString(messageList[j].createdAt);
+                        const relativeDateTime = formatDateTimeFromDateString(strDateTime);
+                        messageGroup.push(
+                            <span key={`msgpiece-${j}`} className='message-piece'>
+                                {messageList[j].content}
+                                <span className='message-piece__tooltip'>{relativeDateTime}</span>
+                            </span>
+                        );
+                        indexSkipTo++;
+                    } else {
+                        break;
+                    }
+                }
+                result.push(
+                    <div key={`msg-${i}`} className='message from-others'>
+                        <div className='message__person-img'>
+                            {data?.photoURL ? (
+                                <img className='person-img' src={data.photoURL} alt='' ></img>
+                            ) : (
+                                <div className='person-icon-wrapper'>
+                                    <FontAwesomeIcon className='person-icon' icon={faUser} />
+                                </div>
+                            )}
+                        </div>
+                        <div className='message__content'>
+                            {messageGroup.map((msg) => msg)}
+                        </div>
+                    </div>
+                );
+                messageGroup = [];
+                i = indexSkipTo - 1;
+            }
+        }
+
+        return (
+            <>
+                {result}
+                <div ref={messagesEndRef} />
+            </>
+        );
+    };
+
     const renderChatRoomComponent = () => {
         return (
             <>
@@ -323,8 +419,25 @@ function ChatRoom(props) {
                     <div className='chat-info__actions'>
                         <div className='action-list-wrapper'>
                             <div className='action-list'>
+                                {/* <label className='action-item' htmlFor="">
+                                    <span className='action-icon-circle'>
+                                        <FontAwesomeIcon className='action-icon' icon={faPhone} />
+                                    </span>
+                                </label>
+                                <label className='action-item' htmlFor="">
+                                    <span className='action-icon-circle'>
+                                        <FontAwesomeIcon className='action-icon' icon={faVideo} />
+                                    </span>
+                                </label>
                                 <label className='action-item' htmlFor="checkbox-for-chatroom-menu">
                                     <FontAwesomeIcon className='action-icon' icon={faInfoCircle} />
+                                </label> */}
+                                <label className='action-item' htmlFor="checkbox-for-chatroom-menu">
+                                    <span className='action-icon-wrapper info-icon'>
+                                        <span className='action-icon-circle'>
+                                            <FontAwesomeIcon className='action-icon' icon={faInfo} />
+                                        </span>
+                                    </span>
                                 </label>
                             </div>
                         </div>
@@ -335,7 +448,7 @@ function ChatRoom(props) {
                     <div className='content-wrapper'>
                         <div className='content'>
 
-                            {renderChatRoomMessages()}
+                            {true ? renderChatRoomMessagesWithGrouping() : renderChatRoomMessages()}
 
                             {/* <div className='message from-others'>
                                 <div className='message__person-img'>

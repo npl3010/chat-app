@@ -73,6 +73,15 @@
             &:hover {
                 background-color: #eee;
             }
+
+            &.is-disabled {
+                cursor: auto;
+                color: #aaa;
+            }
+
+            &.is-disabled:hover {
+                background-color: #f9f9f9;
+            }
         }
 
         &__option-icon-wrapper {

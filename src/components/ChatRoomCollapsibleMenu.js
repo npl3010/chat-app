@@ -140,7 +140,7 @@ function ChatRoomCollapsibleMenu(props) {
                                             </div>
                                             <span>Đổi tên đoạn chat</span>
                                         </div>
-                                        <div className='inline-menu__option'>
+                                        <div className='inline-menu__option is-disabled'>
                                             <div className='inline-menu__option-icon-wrapper'>
                                                 <FontAwesomeIcon className='inline-menu__option-icon' icon={faImage} />
                                             </div>
