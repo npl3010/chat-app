@@ -146,7 +146,7 @@ function ChatRoomCollapsibleMenu(props) {
                                             </div>
                                             <span>Thay đổi ảnh</span>
                                         </div>
-                                        <div className='inline-menu__option'>
+                                        <div className='inline-menu__option is-disabled'>
                                             <div className='inline-menu__option-icon-wrapper'>
                                                 <FontAwesomeIcon className='inline-menu__option-icon' icon={faDotCircle} />
                                             </div>

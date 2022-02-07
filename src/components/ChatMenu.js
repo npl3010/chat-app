@@ -17,7 +17,7 @@ import useRooms from '../customHooks/useRooms';
 
 // Services:
 import { fetchUserListByUidList } from '../firebase/queryUsers';
-import { fetchFriendListByUserName } from '../firebase/queryFriends';
+import { fetchFriendListByUserName, fetchFriendListOfUser } from '../firebase/queryFriends';
 import { markNewMessagesAsReadByUID } from '../firebase/queryRooms';
 
 // CSS:
@@ -38,6 +38,7 @@ function ChatMenu(props) {
     // Redux:
     const user = useSelector((state) => state.userAuth.user);
     const { rooms, selectedChatRoomID, roomIDWillBeSelected } = useSelector((state) => state.manageRooms);
+    const { friends } = useSelector((state) => state.manageFriends);
     const dispatch = useDispatch();
 
 
@@ -84,13 +85,39 @@ function ChatMenu(props) {
             });
     }, [dispatch, rooms, user.uid]);
 
-    const handleFocusSearchBox = () => {
+    const handleFocusSearchBox = (e) => {
         setIsSearchBoxInputFocused(true);
+        if (searchResultList.length === 0) {
+            if (!e.target.value) {
+                getDefaultFriendList(e);
+                console.log('Vê empty')
+            }
+        }
     };
 
     const handleBlurSearchBox = () => {
         setIsSearchBoxInputFocused(false);
     };
+
+    const getDefaultFriendList = (e) => {
+        clearTimeout(timeout.current);
+        // Data is being fetched or not:
+        setStateForSearching('fetching');
+        // Clear options:
+        setSearchResultList([]);
+        // Fetch API:
+        timeout.current = setTimeout(async () => {
+            fetchFriendListOfUser(user.uid, [])
+                .then((userList) => {
+                    setSearchResultList(userList);
+                    if (userList.length === 0) {
+                        setStateForSearching('empty-search-result');
+                    } else {
+                        setStateForSearching('none');
+                    }
+                });
+        }, 500);
+    }
 
     const handleSearchInputChange = (e) => {
         // We must clearTimeout to prevent autocomplete on submitting many requests when fetching API:
@@ -116,7 +143,22 @@ function ChatMenu(props) {
                     });
             }, 500);
         } else {
-            setStateForSearching('none');
+            // Data is being fetched or not:
+            setStateForSearching('fetching');
+            // Clear options:
+            setSearchResultList([]);
+            // Fetch API:
+            timeout.current = setTimeout(async () => {
+                fetchFriendListOfUser(user.uid, [])
+                    .then((userList) => {
+                        setSearchResultList(userList);
+                        if (userList.length === 0) {
+                            setStateForSearching('empty-search-result');
+                        } else {
+                            setStateForSearching('none');
+                        }
+                    });
+            }, 500);
         }
     };
 
@@ -303,15 +345,31 @@ function ChatMenu(props) {
         );
     };
 
+    const renderEmptyFriendList = () => {
+        return (
+            <div className='results-wrapper'>
+                <div className='results empty'>
+                    <div className='empty-search-result'>
+                        <div className='empty-search-result__msg'>Bạn chưa có người liên hệ nào!</div>
+                    </div>
+                </div>
+            </div>
+        );
+    };
+
     const renderSearchResult = () => {
-        if (stateForSearching === 'fetching') {
-            return renderSearchResultOnLoading();
-        } else if (stateForSearching === 'empty-search-result') {
-            return renderEmptySearchResult();
-        } else if (stateForSearching === 'none') {
-            return renderNonEmptySearchResult();
+        if (friends?.length === 0) {
+            return renderEmptyFriendList();
         } else {
-            return (<></>);
+            if (stateForSearching === 'fetching') {
+                return renderSearchResultOnLoading();
+            } else if (stateForSearching === 'empty-search-result') {
+                return renderEmptySearchResult();
+            } else if (stateForSearching === 'none') {
+                return renderNonEmptySearchResult();
+            } else {
+                return (<></>);
+            }
         }
     };
 
@@ -365,7 +423,7 @@ function ChatMenu(props) {
                                         className='search-box__input'
                                         type='text'
                                         placeholder='Tìm trong danh bạ'
-                                        onFocus={handleFocusSearchBox}
+                                        onFocus={(e) => handleFocusSearchBox(e)}
                                         onChange={(e) => handleSearchInputChange(e)}
                                     ></input>
                                 </div>

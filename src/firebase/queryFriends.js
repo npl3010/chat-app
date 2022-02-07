@@ -315,6 +315,47 @@ export async function markAllNotificationsAsReadByUID(uid) {
 }
 
 
+// Get all friends of a user by user's id:
+/**
+ * 
+ * @param {string} userID This is the id of the user who is searhing his friends.
+ * @param {array} excludedUsers The list of users to be excluded from the result list.
+ * @returns {array} The list of users.
+ */
+export async function fetchFriendListOfUser(userID = '', excludedUsers = []) {
+    let results = [];
+
+    // 1. Get all friends' id:
+    const qFriendList = query(collection(db, "friends"),
+        where("friends", "array-contains", userID),
+    );
+    await getDocs(qFriendList)
+        .then(async (res) => {
+            // 2. Get personal info of each friend by userName:
+            const listOfUsersInfo = await Promise.all(res.docs.map(async (doc) => {
+                const qInfoList = query(collection(db, "users"),
+                    where("uid", "==", doc.data().uid),
+                    orderBy("displayName"),
+                    limit(1)
+                );
+                const qInfoListQuerySnapshot = await getDocs(qInfoList);
+                let temp = null;
+                qInfoListQuerySnapshot.forEach((qInfoDoc) => {
+                    temp = { ...qInfoDoc.data() };
+                });
+                return temp;
+            }));
+            // Store data:
+            results = listOfUsersInfo.filter((item) => {
+                return !(item === null);
+            });
+        });
+
+    // 3. Return result:
+    return results;
+}
+
+
 // Get friends by name:
 /**
  * 

@@ -102,7 +102,7 @@ function OptionListMenu(props) {
                             <div className='navigation__right-section'></div>
                         </div>
                         <div className='option-list'>
-                            <div className='option-list__item'>
+                            <div className='option-list__item is-disabled'>
                                 <div className='option-list__option-title'>
                                     <div className='option-list__icon-wrapper'>
                                         <FontAwesomeIcon className='option-list__icon' icon={faCog} />
@@ -110,7 +110,7 @@ function OptionListMenu(props) {
                                     <span>Cài đặt</span>
                                 </div>
                             </div>
-                            <div className='option-list__item'>
+                            <div className='option-list__item is-disabled'>
                                 <div className='option-list__option-title'>
                                     <div className='option-list__icon-wrapper'>
                                         <FontAwesomeIcon className='option-list__icon' icon={faGlobe} />
@@ -133,7 +133,7 @@ function OptionListMenu(props) {
                             <div className='navigation__right-section'></div>
                         </div>
                         <div className='option-list'>
-                            <div className='option-list__item'>
+                            <div className='option-list__item is-disabled'>
                                 <div className='option-list__option-title'>
                                     <div className='option-list__icon-wrapper'>
                                         <FontAwesomeIcon className='option-list__icon' icon={faQuestionCircle} />
@@ -156,7 +156,7 @@ function OptionListMenu(props) {
                             <div className='navigation__right-section'></div>
                         </div>
                         <div className='option-list'>
-                            <div className='option-list__item'>
+                            <div className='option-list__item is-disabled'>
                                 <div className='option-list__option-title'>
                                     <div className='option-list__icon-wrapper'>
                                         <FontAwesomeIcon className='option-list__icon' icon={faMoon} />
