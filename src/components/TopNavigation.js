@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCaretDown, faSearch } from '@fortawesome/free-solid-svg-icons';
+import { faCaretDown } from '@fortawesome/free-solid-svg-icons';
 
 // Components:
 import TopNavButtonForFriendRequest from './TopNavButtonForFriendRequest';
@@ -62,12 +62,21 @@ function TopNavigation(props) {
                                     <img className='logo' src={appLogo} alt='' draggable={false}></img>
                                 </span>
                             </span>
-                            <div className='search-box-wrapper'>
+                            <span className='topnav__app-name'>
+                                <div className='app-name-wrapper'>
+                                    <div className='app-name animated-glitch-text-effect'>
+                                        <span className='app-name-layer' aria-hidden={true}>MyChatApp</span>
+                                        MyChatApp
+                                        <span className='app-name-layer' aria-hidden={true}>MyChatApp</span>
+                                    </div>
+                                </div>
+                            </span>
+                            {/* <div className='search-box-wrapper'>
                                 <div className='search-box--primary'>
                                     <FontAwesomeIcon className='search-box__icon' icon={faSearch} />
                                     <input className='search-box__input' type='text' placeholder='Tìm kiếm trên App'></input>
                                 </div>
-                            </div>
+                            </div> */}
                         </div>
                     </div>
 
