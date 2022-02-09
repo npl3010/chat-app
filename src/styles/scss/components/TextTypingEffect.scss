@@ -1,0 +1,39 @@
+// .text-typing-effect:
+.text-typing-effect-wrapper {
+    position: relative;
+
+    .text-typing-effect {
+        position: relative;
+        display: inline-block;
+        background-color: #000;
+        white-space: nowrap;
+
+        &.blinking-cursor::after {
+            position: absolute;
+            content: '|';
+            top: 0;
+            left: 100%;
+            color: #fff;
+            animation: Blink 1s step-start 0s infinite;
+        }
+
+        &.hidden-text {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        &.visible-text {
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+    }
+}
+
+
+// Animations:
+@keyframes Blink {
+    50% {
+        opacity: 0;
+    }
+}

@@ -65,6 +65,7 @@ function TextWithEffect(props) {
             return (null);
         }
     };
+    
     return (
         <>
             {renderTextWithEffect()}

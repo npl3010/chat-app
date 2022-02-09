@@ -3,6 +3,7 @@ import React from 'react';
 
 // Components:
 import TextWithEffect from '../components/text/TextWithEffect';
+import TextTypingEffect from '../components/text/TextTypingEffect';
 
 // Firebase:
 import { auth, signInWithPopup, fb_provider, getAdditionalUserInfo } from '../firebase/config';
@@ -99,11 +100,18 @@ function LoginPage(props) {
                                     <div className='intro-wrapper'>
                                         <div className='intro'>
                                             <div className='intro__title'>
-                                                <TextWithEffect text="MyChatApp" textType={['white-text']}></TextWithEffect>
+                                                <TextWithEffect
+                                                    text="MyChatApp"
+                                                    textType={['white-text']}
+                                                ></TextWithEffect>
                                             </div>
                                             <div className='intro__content'>
                                                 <div className='content-wrapper'>
-                                                    <div className='content'>Connect with people</div>
+                                                    <div className='content'>
+                                                        <TextTypingEffect
+                                                            text={["A free messaging web app", "Instant messaging", "Connect with people", "Keep in touch with friends"]}
+                                                        ></TextTypingEffect>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
