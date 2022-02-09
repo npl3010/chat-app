@@ -59,16 +59,24 @@ $topnav_paddingTopBottom: 8px;
         &__logo {
             display: inline-block;
             margin-right: 8px;
+            border-radius: 5px;
+            background-color: #fff;
 
             .logo-wrapper {
                 display: inline-block;
                 min-width: 35px;
                 width: 35px;
                 height: 35px;
-                // background-color: steelblue;
-                background: linear-gradient(to right, rgba(135, 206, 250, 1), rgba(135, 206, 250, 0.5));
-                box-shadow: 0 0 0 3px rgba(135, 206, 250, 0.5);
-                border-radius: 50%;
+                background-image: linear-gradient(135deg, 
+                    rgba(255, 99, 71, 0.5),
+                    rgba(30, 144, 255, 0.5),
+                    rgba(50, 205, 50, 0.5));
+                border-radius: 5px;
+                box-shadow:
+                    -1px -1px 5px 0px rgba(255, 99, 71, 0.5),
+                    1px -1px 5px 0px rgba(30, 144, 255, 0.5),
+                    1px 1px 5px 0px rgba(50, 205, 50, 0.5),
+                    -1px 1px 5px 0px rgba(30, 144, 255, 0.5);
                 cursor: pointer;
             }
 
@@ -83,52 +91,6 @@ $topnav_paddingTopBottom: 8px;
         &__app-name {
             display: inline-block;
             margin-right: 8px;
-
-            .app-name-wrapper {
-                position: relative;
-            }
-
-            .app-name {
-                cursor: pointer;
-                user-select: none;
-            }
-
-            .app-name.animated-glitch-text-effect {
-                position: relative;
-                // color: #fff;
-                color: dodgerblue;
-                font-size: 1.5rem;
-                font-weight: bold;
-                text-shadow: 
-                    0.05em 0 0 tomato,
-                    -0.025em -0.05em 0 limegreen,
-                    0.025em 0.05em 0 dodgerblue;
-                animation: AnimatedGlitchTextEffect 0.5s linear infinite;
-            }
-
-            .app-name.animated-glitch-text-effect .app-name-layer {
-                position: absolute;
-                top: 0;
-                left: 0;
-            }
-
-            .app-name.animated-glitch-text-effect .app-name-layer:nth-child(1) {
-                animation: AnimatedGlitchTextEffect 750ms linear infinite;
-                color: tomato;
-                z-index: 1;
-                clip-path: polygon(0 0, 100% 0, 100% 50%, 0% 35%);
-                transform: translate(-0.025em, -0.0125em);
-                opacity: 0.5;
-            }
-
-            .app-name.animated-glitch-text-effect .app-name-layer:nth-child(2) {
-                animation: AnimatedGlitchTextEffect 350ms linear infinite;
-                color: limegreen;
-                z-index: 1;
-                clip-path: polygon(0 50%, 100% 50%, 100% 100%, 0% 100%);
-                transform: translate(0.0125em, 0.025em);
-                opacity: 0.5;
-            }
         }
     }
 }
@@ -351,50 +313,5 @@ $topnav_paddingTopBottom: 8px;
         opacity: 1;
         visibility: visible;
         transform: scale(1);
-    }
-}
-
-@keyframes AnimatedGlitchTextEffect {
-    0% {
-        text-shadow: 
-            0.05em 0 0 tomato,
-            -0.025em -0.05em 0 limegreen,
-            0.025em 0.05em 0 dodgerblue;
-    }
-    24% {
-        text-shadow: 
-            0.05em 0 0 tomato,
-            -0.025em -0.05em 0 limegreen,
-            0.025em 0.05em 0 dodgerblue;
-    }
-    25% {
-        text-shadow: 
-            -0.05em -0.025em 0 tomato,
-            0.025em -0.05em 0 limegreen,
-            -0.025em -0.05em 0 dodgerblue;
-    }
-    49% {
-        text-shadow: 
-            -0.05em -0.025em 0 tomato,
-            0.025em -0.05em 0 limegreen,
-            -0.025em -0.05em 0 dodgerblue;
-    }
-    50% {
-        text-shadow: 
-            -0.05em 0.025em 0 tomato,
-            -0.025em 0.05em 0 limegreen,
-            0.025em -0.05em 0 dodgerblue;
-    }
-    99% {
-        text-shadow: 
-            -0.05em 0.025em 0 tomato,
-            -0.025em 0.05em 0 limegreen,
-            0.025em -0.05em 0 dodgerblue;
-    }
-    100% {
-        text-shadow: 
-            0.05em 0 0 tomato,
-            -0.025em -0.05em 0 limegreen,
-            0.025em 0.05em 0 dodgerblue;
     }
 }

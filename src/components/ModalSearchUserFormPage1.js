@@ -67,7 +67,7 @@ function ModalSearchUserFormPage1(props) {
             <div className='userlist-wrapper'>
                 <div className='userlist skeleton-loading'>
                     <div
-                        className='userlist__item'
+                        className='userlist__item sample'
                     >
                         <div className='user'>
                             <div className='user__person-img'>

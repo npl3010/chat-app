@@ -315,7 +315,7 @@
     .results {
         display: block;
 
-        &__item {
+        &__item:not(.sample) {
             opacity: 0;
             animation: staggeredListForChatMenuSearchResults 0.3s ease 1 normal;
             animation-fill-mode: forwards;

@@ -6,6 +6,7 @@ import { faCaretDown } from '@fortawesome/free-solid-svg-icons';
 import TopNavButtonForFriendRequest from './TopNavButtonForFriendRequest';
 import TopNavButtonForNotification from './TopNavButtonForNotification';
 import OptionListMenu from './OptionListMenu';
+import TextWithEffect from './text/TextWithEffect';
 
 // Firebase:
 import { auth, signOut } from '../firebase/config';
@@ -63,13 +64,7 @@ function TopNavigation(props) {
                                 </span>
                             </span>
                             <span className='topnav__app-name'>
-                                <div className='app-name-wrapper'>
-                                    <div className='app-name animated-glitch-text-effect'>
-                                        <span className='app-name-layer' aria-hidden={true}>MyChatApp</span>
-                                        MyChatApp
-                                        <span className='app-name-layer' aria-hidden={true}>MyChatApp</span>
-                                    </div>
-                                </div>
+                                <TextWithEffect text="MyChatApp"></TextWithEffect>
                             </span>
                             {/* <div className='search-box-wrapper'>
                                 <div className='search-box--primary'>

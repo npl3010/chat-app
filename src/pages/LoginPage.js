@@ -1,6 +1,9 @@
 import React from 'react';
 // import swal from 'sweetalert';
 
+// Components:
+import TextWithEffect from '../components/text/TextWithEffect';
+
 // Firebase:
 import { auth, signInWithPopup, fb_provider, getAdditionalUserInfo } from '../firebase/config';
 
@@ -13,6 +16,9 @@ import { AlertControlContext } from '../context/AlertControlProvider';
 
 // Services:
 import { addDocument, addDocumentWithoutTimestamp, generateUserNameKeywords } from '../firebase/services';
+
+// CSS:
+import '../styles/scss/pages/LoginPage.scss';
 
 
 function LoginPage(props) {
@@ -75,9 +81,70 @@ function LoginPage(props) {
 
     // Component:
     return (
-        <div>
-            <button onClick={() => handleLoginWithFB()}>Đăng nhập với tài khoản Facebook</button>
-            <button>Đăng nhập với tài khoản Google</button>
+        <div className='app-page-wrapper'>
+            <div className='app-page'>
+                <div className='loginpage-wrapper'>
+                    <div className='loginpage'>
+                        {/* Header: */}
+                        <div className='loginpage__header-section'></div>
+
+                        {/* Intro: */}
+                        <div className='loginpage__intro-section'>
+                            <div className='color-block'></div>
+                            <div className='color-block'></div>
+                            <div className='color-block'></div>
+                            {/* Introduction: */}
+                            <div className='intro-section'>
+                                <div className='intro-section__left-section'>
+                                    <div className='intro-wrapper'>
+                                        <div className='intro'>
+                                            <div className='intro__title'>
+                                                <TextWithEffect text="MyChatApp" textType={['white-text']}></TextWithEffect>
+                                            </div>
+                                            <div className='intro__content'>
+                                                <div className='content-wrapper'>
+                                                    <div className='content'>Connect with people</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className='intro-section__right-section'>
+                                    <div className='login-form-wrapper'>
+                                        <div className='square-block' style={{ '--order': 1 }}></div>
+                                        <div className='square-block' style={{ '--order': 2 }}></div>
+                                        {/* Login form: */}
+                                        <div className='login-form'>
+                                            <div className='login-form__header'>
+                                                <div className='form-title'>Login Form</div>
+                                            </div>
+                                            <div className='login-form__fields'>
+                                                <div className='other-sign-in-options'>
+                                                    <button
+                                                        className='sign-in-option login-btn with-facebook'
+                                                        onClick={() => handleLoginWithFB()}
+                                                    >Đăng nhập với tài khoản Facebook</button>
+                                                    <button
+                                                        className='sign-in-option login-btn with-google'
+                                                        onClick={() => handleLoginWithFB()}
+                                                    >Đăng nhập với tài khoản Google</button>
+                                                </div>
+                                            </div>
+                                            <div className='login-form__footer'></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* About: */}
+                        <div className='loginpage__about-section'></div>
+
+                        {/* Footer: */}
+                        <div className='loginpage__footer-section'></div>
+                    </div>
+                </div>
+            </div>
         </div>
     );
 }

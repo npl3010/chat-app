@@ -1,0 +1,107 @@
+// .text-with-effect:
+.text-with-effect-wrapper {
+    position: relative;
+
+    .text-with-effect {
+        cursor: pointer;
+        user-select: none;
+    }
+    
+    // 1. Effect 1 (glitch text):
+    .text-with-effect.animated-glitch-text-effect {
+        position: relative;
+        // color: #fff;
+        color: dodgerblue;
+        font-size: 1.5rem;
+        font-weight: bold;
+        text-shadow: 
+            0.05em 0 0 tomato,
+            -0.025em -0.05em 0 limegreen,
+            0.025em 0.05em 0 dodgerblue;
+        animation: AnimatedGlitchTextEffect 0.5s linear infinite;
+
+        .text-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        .text-layer:nth-child(1) {
+            animation: AnimatedGlitchTextEffect 750ms linear infinite;
+            color: tomato;
+            z-index: 1;
+            clip-path: polygon(0 0, 100% 0, 100% 50%, 0% 35%);
+            transform: translate(-0.025em, -0.0125em);
+            opacity: 0.5;
+        }
+
+        .text-layer:nth-child(2) {
+            animation: AnimatedGlitchTextEffect 350ms linear infinite;
+            color: limegreen;
+            z-index: 1;
+            clip-path: polygon(0 50%, 100% 50%, 100% 100%, 0% 100%);
+            transform: translate(0.0125em, 0.025em);
+            opacity: 0.5;
+        }
+    }
+}
+
+// Text types:
+.text-with-effect-wrapper {
+
+    // Type 1 (.white-text):
+    .text-with-effect.animated-glitch-text-effect.white-text {
+        color: #fff;
+        
+        .text-layer {
+            color: #fff;
+        }
+    }
+}
+
+
+// Animations:
+@keyframes AnimatedGlitchTextEffect {
+    0% {
+        text-shadow: 
+            0.05em 0 0 tomato,
+            -0.025em -0.05em 0 limegreen,
+            0.025em 0.05em 0 dodgerblue;
+    }
+    24% {
+        text-shadow: 
+            0.05em 0 0 tomato,
+            -0.025em -0.05em 0 limegreen,
+            0.025em 0.05em 0 dodgerblue;
+    }
+    25% {
+        text-shadow: 
+            -0.05em -0.025em 0 tomato,
+            0.025em -0.05em 0 limegreen,
+            -0.025em -0.05em 0 dodgerblue;
+    }
+    49% {
+        text-shadow: 
+            -0.05em -0.025em 0 tomato,
+            0.025em -0.05em 0 limegreen,
+            -0.025em -0.05em 0 dodgerblue;
+    }
+    50% {
+        text-shadow: 
+            -0.05em 0.025em 0 tomato,
+            -0.025em 0.05em 0 limegreen,
+            0.025em -0.05em 0 dodgerblue;
+    }
+    99% {
+        text-shadow: 
+            -0.05em 0.025em 0 tomato,
+            -0.025em 0.05em 0 limegreen,
+            0.025em -0.05em 0 dodgerblue;
+    }
+    100% {
+        text-shadow: 
+            0.05em 0 0 tomato,
+            -0.025em -0.05em 0 limegreen,
+            0.025em 0.05em 0 dodgerblue;
+    }
+}

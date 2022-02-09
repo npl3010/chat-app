@@ -90,7 +90,6 @@ function ChatMenu(props) {
         if (searchResultList.length === 0) {
             if (!e.target.value) {
                 getDefaultFriendList(e);
-                console.log('Vê empty')
             }
         }
     };
@@ -315,7 +314,7 @@ function ChatMenu(props) {
         return (
             <div className='results-wrapper'>
                 <div className='results skeleton-loading'>
-                    <div className='results__item'>
+                    <div className='results__item sample'>
                         <div className='object'>
                             <div className='object__img-wrapper'>
                                 <div className='object-character-name'>

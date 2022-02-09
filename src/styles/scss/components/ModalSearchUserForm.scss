@@ -318,7 +318,7 @@ $avatar_size: 96px;
     flex-direction: column;
     justify-content: flex-start;
 
-    &__item {
+    &__item:not(.sample) {
         padding: 0 8px;
         opacity: 0;
         animation: staggeredListForModalSearchUserForm 0.3s ease 1 normal;
