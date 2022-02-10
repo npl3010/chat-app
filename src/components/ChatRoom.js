@@ -359,9 +359,9 @@ function ChatRoom(props) {
             } else {
                 // Get user data:
                 let data = null;
-                for (let i = 0; i < selectedChatRoomUsers.length; i++) {
-                    if (messageList[i].uid === selectedChatRoomUsers[i].uid) {
-                        data = selectedChatRoomUsers[i];
+                for (let t = 0; t < selectedChatRoomUsers.length; t++) {
+                    if (messageList[i].uid === selectedChatRoomUsers[t].uid) {
+                        data = selectedChatRoomUsers[t];
                         break;
                     }
                 }
