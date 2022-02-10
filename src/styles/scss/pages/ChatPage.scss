@@ -40,3 +40,67 @@
         transition: min-width 0.3s ease, opacity 0s ease 0.3s;
     }
 }
+
+
+/* Responsive design:*/
+@media screen and (max-width: 576px) {
+
+    .chatpage {
+        &__left-section {
+            min-width: auto;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #fff;
+            z-index: 1;
+        }
+
+        &__mid-section {
+            position: absolute;
+            top: 0;
+            left: 100%;
+            width: 100%;
+            height: 100%;
+            background-color: #fff;
+            z-index: 2;
+            transition: all 0.3s ease;
+
+            &.hidden-for-small-devices {
+                left: 100%;
+            }
+
+            &.visible-for-small-devices {
+                left: 0;
+            }
+        }
+
+        &__right-section {
+            position: absolute;
+            top: 0;
+            left: 100%;
+            width: 100%;
+            height: 100%;
+            background-color: #fff;
+            z-index: 3;
+            transition: all 0.3s ease;
+            // Others:
+            min-width: 100%;
+            opacity: 1;
+            visibility: visible;
+
+            &.hidden-for-small-devices {
+                left: 100%;
+            }
+
+            &.visible-for-small-devices {
+                left: 0;
+            }
+        }
+
+        input#checkbox-for-chatroom-menu:checked ~ .chatpage__right-section {
+            transition: all 0.3s ease;
+        }
+    }
+}

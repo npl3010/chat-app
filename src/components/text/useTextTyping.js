@@ -40,12 +40,11 @@ function useTextTyping(text) {
                                 timeoutID.current = setTimeout(() => {
                                     setCurrentPhase(Phase.DELETING);
                                 }, 1000);
-                                break;
+                                return;
                             } else {
                                 timeoutID.current = setTimeout(() => {
                                     setTypedText(nextTextToType);
                                 }, 150);
-                                break;
                             }
                         }
                     } else if (typeof text === 'string') {
@@ -59,15 +58,17 @@ function useTextTyping(text) {
                             timeoutID.current = setTimeout(() => {
                                 setCurrentPhase(Phase.DELETING);
                             }, 1000);
-                            break;
+                            return;
                         } else {
                             timeoutID.current = setTimeout(() => {
                                 setTypedText(nextTextToType);
                             }, 150);
-                            break;
                         }
                     }
-                    break;
+
+                    return (() => {
+                        clearTimeout(timeoutID.current);
+                    });
                 }
             case Phase.DELETING:
                 {
@@ -82,14 +83,13 @@ function useTextTyping(text) {
                                     setSelectedIndex(0);
                                 }
                                 setCurrentPhase(Phase.TYPING);
-                                break;
+                                return;
                             } else {
                                 const nextRemainingText = text[selectedIndex].slice(0, (typedText.length - 1));
 
                                 timeoutID.current = setTimeout(() => {
                                     setTypedText(nextRemainingText);
                                 }, 50);
-                                break;
                             }
                         }
                     } else if (typeof text === 'string') {
@@ -97,17 +97,19 @@ function useTextTyping(text) {
                         if (typedText === '') {
                             // Start text animation for 'TYPING':
                             setCurrentPhase(Phase.TYPING);
-                            break;
+                            return;
                         } else {
                             const nextRemainingText = text[0].slice(0, (typedText.length - 1));
 
                             timeoutID.current = setTimeout(() => {
                                 setTypedText(nextRemainingText);
                             }, 150);
-                            break;
                         }
                     }
-                    break;
+
+                    return (() => {
+                        clearTimeout(timeoutID.current);
+                    });
                 }
             case Phase.STARTING:
                 {
@@ -121,16 +123,12 @@ function useTextTyping(text) {
                     } else {
                         setCurrentPhase(Phase.PAUSING);
                     }
-                    break;
+                    return;
                 }
             case Phase.PAUSING:
             default:
-                break;
+                return;
         }
-
-        return (() => {
-            clearTimeout(timeoutID.current);
-        });
     }, [text, typedText, currentPhase, selectedIndex]);
 
 

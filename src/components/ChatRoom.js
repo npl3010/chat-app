@@ -1,13 +1,13 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faAngleRight, faExclamation, faUser, faInfo } from '@fortawesome/free-solid-svg-icons';
+import { faAngleRight, faExclamation, faUser, faInfo, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 
 // Components:
 import AvatarGroup from './AvatarGroup';
 
 // Redux:
 import { useDispatch, useSelector } from 'react-redux';
-import { setRoomIDWillBeSelected } from '../features/manageRooms/manageRoomsSlice';
+import { clearSelectedRoom, setRoomIDWillBeSelected } from '../features/manageRooms/manageRoomsSlice';
 
 // Services:
 import { addDocument, addDocumentWithTimestamps, formatDateTimeFromDateString, updateDocumentByIDWithTimestamps } from '../firebase/services';
@@ -118,6 +118,10 @@ function ChatRoom(props) {
         const objDate = new Date(dateString);
         const strDateTime = objDate.toLocaleString();
         return strDateTime;
+    }
+
+    const unselectCurrentRoom = () => {
+        dispatch(clearSelectedRoom());
     }
 
 
@@ -410,11 +414,20 @@ function ChatRoom(props) {
         );
     };
 
+    const renderGoBackButtonForSmallDevices = () => {
+        return (
+            <div className='btn-for-small-devices' onClick={() => unselectCurrentRoom()}>
+                <FontAwesomeIcon className='btn-icon' icon={faArrowLeft} />
+            </div>
+        );
+    };
+
     const renderChatRoomComponent = () => {
         return (
             <>
                 <div className='chat-info'>
                     <div className='chat-info__person'>
+                        {renderGoBackButtonForSmallDevices()}
                         {renderChatRoomImage()}
                         <div className='person-info'>
                             <span className='person-name'>{generateChatRoomName()}</span>

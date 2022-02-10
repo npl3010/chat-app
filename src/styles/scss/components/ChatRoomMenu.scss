@@ -3,6 +3,10 @@
     position: relative;
     height: 100%;
 
+    &__nav {
+        padding: 10px 16px;
+    }
+
     &__header {
         position: relative;
         padding: 10px 16px;
@@ -61,5 +65,39 @@
             display: block;
             width: 100%;
         }
+    }
+
+    .btn-for-small-devices {
+        margin-right: 8px;
+        background-color: transparent;
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-width: 36px;
+        width: 36px;
+        height: 36px;
+        cursor: pointer;
+        background-color: #eee;
+        display: none;
+
+        &:hover {
+            background-color: #ddd;
+        }
+
+        .btn-icon {
+            display: block;
+            font-size: 14px;
+            color: #888;
+        }
+    }
+}
+
+
+/* Responsive design:*/
+@media screen and (max-width: 576px) {
+
+    .chatroom-menu .btn-for-small-devices {
+        display: flex;
     }
 }

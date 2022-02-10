@@ -14,6 +14,7 @@
         border-radius: 5px;
         padding: 8px 16px;
         margin: 0;
+        overflow-x: hidden;
         // Display:
         display: flex;
         justify-content: flex-start;
@@ -38,6 +39,7 @@
             color: inherit;
             // flex-grow: 1;
             width: 100%;
+            overflow: auto;
         }
 
         &__actions {
@@ -72,7 +74,7 @@
             .msg {
                 font-weight: normal;
                 font-size: 14px;
-                word-wrap: break-word;
+                // word-wrap: break-word;
             }
         }
 
@@ -166,5 +168,15 @@
     }
     100% {
         transform: translateX(0px);
+    }
+}
+
+
+/* Responsive design:*/
+@media screen and (max-width: 576px) {
+
+    .app-alert-message-wrapper .app-alert-message {
+        min-width: auto;
+        width: calc(100vw - 16px - 16px);
     }
 }

@@ -133,6 +133,31 @@
             font-size: 13px;
         }
     }
+
+    .btn-for-small-devices {
+        margin-right: 8px;
+        background-color: transparent;
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-width: 36px;
+        width: 36px;
+        height: 36px;
+        cursor: pointer;
+        background-color: #eee;
+        display: none;
+
+        &:hover {
+            background-color: #ddd;
+        }
+
+        .btn-icon {
+            display: block;
+            font-size: 14px;
+            color: #888;
+        }
+    }
 }
 
 
@@ -508,5 +533,14 @@
                 right: 0;
             }
         }
+    }
+}
+
+
+/* Responsive design:*/
+@media screen and (max-width: 576px) {
+
+    .chatroom .btn-for-small-devices {
+        display: flex;
     }
 }

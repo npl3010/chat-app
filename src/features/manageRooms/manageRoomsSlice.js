@@ -29,6 +29,10 @@ const manageRoomsSlice = createSlice({
             state.isLoadingARoom = false;
             state.temporaryRoom = null;
         },
+        clearSelectedRoom: (state) => {
+            state.selectedChatRoomID = '';
+            state.selectedChatRoomUsers = [];
+        },
 
         // Store the selected room's info:
         selectRoom: (state, action) => {
@@ -125,6 +129,7 @@ const manageRoomsSlice = createSlice({
 // Action creators are generated for each case reducer function:
 export const {
     resetRoomsStatesToInitial,
+    clearSelectedRoom,
     selectRoom,
     setIsLoadingARoom,
     setRoomIDWillBeSelected,

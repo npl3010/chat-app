@@ -315,3 +315,38 @@ $topnav_paddingTopBottom: 8px;
         transform: scale(1);
     }
 }
+
+
+/* Responsive design:*/
+@media screen and (max-width: 576px) {
+
+    .top-navigation {
+        z-index: 5;
+
+        .topnav-wrapper .topnav__app-name {
+            display: none;
+
+            .text-with-effect-wrapper .text-with-effect.animated-glitch-text-effect {
+                animation: none;
+            }
+        }
+
+        .user-btn {
+            display: none;
+        }
+
+        .main-menu .menu-button {
+            min-width: 36px;
+            width: 36px;
+            height: 36px;
+        }
+
+        .dropdown-btn .dropdown-menu {
+            width: calc(100vw - 16px - 16px);
+        }
+
+        .notification-btn .notification-menu {
+            width: calc(100vw - 16px - 16px);
+        }
+    }
+}

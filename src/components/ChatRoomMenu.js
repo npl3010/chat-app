@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Avatar, Tooltip } from 'antd';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 
 // Components:
 import ChatRoomCollapsibleMenu from './ChatRoomCollapsibleMenu';
@@ -12,6 +14,11 @@ import '../styles/scss/components/ChatRoomMenu.scss';
 
 
 function ChatRoomMenu(props) {
+    const {
+        handleDisplayChatRoomMenu
+    } = props;
+
+
     // Redux:
     const user = useSelector((state) => state.userAuth.user);
     const { rooms, selectedChatRoomID, selectedChatRoomUsers } = useSelector((state) => state.manageRooms);
@@ -157,8 +164,20 @@ function ChatRoomMenu(props) {
         return result;
     };
 
+    const renderGoBackButtonForSmallDevices = () => {
+        return (
+            <div className='btn-for-small-devices' onClick={() => handleDisplayChatRoomMenu()}>
+                <FontAwesomeIcon className='btn-icon' icon={faArrowLeft} />
+            </div>
+        );
+    };
+
     return (
         <div className='chatroom-menu'>
+            <div className='chatroom-menu__nav'>
+                {renderGoBackButtonForSmallDevices()}
+            </div>
+
             <div className='chatroom-menu__header'>
                 <div className='chatroom-menu__info'>
                     <div className='chatroom-menu__members'>
@@ -170,7 +189,9 @@ function ChatRoomMenu(props) {
 
             <div className='chatroom-menu__options'>
                 {renderOptionList()}
-                <div></div>
+                <div className='actions-wrapper'>
+                    <div className='action'></div>
+                </div>
             </div>
         </div>
     );

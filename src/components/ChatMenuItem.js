@@ -25,34 +25,17 @@ function ChatMenuItem(props) {
 
 
     // State:
-    const [membersDetails, setMembersDetails] = useState(false);
+    const [membersDetails, setMembersDetails] = useState([]);
     const [isSeen, setIsSeen] = useState(false);
 
 
     // Side effects:
     useEffect(() => {
         if (membersOfARoom.length > 0) {
-            const arr = membersOfARoom.filter((element) => {
-                return !(element === user.uid);
-            });
-            if (arr.length === 1) {
-                fetchUserListByUidList(arr)
-                    .then((users) => {
-                        const data = users.map((u, i) => {
-                            return {
-                                uid: u.uid,
-                                imgSrc: u.photoURL,
-                                displayName: u.displayName
-                            }
-                        });
-                        data.push({
-                            uid: user.uid,
-                            imgSrc: user.photoURL,
-                            displayName: user.displayName
-                        });
-                        setMembersDetails(data);
-                    });
-            } else {
+            if (roomType === 'one-to-one-chat') {
+                const arr = membersOfARoom.filter((element) => {
+                    return !(element === user.uid);
+                });
                 fetchUserListByUidList(arr)
                     .then((users) => {
                         const data = users.map((u, i) => {
@@ -64,9 +47,43 @@ function ChatMenuItem(props) {
                         });
                         setMembersDetails(data);
                     });
+            } else if (roomType === 'group-chat') {
+                const arr = membersOfARoom.filter((element) => {
+                    return !(element === user.uid);
+                });
+                if (arr.length === 1) {
+                    fetchUserListByUidList(arr)
+                        .then((users) => {
+                            const data = users.map((u, i) => {
+                                return {
+                                    uid: u.uid,
+                                    imgSrc: u.photoURL,
+                                    displayName: u.displayName
+                                }
+                            });
+                            data.push({
+                                uid: user.uid,
+                                imgSrc: user.photoURL,
+                                displayName: user.displayName
+                            });
+                            setMembersDetails(data);
+                        });
+                } else {
+                    fetchUserListByUidList(arr)
+                        .then((users) => {
+                            const data = users.map((u, i) => {
+                                return {
+                                    uid: u.uid,
+                                    imgSrc: u.photoURL,
+                                    displayName: u.displayName
+                                }
+                            });
+                            setMembersDetails(data);
+                        });
+                }
             }
         }
-    }, [user, membersOfARoom]);
+    }, [user, membersOfARoom, roomType]);
 
     useEffect(() => {
         let count = 0;

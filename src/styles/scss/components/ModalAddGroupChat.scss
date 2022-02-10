@@ -94,3 +94,12 @@
         text-align: center;
     }
 }
+
+
+/* Responsive design:*/
+@media screen and (max-width: 576px) {
+
+    .antd-modal-add-group-chat {
+        min-width: auto;
+    }
+}

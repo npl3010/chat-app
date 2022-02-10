@@ -24,21 +24,26 @@ function ChatPage(props) {
     // State:
     const [isThereASelectedRoom, setIsThereASelectedRoom] = useState(false);
     const [isChatRoomMenuDisplayed, setIsChatRoomMenuDisplayed] = useState(false);
+    const [isRightSectionVisibleForSmallDevice, setIsRightSectionVisibleForSmallDevice] = useState(false);
 
 
     // Methods:
     const handleDisplayChatRoomMenu = useCallback(() => {
-        setIsChatRoomMenuDisplayed(!isChatRoomMenuDisplayed);
-    }, [isChatRoomMenuDisplayed]);
+        if (window.innerWidth < 576) {
+            setIsRightSectionVisibleForSmallDevice(!isRightSectionVisibleForSmallDevice);
+        } else {
+            setIsChatRoomMenuDisplayed(!isChatRoomMenuDisplayed);
+        }
+    }, [isChatRoomMenuDisplayed, isRightSectionVisibleForSmallDevice]);
 
 
     // Side effects:
     useEffect(() => {
         if (typeof selectedChatRoomID === 'string' && selectedChatRoomID !== '' && isThereASelectedRoom === false) {
-            handleDisplayChatRoomMenu();
+            setIsChatRoomMenuDisplayed(true);
             setIsThereASelectedRoom(true);
         }
-    }, [selectedChatRoomID, isThereASelectedRoom, handleDisplayChatRoomMenu]);
+    }, [selectedChatRoomID, isThereASelectedRoom]);
 
 
     // Component:
@@ -53,7 +58,7 @@ function ChatPage(props) {
                             <ChatMenu></ChatMenu>
                         </div>
 
-                        <div className='chatpage__mid-section'>
+                        <div className={`chatpage__mid-section${selectedChatRoomID ? ' visible-for-small-devices' : ' hidden-for-small-devices'}`}>
                             <ChatRoom></ChatRoom>
                         </div>
 
@@ -65,8 +70,10 @@ function ChatPage(props) {
                             onChange={() => handleDisplayChatRoomMenu()}>
                         </input>
 
-                        <div className='chatpage__right-section'>
-                            <ChatRoomMenu></ChatRoomMenu>
+                        <div className={`chatpage__right-section${isRightSectionVisibleForSmallDevice ? ' visible-for-small-devices' : ' hidden-for-small-devices'}`}>
+                            <ChatRoomMenu
+                                handleDisplayChatRoomMenu={handleDisplayChatRoomMenu}
+                            ></ChatRoomMenu>
                         </div>
                     </div>
                 </div>
