@@ -173,6 +173,25 @@
         .sign-in-option:last-child {
             margin-bottom: 0;
         }
+
+        .btn-icon-wrapper {
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-width: 30px;
+            width: 30px;
+            height: 30px;
+            margin-right: 10px;
+            cursor: pointer;
+
+            .btn-icon {
+                position: relative;
+                width: 100%;
+                height: 100%;
+                border-radius: 50%;
+            }
+        }
     }
 }
 
@@ -183,7 +202,7 @@
     .login-btn {
         border: none;
         outline: none;
-        padding: 8px 16px;
+        padding: 5px 10px 5px 5px;
         background-color: rgba(255, 255, 255, 0.8);
         color: #000;
         border-radius: 50px;
@@ -192,6 +211,9 @@
         text-align: center;
         cursor: pointer;
         user-select: none;
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
 
         &:hover {
             background-color: rgba(255, 255, 255, 1);
@@ -250,5 +272,22 @@
 
     .loginpage .intro-section__right-section {
         width: 100%;
+    }
+
+    .loginpage .intro__title {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .text-typing-effect-wrapper .text-typing-effect.visible-text {
+        top: 0;
+        left: 50%;
+        transform: translate(-50%, 0);
+    }
+
+    .loginpage .login-btn {
+        font-size: 13px;
     }
 }

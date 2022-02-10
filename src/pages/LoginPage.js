@@ -21,6 +21,10 @@ import { addDocument, addDocumentWithoutTimestamp, generateUserNameKeywords } fr
 // CSS:
 import '../styles/scss/pages/LoginPage.scss';
 
+// Assets:
+import fbIcon from '../assets/images/icon_Facebook.png';
+import ggIcon from '../assets/images/icon_Google.png';
+
 
 function LoginPage(props) {
     // Context:
@@ -131,11 +135,25 @@ function LoginPage(props) {
                                                     <button
                                                         className='sign-in-option login-btn with-facebook'
                                                         onClick={() => handleLoginWithFB()}
-                                                    >Đăng nhập với tài khoản Facebook</button>
+                                                    >
+                                                        <span className='btn-icon-wrapper'>
+                                                            <a href="https://www.flaticon.com/free-icons/facebook" title="facebook icons" style={{ pointerEvents: 'none' }}>
+                                                                <img className='btn-icon' src={fbIcon} alt={'facebook-icon'}></img>
+                                                            </a>
+                                                        </span>
+                                                        <span className='btn-title'>Đăng nhập với Facebook</span>
+                                                    </button>
                                                     <button
                                                         className='sign-in-option login-btn with-google'
                                                         onClick={() => handleLoginWithFB()}
-                                                    >Đăng nhập với tài khoản Google</button>
+                                                    >
+                                                        <span className='btn-icon-wrapper'>
+                                                            <a href="https://www.flaticon.com/free-icons/google" title="google icons" style={{ pointerEvents: 'none' }}>
+                                                                <img className='btn-icon' src={ggIcon} alt={'facebook-icon'}></img>
+                                                            </a>
+                                                        </span>
+                                                        <span className='btn-title'>Đăng nhập với Google</span>
+                                                    </button>
                                                 </div>
                                             </div>
                                             <div className='login-form__footer'></div>
