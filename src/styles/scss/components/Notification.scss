@@ -204,3 +204,20 @@
         transform: translate(-50%, -50%) rotate(360deg);
     }
 }
+
+
+/* Responsive design:*/
+@media screen and (max-width: 576px) {
+
+    .notification-wrapper .notification .action-btn-wrapper {
+        margin-right: 0;
+        margin-bottom: 8px;
+        width: 100%;
+    }
+
+    .notification-wrapper .notification .action-btn {
+        padding: 3px 8px;
+        width: 100%;
+        text-align: center;
+    }
+}

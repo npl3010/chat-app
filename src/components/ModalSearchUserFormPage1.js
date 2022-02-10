@@ -50,7 +50,7 @@ function ModalSearchUserFormPage1(props) {
                                         </div>
                                         <div className='user__info'>
                                             <div className='user-title'>{userListItem.displayName}</div>
-                                            <div className='user-more-info'>{userListItem.email}</div>
+                                            {/* <div className='user-more-info'>{userListItem.email}</div> */}
                                         </div>
                                     </div>
                                 </div>
