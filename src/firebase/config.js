@@ -13,6 +13,7 @@ import {
     signOut,
     onAuthStateChanged,
     FacebookAuthProvider,
+    GoogleAuthProvider,
     getAdditionalUserInfo,
     connectAuthEmulator,
 } from "firebase/auth";
@@ -55,6 +56,7 @@ const analytics = getAnalytics(app);
 const auth = getAuth();
 const db = getFirestore();
 const fb_provider = new FacebookAuthProvider();
+const gg_provider = new GoogleAuthProvider();
 
 
 // Firebase Emulator:
@@ -69,7 +71,7 @@ export {
     signInWithPopup,
     signOut,
     onAuthStateChanged,
-    fb_provider,
+    fb_provider, gg_provider,
     FacebookAuthProvider,
     getAdditionalUserInfo,
     collection,

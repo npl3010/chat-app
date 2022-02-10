@@ -6,7 +6,7 @@ import TextWithEffect from '../components/text/TextWithEffect';
 import TextTypingEffect from '../components/text/TextTypingEffect';
 
 // Firebase:
-import { auth, signInWithPopup, fb_provider, getAdditionalUserInfo } from '../firebase/config';
+import { auth, signInWithPopup, fb_provider, getAdditionalUserInfo, gg_provider } from '../firebase/config';
 
 // Redux:
 import { useDispatch } from 'react-redux';
@@ -81,7 +81,53 @@ function LoginPage(props) {
                 // swal(errorCode, errorMessage, "error");
                 showAppAlertMessage('danger', errorCode, errorMessage, 5);
             });
-    }
+    };
+
+
+    const handleLoginWithGG = () => {
+        signInWithPopup(auth, gg_provider)
+            .then((result) => {
+                // Get user data:
+                const { displayName, email, uid, photoURL } = result.user;
+                const action = setUser({ displayName, email, uid, photoURL });
+                dispatch(action);
+
+                // Check isNewUser:
+                const moreInfo = getAdditionalUserInfo(result);
+                if (moreInfo.isNewUser === true) {
+                    // If user's account is the first login, create necessary tables in database:
+                    // - Table 'users':
+                    addDocument("users", {
+                        displayName: result.user.displayName,
+                        email: result.user.email,
+                        uid: result.user.uid,
+                        photoURL: result.user.photoURL,
+                        providerId: moreInfo.providerId,
+                        displayNameSearchKeywords: generateUserNameKeywords(result.user.displayName),
+                        phoneNumber: result.user.phoneNumber,
+                        gender: ''
+                    });
+                    // - Table 'friends':
+                    addDocumentWithoutTimestamp("friends", {
+                        uid: result.user.uid,
+                        friends: [],
+                        friendsFrom: []
+                    });
+                }
+
+                // Display result:
+                // swal("Successfully logged in!", `Your email: ${email}`, "success");
+                showAppAlertMessage('success', 'Đăng nhập thành công', `Tài khoản: ${email}`, 3);
+            })
+            .catch((error) => {
+                // Handle Errors:
+                const errorCode = error.code;
+                const errorMessage = error.message;
+                // Display result:
+                // swal(errorCode, errorMessage, "error");
+                showAppAlertMessage('danger', errorCode, errorMessage, 5);
+            });
+    };
 
 
     // Component:
@@ -145,7 +191,7 @@ function LoginPage(props) {
                                                     </button>
                                                     <button
                                                         className='sign-in-option login-btn with-google'
-                                                        onClick={() => handleLoginWithFB()}
+                                                        onClick={() => handleLoginWithGG()}
                                                     >
                                                         <span className='btn-icon-wrapper'>
                                                             <a href="https://www.flaticon.com/free-icons/google" title="google icons" style={{ pointerEvents: 'none' }}>
