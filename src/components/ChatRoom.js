@@ -210,6 +210,12 @@ function ChatRoom(props) {
                     <div className='group-img-wrapper'></div>
                 );
             } else {
+                if (imgGroup.length === 1) {
+                    imgGroup.push({
+                        imgSrc: user.photoURL,
+                        displayName: user.displayName
+                    });
+                }
                 return (
                     <div className='group-img-wrapper'>
                         <AvatarGroup

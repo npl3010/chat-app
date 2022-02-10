@@ -35,19 +35,38 @@ function ChatMenuItem(props) {
             const arr = membersOfARoom.filter((element) => {
                 return !(element === user.uid);
             });
-            fetchUserListByUidList(arr)
-                .then((users) => {
-                    const data = users.map((u, i) => {
-                        return {
-                            uid: u.uid,
-                            imgSrc: u.photoURL,
-                            displayName: u.displayName
-                        }
+            if (arr.length === 1) {
+                fetchUserListByUidList(arr)
+                    .then((users) => {
+                        const data = users.map((u, i) => {
+                            return {
+                                uid: u.uid,
+                                imgSrc: u.photoURL,
+                                displayName: u.displayName
+                            }
+                        });
+                        data.push({
+                            uid: user.uid,
+                            imgSrc: user.photoURL,
+                            displayName: user.displayName
+                        });
+                        setMembersDetails(data);
                     });
-                    setMembersDetails(data);
-                });;
+            } else {
+                fetchUserListByUidList(arr)
+                    .then((users) => {
+                        const data = users.map((u, i) => {
+                            return {
+                                uid: u.uid,
+                                imgSrc: u.photoURL,
+                                displayName: u.displayName
+                            }
+                        });
+                        setMembersDetails(data);
+                    });
+            }
         }
-    }, [user.uid, membersOfARoom]);
+    }, [user, membersOfARoom]);
 
     useEffect(() => {
         let count = 0;

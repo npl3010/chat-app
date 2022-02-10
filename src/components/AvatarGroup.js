@@ -22,7 +22,9 @@ function AvatarGroup(props) {
     // Component:
     const renderClassNameForAvatarGroup = () => {
         let className = '';
-        if (imgsData.length === 2) {
+        if (imgsData.length === 1) {
+            className = ' one-img';
+        } else if (imgsData.length === 2) {
             className = ' two-imgs';
         } else if (imgsData.length === 3) {
             className = ' three-imgs';
