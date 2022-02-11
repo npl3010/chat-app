@@ -92,7 +92,7 @@ function App() {
 
   // Component:
   return (
-    <BrowserRouter>
+    <BrowserRouter basename='/chat-app'>
 
       {/* Provider: */}
       <ModalControlProvider>
