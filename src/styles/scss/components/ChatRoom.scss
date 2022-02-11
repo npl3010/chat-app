@@ -525,13 +525,16 @@
 
     .message:first-child {
 
-        .message-piece {
+        .message-piece:first-child {
+            
+            .message-piece {
 
-            &__tooltip {
-                bottom: auto;
-                top: calc(100% + 2px);
-                right: 0;
-                width: fit-content;
+                &__tooltip {
+                    bottom: auto;
+                    top: calc(100% + 2px);
+                    right: 0;
+                    width: fit-content;
+                }
             }
         }
     }
