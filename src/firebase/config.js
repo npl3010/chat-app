@@ -15,7 +15,7 @@ import {
     FacebookAuthProvider,
     GoogleAuthProvider,
     getAdditionalUserInfo,
-    connectAuthEmulator,
+    // connectAuthEmulator,
 } from "firebase/auth";
 
 import {
@@ -30,7 +30,7 @@ import {
     deleteDoc,
     onSnapshot,
     serverTimestamp,
-    connectFirestoreEmulator,
+    // connectFirestoreEmulator,
     query, where, orderBy, limit,
 } from "firebase/firestore";
 
@@ -60,8 +60,8 @@ const gg_provider = new GoogleAuthProvider();
 
 
 // Firebase Emulator:
-connectAuthEmulator(auth, "http://localhost:9099");
-connectFirestoreEmulator(db, 'localhost', 8080);
+// connectAuthEmulator(auth, "http://localhost:9099");
+// connectFirestoreEmulator(db, 'localhost', 8080);
 
 
 export {
