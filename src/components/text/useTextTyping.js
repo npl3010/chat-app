@@ -36,10 +36,6 @@ function useTextTyping(text) {
                             if (nextTextToType === typedText) {
                                 // Pause text animation:
                                 setCurrentPhase(Phase.PAUSING);
-                                // Start text animation for 'DELETING':
-                                timeoutID.current = setTimeout(() => {
-                                    setCurrentPhase(Phase.DELETING);
-                                }, 1000);
                                 return;
                             } else {
                                 timeoutID.current = setTimeout(() => {
@@ -54,10 +50,6 @@ function useTextTyping(text) {
                         if (nextTextToType === typedText) {
                             // Pause text animation:
                             setCurrentPhase(Phase.PAUSING);
-                            // Start text animation for 'DELETING' after a second:
-                            timeoutID.current = setTimeout(() => {
-                                setCurrentPhase(Phase.DELETING);
-                            }, 1000);
                             return;
                         } else {
                             timeoutID.current = setTimeout(() => {
@@ -99,7 +91,7 @@ function useTextTyping(text) {
                             setCurrentPhase(Phase.TYPING);
                             return;
                         } else {
-                            const nextRemainingText = text[0].slice(0, (typedText.length - 1));
+                            const nextRemainingText = text.slice(0, (typedText.length - 1));
 
                             timeoutID.current = setTimeout(() => {
                                 setTypedText(nextRemainingText);
@@ -118,14 +110,23 @@ function useTextTyping(text) {
                             setSelectedIndex(0);
                             setCurrentPhase(Phase.TYPING);
                         } else {
-                            setCurrentPhase(Phase.PAUSING);
+                            setCurrentPhase(null);
                         }
                     } else {
-                        setCurrentPhase(Phase.PAUSING);
+                        setCurrentPhase(Phase.TYPING);
                     }
                     return;
                 }
             case Phase.PAUSING:
+                {
+                    // Start text animation for 'DELETING':
+                    const timeout = setTimeout(() => {
+                        setCurrentPhase(Phase.DELETING);
+                    }, 1000);
+                    return (() => {
+                        clearTimeout(timeout);
+                    });
+                }
             default:
                 return;
         }
