@@ -20,6 +20,9 @@ import useFirestore from "../customHooks/useFirestore";
 
 
 function ChatRoom(props) {
+    const {
+        setIsChatRoomMenuDisplayed
+    } = props;
     const messagesEndRef = useRef(null);
 
 
@@ -122,6 +125,7 @@ function ChatRoom(props) {
 
     const unselectCurrentRoom = () => {
         dispatch(clearSelectedRoom());
+        setIsChatRoomMenuDisplayed(false);
     }
 
 

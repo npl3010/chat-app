@@ -46,6 +46,10 @@
 @media screen and (max-width: 576px) {
 
     .chatpage {
+        width: 100vw;
+        min-width: 100vw;
+        max-width: 100vw;
+        
         &__left-section {
             min-width: auto;
             position: absolute;

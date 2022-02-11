@@ -31,6 +31,7 @@ function ChatPage(props) {
     const handleDisplayChatRoomMenu = useCallback(() => {
         if (window.innerWidth < 576) {
             setIsRightSectionVisibleForSmallDevice(!isRightSectionVisibleForSmallDevice);
+            setIsChatRoomMenuDisplayed(!isRightSectionVisibleForSmallDevice);
         } else {
             setIsChatRoomMenuDisplayed(!isChatRoomMenuDisplayed);
         }
@@ -59,7 +60,9 @@ function ChatPage(props) {
                         </div>
 
                         <div className={`chatpage__mid-section${selectedChatRoomID ? ' visible-for-small-devices' : ' hidden-for-small-devices'}`}>
-                            <ChatRoom></ChatRoom>
+                            <ChatRoom
+                                setIsChatRoomMenuDisplayed={setIsChatRoomMenuDisplayed}
+                            ></ChatRoom>
                         </div>
 
                         <input
