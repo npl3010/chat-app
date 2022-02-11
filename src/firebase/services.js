@@ -185,11 +185,24 @@ export const toPascalCaseForAllWords = (text) => {
 }
 
 
+// Get current datetime from date string:
+/**
+ * 
+ * @param {string} dateString A string
+ * @returns {string}
+ */
+export const getDateAndTimeFromDateString = (dateString) => {
+    const objDate = new Date(dateString);
+    const strDateTime = objDate.toLocaleString();
+    return strDateTime;
+}
+
+
 // Relative Date Formatting with date-fns:
 /**
  * 
  * @param {string} dateString A string
- * @returns 
+ * @returns {string}
  */
 export const formatDateTimeFromDateString = (dateString) => {
     let result = '';

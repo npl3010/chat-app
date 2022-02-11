@@ -117,12 +117,6 @@ function ChatRoom(props) {
         }
     }
 
-    const getDateAndTimeFromDateString = (dateString) => {
-        const objDate = new Date(dateString);
-        const strDateTime = objDate.toLocaleString();
-        return strDateTime;
-    }
-
     const unselectCurrentRoom = () => {
         dispatch(clearSelectedRoom());
         setIsChatRoomMenuDisplayed(false);
@@ -269,8 +263,7 @@ function ChatRoom(props) {
                 {
                     messages.slice(0).reverse().map((msg, index) => {
                         if (msg.uid === user.uid) {
-                            const strDateTime = getDateAndTimeFromDateString(msg.createdAt);
-                            const relativeDateTime = formatDateTimeFromDateString(strDateTime);
+                            const relativeDateTime = formatDateTimeFromDateString(msg.createdAt);
                             return (
                                 <div key={`msg-${index}`} className='message from-me'>
                                     <div className='message__content'>
@@ -292,8 +285,7 @@ function ChatRoom(props) {
                             }
 
                             // Return:
-                            const strDateTime = getDateAndTimeFromDateString(msg.createdAt);
-                            const relativeDateTime = formatDateTimeFromDateString(strDateTime);
+                            const relativeDateTime = formatDateTimeFromDateString(msg.createdAt);
                             return (
                                 <div key={`msg-${index}`} className='message from-others'>
                                     <div className='message__person-img'>
@@ -338,8 +330,7 @@ function ChatRoom(props) {
                     const d1 = new Date(messageList[i].createdAt);
                     const d2 = new Date(messageList[j].createdAt);
                     if (messageList[i].uid === messageList[j].uid && Math.abs(d1 - d2) <= 60000) {
-                        const strDateTime = getDateAndTimeFromDateString(messageList[j].createdAt);
-                        const relativeDateTime = formatDateTimeFromDateString(strDateTime);
+                        const relativeDateTime = formatDateTimeFromDateString(messageList[j].createdAt);
                         messageGroup.push(
                             <span key={`msgpiece-${j}`} className='message-piece'>
                                 {messageList[j].content}
@@ -376,8 +367,7 @@ function ChatRoom(props) {
                     const d1 = new Date(messageList[i].createdAt);
                     const d2 = new Date(messageList[j].createdAt);
                     if (messageList[i].uid === messageList[j].uid && Math.abs(d1 - d2) <= 60000) {
-                        const strDateTime = getDateAndTimeFromDateString(messageList[j].createdAt);
-                        const relativeDateTime = formatDateTimeFromDateString(strDateTime);
+                        const relativeDateTime = formatDateTimeFromDateString(messageList[j].createdAt);
                         messageGroup.push(
                             <span key={`msgpiece-${j}`} className='message-piece'>
                                 {messageList[j].content}
